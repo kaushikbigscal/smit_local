@@ -1,0 +1,36 @@
+<odoo>
+    <record id="view_project_timesheet_report_wizard_form" model="ir.ui.view">
+        <field name="name">project.timesheet.report.wizard.form</field>
+        <field name="model">project.timesheet.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Project Timesheet Report Wizard">
+                <group>
+                    <field name="x_template" autofocus="autofocus"/>
+                    <field name="available_project_ids" invisible="1"/>
+                    <field name="project_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"  domain="[('id', 'in', available_project_ids)]"/>
+                    <field name="customer_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
+                    <field name="department_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
+                    <div class="text-muted o_form_label" colspan="2">
+                        Note: All fields are optional. You can generate the report without applying any filters.
+                    </div>
+<!--                    <field name="employee_ids" widget="many2many_tags"/>-->
+<!--                    <field name="date_from"/>-->
+<!--                    <field name="date_to"/>-->
+                </group>
+                <footer>
+                    <button string="Generate Report" type="object" name="action_generate_report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_project_timesheet_report_wizard" model="ir.actions.act_window">
+        <field name="name">Project Timesheet</field>
+        <field name="res_model">project.timesheet.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_project_timesheet_report_root" name="Project Timesheet" parent="project.menu_project_report" action="action_project_timesheet_report_wizard" sequence="11"/>
+</odoo>

@@ -1,0 +1,64 @@
+<odoo>
+    <record id="res_config_settings_view_form_inherit_amc_block" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.amc.block</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="industry_fsm.res_config_settings_view_form"/>
+        <field name="priority" eval="80"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='industry_fsm']" position="inside">
+                <block title="AMC" id="amc_config_block">
+                    <div class="row">
+
+                        <!-- LEFT SIDE: Days Before Schedule Visit -->
+                        <div class="col-6">
+                            <div class="setting">
+                                <div class="mt16 o_setting_left_pane">
+                                    <field name="days_before_schedule_visit"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="days_before_schedule_visit" string="Days Before Schedule Visit"/>
+                                    <div class="text-muted">
+                                        Number of days before the scheduled visit to create the service call.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT SIDE: Show New Estimation Button -->
+                        <div class="col-6">
+                            <div class="setting">
+                                <div class="mt16 o_setting_left_pane">
+                                    <field name="amc_new_estimation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amc_new_estimation" string="Create New Estimation"/>
+                                    <div class="text-muted">
+                                        Enable this option to create a new estimation in AMC Contracts.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt16">
+                        <!-- Full Width: AMC Contract Reminder Days -->
+                        <div class="col-12 col-lg-6">
+                            <div class="o_setting_right_pane">
+                                <label for="amc_contract_reminder_days"/>
+                                <div class="text-muted">
+                                    Set days for reminder of expired contract.
+                                </div>
+                                <div>
+                                    <field name="amc_contract_reminder_days" style="width: 80px; display: inline-block;"
+                                           nolabel="1"/>
+                                    <span style="margin-left: 4px;">Days Before</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+ 

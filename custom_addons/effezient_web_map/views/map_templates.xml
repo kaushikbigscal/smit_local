@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="map_template">
+        <div t-ref="googleMapContainer" style="height: 100%; width: 100%;"></div>
+        <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=AIzaSyDIHThgSjrRMrvJYcXbgsmcZjNtmjE4BRA'"
+                t-att-async="'async'"
+                t-att-defer="'defer'">
+        </script>
+    </template>
+</odoo>

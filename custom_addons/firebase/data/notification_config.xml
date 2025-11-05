@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="firebase_config_parameter" model="ir.config_parameter">
+        <field name="key">firebase.credentials_path</field>
+        <field name="value">C:\Users\town\Desktop\odoo-17.0\firebase_credentials.json</field>
+    </record>
+</odoo>

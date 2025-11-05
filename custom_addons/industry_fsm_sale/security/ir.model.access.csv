@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+industry_fsm_sale.access_product_part_data,access_product_part_data,industry_fsm_sale.model_product_part_data,base.group_user,1,1,1,1
+industry_fsm_sale.access_sale_order_parts,access_sale_order_parts,industry_fsm_sale.model_sale_order_parts,base.group_user,1,1,1,1
+
+industry_fsm_sale.access_fsm_sign_report_wizard,access_fsm_sign_report_wizard,industry_fsm_sale.model_fsm_sign_report_wizard,base.group_user,1,1,1,1
+
+access_service_call_count_user,access.service.call.count.user,model_service_call_count,base.group_user,1,1,0,0

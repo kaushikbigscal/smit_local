@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<!--    <data>-->
+<!--        <record id="email_template_holiday" model="mail.template">-->
+<!--            <field name="name">Holiday Notification</field>-->
+<!--            <field name="email_from">${(user.email_formatted or '')|safe}</field>-->
+<!--            <field name="model_id" ref="data_recycle.model_resource_calendar_leaves"/>-->
+<!--            <field name="subject">Holiday Notification</field>-->
+<!--            <field name="auto_delete" eval="True"/>-->
+<!--            <field name="body_html">-->
+<!--                <p>Dear Customer,</p>-->
+
+<!--                <p>We would like to inform you that our office will remain closed due to holiday.</p>-->
+
+<!--                <p>Regular operations will resume soon. During this period, our team will not be available to respond to-->
+<!--                    calls or emails.-->
+<!--                </p>-->
+
+<!--                <p>We appreciate your cooperation and look forward to serving you after the holidays.</p>-->
+
+<!--                <p>Best regards,-->
+<!--                    <br/>-->
+<!--                    Your Company-->
+<!--                </p>-->
+<!--            </field>-->
+<!--        </record>-->
+<!--    </data>-->
+</odoo>

@@ -1,0 +1,152 @@
+<odoo noupdate="0">
+    <data>
+        <!-- your base, empty template that should only be loaded at install time -->
+        <record id="report_template_xml_upload" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_xml_upload</field>
+            <field name="model">hr.payslip</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_xml_upload">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload</field>
+            <field name="report_file">data_recycle.report_template_xml_upload</field>
+            <field name="print_report_name">
+                '%s_%s_%s' % (object.employee_id.name.replace(" ", "") if object.employee_id else 'Employee',
+                object.date_from.strftime("%B%Y") if object.date_from else 'UnknownMonth', time.strftime("%Y%m%d_%H%M"))
+            </field>
+        </record>
+
+
+        <record id="report_template_service_call_xml_upload" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_service_call_xml_upload</field>
+            <field name="model">project.task</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_service_call_xml_upload">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all_service_call" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">project.task</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_service_call_xml_upload</field>
+            <field name="report_file">data_recycle.report_template_service_call_xml_upload</field>
+            <field name="print_report_name">
+                'ServiceReport_%s_%s' % (
+                object.partner_id.name.replace(' ', '') if object.partner_id else 'NoCustomer',
+                time.strftime("%Y-%m-%d_%H_%M")
+                )
+            </field>
+        </record>
+
+
+        <record id="report_template_xml_upload_account_move_invoice" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_xml_upload_account_move_invoice</field>
+            <field name="model">account.move</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_xml_upload_account_move_invoice">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all_account_move_invoice" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload_account_move_invoice</field>
+            <field name="report_file">data_recycle.report_template_xml_upload_account_move_invoice</field>
+        </record>
+
+
+        <record id="report_template_xml_upload_sale_order" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_xml_upload_sale_order</field>
+            <field name="model">sale.order</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_xml_upload_sale_order">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all_sale_order" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload_sale_order</field>
+            <field name="report_file">data_recycle.report_template_xml_upload_sale_order</field>
+            <field name="print_report_name">
+                '%s_%s_%s' % (object.partner_id.name.replace(" ", "") if object.partner_id else 'NoCustomer',
+                object.name.replace(" ", "") if object.name else 'NoQuotation', time.strftime("%Y%m%d_%H%M") )
+            </field>
+        </record>
+
+        <record id="report_template_xml_upload_amc_contract" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_xml_upload_amc_contract</field>
+            <field name="model">amc.contract</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_xml_upload_amc_contract">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all_amc_contract" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">amc.contract</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload_amc_contract</field>
+            <field name="report_file">data_recycle.report_template_xml_upload_amc_contract</field>
+        </record>
+
+        <record id="report_template_xml_upload_cmc_contract" model="ir.ui.view">
+            <field name="name">data_recycle.report_template_xml_upload_cmc_contract</field>
+            <field name="model">amc.contract</field>
+            <field name="type">qweb</field>
+            <field name="arch_db"><![CDATA[
+        <template id="report_template_xml_upload_cmc_contract">
+          <t t-call="web.external_layout">
+            <main/>
+          </t>
+        </template>
+      ]]></field>
+        </record>
+
+        <record id="action_xml_upload_custom_report_format_for_all_cmc_contract" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">amc.contract</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload_cmc_contract</field>
+            <field name="report_file">data_recycle.report_template_xml_upload_cmc_contract</field>
+        </record>
+    </data>
+</odoo>
+
+
+
+
+ 

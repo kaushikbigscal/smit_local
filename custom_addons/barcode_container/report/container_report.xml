@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Paper Format - A4 with 10px margins -->
+    <record id="paperformat_a4_custom" model="report.paperformat">
+        <field name="name">A4 Custom (10px Border)</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Report action -->
+    <record id="action_report_container" model="ir.actions.report">
+        <field name="name">Container Report</field>
+        <field name="model">barcode.container</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">barcode_container.report_container_document</field>
+        <field name="report_file">barcode_container.report_container_document</field>
+        <field name="binding_model_id" ref="model_barcode_container"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Container - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="barcode_container.paperformat_a4_custom"/>
+    </record>
+
+    <!-- QWeb template -->
+    <template id="report_container_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                        }
+                        .page {
+                        width: 100%;
+                        font-family: Cambria;
+                        font-size: 12px;
+                        background: white;
+                        }
+                        .header-bar {
+                        width: 100%;
+                        background-color: #0a4515;
+                        color: #ffffff;
+                        padding: 25px 20px;
+                        text-align: center;
+                        }
+                        .logo-circle {
+                        width: 140px;
+                        height: 130px;
+                        background-color: #ffffff;
+                        border-radius: 50%;
+                        margin: 0 auto 15px auto;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: hidden;
+                        border: 3px solid #ffffff;
+                        }
+                        .logo-circle img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        }
+                        .company-name {
+                        font-size: 32px;
+                        font-weight: bold;
+                        margin-bottom: 8px;
+                        letter-spacing: 1px;
+                        }
+                        .divider-line {
+                        width: 200px;
+                        height: 2px;
+                        background-color: #ffffff;
+                        margin: 10px auto;
+                        }
+                        .tagline {
+                        font-size: 14px;
+                        font-weight: normal;
+                        letter-spacing: 0.5px;
+                        margin-top: 8px;
+                        }
+                        .content {
+                        padding: 20px 15px;
+                        }
+                        .details-wrapper {
+                        display: table;
+                        width: 100%;
+                        }
+                        .details-column {
+                        display: table-cell;
+                        vertical-align: top;
+                        }
+                        .details-column.left {
+                        width: 50%;
+                        padding-right: 20px;
+                        }
+                        .details-column.right {
+                        width: 50%;
+                        padding-left: 20px;
+                        }
+                        .detail-row {
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                        }
+                        .detail-label {
+                        font-weight: bold;
+                        display: inline-block;
+                        min-width: 130px;
+                        }
+                        .detail-value {
+                        display: inline-block;
+                        }
+                        .table-section {
+                        margin-top: 30px;
+                        width: 100%;
+                        }
+                        .data-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 12px;
+                        }
+                        .data-table th {
+                        background-color: #f0f0f0;
+                        border: 1px solid #000;
+                        padding: 8px 5px;
+                        text-align: center;
+                        font-weight: bold;
+                        }
+                        .data-table td {
+                        border: 1px solid #000;
+                        padding: 6px 5px;
+                        text-align: center;
+                        }
+                        .data-table tr.scanned-row {
+                        background-color: #90EE90;
+                        }
+                        .data-table tr.scanned-row td {
+                        background-color: #90EE90;
+                        font-weight: bold;
+                        }
+                        .data-table td.qr-cell {
+                        padding: 4px;
+                        }
+                        .data-table td.qr-cell img {
+                        width: 75px;
+                        height: 75px;
+                        display: block;
+                        margin: 0 auto;
+                        }
+                        .footer-bar {
+                        width: 100%;
+                        background-color: #6B4423;
+                        color: #ffffff;
+                        padding: 15px 20px;
+                        margin-top: 20px;
+                        display: table;
+                        }
+                        .footer-left {
+                        display: table-cell;
+                        width: 50%;
+                        vertical-align: middle;
+                        font-size: 16px;
+                        font-weight: bold;
+                        }
+                        .footer-right {
+                        display: table-cell;
+                        width: 50%;
+                        text-align: right;
+                        vertical-align: middle;
+                        }
+                        .footer-item {
+                        font-size: 16px;
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                        }
+                        .footer-item:last-child {
+                        margin-bottom: 0;
+                        }
+                        .note-section{
+                        width: 100%;
+                        padding: 15px 20px;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        }
+                        .note-title{
+                        font-size: 16px;
+                        font-weight: bold;
+                        }
+                        .signature-section{
+                        width: 100%;
+                        padding: 15px 20px;
+                        margin-top: 20px;
+                        margin-left: 10px;
+                        }
+                        .signature-label{
+                        font-size: 16px;
+                        font-weight: bold;
+                        margin-bottom: 60px;
+                        }
+                        .signature-line{
+                        border: 1px solid #000;
+                        width: 300px;
+                        }
+                        .company-footer-bar {
+                        width: 100%;
+                        background-color: #0a4515;
+                        color: #ffffff;
+                        padding: 20px 30px;
+                        margin-top: 30px;
+                        display: table;
+                        page-break-inside: avoid;
+                        }
+                        .company-footer-left {
+                        display: table-cell;
+                        width: 70%;
+                        vertical-align: middle;
+                        padding-right: 40px;
+                        }
+                        .company-footer-right {
+                        display: table-cell;
+                        width: 30%;
+                        vertical-align: middle;
+                        text-align: center;
+                        }
+                        .company-footer-title {
+                        font-size: 16px;
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                        }
+                        .company-footer-details {
+                        font-size: 14px;
+                        line-height: 1.8;
+                        }
+                        .company-footer-details div {
+                        margin-bottom: 1px;
+                        }
+                        .qr-section-wrapper {
+                        display: inline-block;
+                        text-align: center;
+                        }
+                        .thank-you-text {
+                        font-size: 16px;
+                        font-weight: bold;
+                        margin-bottom: 3px;
+                        color: #ffffff;
+                        }
+                        .visit-text {
+                        font-size: 12px;
+                        margin-bottom: 8px;
+                        color: #ffffff;
+                        }
+                        .qr-code-box {
+                        background-color: #ffffff;
+                        padding: 8px;
+                        display: inline-block;
+                        border: 3px solid #ffffff;
+                        margin: 0 auto;
+                        }
+                        .scan-label {
+                        color: #000000;
+                        font-size: 12px;
+                        font-weight: bold;
+                        text-align: center;
+                        margin-bottom: 5px;
+                        }
+                        .qr-code-box img {
+                        width: 100px;
+                        height: 100px;
+                        display: block;
+                        }
+                    </style>
+
+                    <!-- Green Header with Logo -->
+                    <div class="header-bar">
+                        <!-- Logo Circle -->
+                        <div class="logo-circle">
+                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"
+                                 alt="Company Logo"/>
+                            <span t-else="" style="color: #2d5016; font-size: 14px; font-weight: bold;">LOGO</span>
+                        </div>
+
+                        <!-- Company Name -->
+                        <div class="company-name">
+                            Exotic Tropical Timber N.V.
+                        </div>
+
+                        <!-- Divider Line -->
+                        <div class="divider-line"></div>
+
+                        <!-- Tagline/Quote -->
+                        <div class="tagline">
+                            We Unlock The Power Of Wood
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="content">
+                        <!-- Two Column Layout -->
+                        <div class="details-wrapper">
+                            <!-- Left Column: Consignee Info -->
+                            <div class="details-column left">
+                                <div class="detail-row">
+                                    <span class="detail-label">Consignee:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.consignee_id.name"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row" style="display:flex; align-items:flex-start;">
+                                    <span class="detail-label"></span>
+                                    <span class="detail-value">
+                                        <div t-if="o.consignee_id.street">
+                                            <span t-field="o.consignee_id.street"/>
+                                        </div>
+                                        <div>
+                                            <span t-if="o.consignee_id.city" t-field="o.consignee_id.city"/>
+                                            <span t-if="o.consignee_id.state_id">,
+                                                <span t-field="o.consignee_id.state_id.name"/>
+                                            </span>
+                                            <span t-if="o.consignee_id.zip" t-field="o.consignee_id.zip"/>
+                                        </div>
+                                        <div t-if="o.consignee_id.country_id">
+                                            <span t-field="o.consignee_id.country_id.name"/>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Other Details -->
+                            <div class="details-column right">
+                                <div class="detail-row">
+                                    <span class="detail-label">Date:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.date"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">Packinglist nr.:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.name"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">Reference nr.:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.reference_nr"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">BL nr.:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.bl_nr"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">FOB:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.fob"/>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">Destination:</span>
+                                    <span class="detail-value">
+                                        <span t-field="o.destination_id.complete_name"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Section -->
+                        <div class="table-section">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Label#</th>
+                                        <th>Species</th>
+                                        <th>Thickn.(mm)</th>
+                                        <th>Width(mm)</th>
+                                        <th>Length(m)</th>
+                                        <th>Pieces</th>
+                                        <th>Volume(M3)</th>
+                                        <th>QR code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.line_ids" t-as="line">
+                                        <tr t-att-class="'scanned-row' if line.scanned else ''">
+                                            <td>
+                                                <span t-field="line.label"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.species"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.thickness_mm"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.width_mm"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.length_m"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.pieces"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(line.volume_m3 or 0.0, 4)"/>
+                                            </td>
+                                            <td class="qr-cell">
+                                                <img t-if="line.qr_code" t-att-src="image_data_uri(line.qr_code)"
+                                                     alt="QR Code"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Brown Footer Bar -->
+                        <div class="footer-bar">
+                            <div class="footer-left">
+                                Container:
+                                <span t-field="o.container_number"/>
+                            </div>
+                            <div class="footer-right">
+                                <div class="footer-item">
+                                    Total pieces:
+                                    <span t-esc="sum(o.line_ids.mapped('pieces'))"/>
+                                </div>
+                                <div class="footer-item">
+                                    Total volume:
+                                    <span t-esc="'%.3f' % sum(o.line_ids.mapped('volume_m3'))"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Note Section -->
+                        <div class="note-section">
+                            <div class="note-title">Note: After cargo is transferred, to the port authorities [loaded in
+                                container or break bulk]
+                                <br/>
+                                Shipper is not responsible for damages caused during transport or
+                                unloading of the cargo.
+                            </div>
+                        </div>
+
+                        <!-- Signature Section -->
+                        <div class="signature-section">
+                            <div class="signature-label">Authorized Signature:</div>
+                            <div class="signature-line"></div>
+                        </div>
+
+                        <!-- Green Footer Section with Company Details -->
+                        <div class="company-footer-bar">
+                            <div class="company-footer-left">
+                                <div class="company-footer-title">
+                                    Exotic Tropical Timber N.V.
+                                </div>
+                                <div class="company-footer-details">
+                                    <div>Address: Noorderlijke Industrieweg Br. 1</div>
+                                    <div>District: Paramaribo</div>
+                                    <div>Country: Suriname</div>
+                                    <div>FIN Number: 2000044689</div>
+                                    <div>KKF #: 97772</div>
+                                    <div>Phone number: +597 403045 / 8091519</div>
+                                    <div>E-mail address: info@exotictropicaltimber.com</div>
+                                </div>
+                            </div>
+                            <div class="company-footer-right">
+                                <div class="qr-section-wrapper">
+                                    <div class="thank-you-text">Thank you</div>
+                                    <div class="visit-text">Visit our website</div>
+                                    <div class="qr-code-box">
+                                        <div class="scan-label">Scan me!</div>
+                                        <img t-att-src="request.env['ir.config_parameter'].sudo().get_param('web.base.url') + '/barcode_container/static/src/img/company_qr_code.png'"
+                                             alt="QR Code" style="width:100px;height:100px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

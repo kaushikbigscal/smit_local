@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_company_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="notify_customer" string="Notify Customers"/>
+                <field name="notification_type" string="Notification Type" invisible="not notify_customer"
+                       required="notify_customer"/>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="view_resource_calendar_leaves_notify_tree_inherit" model="ir.ui.view">
+        <field name="name">resource.calendar.leaves.notify.tree.inherit</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="resource.resource_calendar_leave_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_to']" position="after">
+                <field name="frequency"/>
+                <field name="customer_selection"/>
+                <field name="category_id" widget="many2many_tags" invisible="customer_selection != 'specific'" required="customer_selection == 'specific'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

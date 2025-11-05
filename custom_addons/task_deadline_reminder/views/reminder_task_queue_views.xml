@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_reminder_task_queue_tree" model="ir.ui.view">
+        <field name="name">reminder.task.queue.tree</field>
+        <field name="model">reminder.task.queue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="task_id"/>
+                <field name="activity_id"/>
+                <field name="reminder_datetime"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_reminder_task_queue_form" model="ir.ui.view">
+        <field name="name">reminder.task.queue.form</field>
+        <field name="model">reminder.task.queue</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="task_id"/>
+                    <field name="activity_id"/>
+                    <field name="reminder_datetime"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_reminder_task_queue_action" model="ir.actions.act_window">
+        <field name="name">Reminder Task Queue</field>
+        <field name="res_model">reminder.task.queue</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_reminder_task_queue"
+              name="Reminder Task Queue"
+              parent="mail.mail_menu_technical"
+              action="view_reminder_task_queue_action"/>
+</odoo>

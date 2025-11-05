@@ -1,0 +1,13 @@
+.pos-total-sales {
+    display: inline-block;
+    padding: 0 10px;
+    margin-left: 15px;
+    color: #000;
+    font-weight: bold;
+
+    &::before {
+        content: '|';
+        margin-right: 10px;
+        opacity: 0.5;
+    }
+}

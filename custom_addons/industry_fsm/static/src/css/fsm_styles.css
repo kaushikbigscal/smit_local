@@ -1,0 +1,8 @@
+.fsm-sticky-buttons {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    background-color: white;
+    margin-top: -20px;
+    padding: 15px;
+}

@@ -1,0 +1,270 @@
+<odoo>
+<template id="report_pdf_template">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; color: #000; max-width: 800px; margin: 0 auto; padding-left: 60px; padding-right: 60px;">
+                    <div style="text-align:center; margin-bottom: 15px;">
+                        <span style="font-size: 13pt; font-weight: bold; text-decoration: underline; text-decoration-skip-ink: none; text-underline-offset: 2px;">
+                            ANNUAL MAINTENANCE CONTRACT (A.M.C.)
+                        </span>
+                    </div>
+                    <div style="height: 15px;"></div>
+                    <div style="text-align:justify; line-height: 1.6;">
+                        This Annual Maintenance agreement between
+                        <span style="font-weight:bold;">VECTOR BIOTEK PVT. LTD.</span>,
+                        425 New GIDC kabilpore, Navsari Gujarat( hereafter called "the company" which term includes its successor and assigns) of one part and
+                        <span style="font-weight:bold; text-decoration:underline; text-underline-offset: 2px;">To</span>
+                        <span style="font-weight:bold; text-decoration:underline; text-underline-offset: 2px;"><t t-esc="doc.partner_id.name"/></span>
+                        (Here after called "the customer" which term includes its/his/her, successors and assigns) on the other part.
+                    </div>
+                    <div style="height: 18px;"></div>
+                    <ol style="padding-left: 18px; text-align:justify; line-height: 1.7;">
+                        <li>
+                            The company agrees in consideration of <span style="font-weight:bold;">Rs.</span>
+                            <span style="font-weight:bold; text-decoration:underline; text-underline-offset: 2px;"><t t-esc="doc.total_amount or ''"/></span>
+                            per annum payable in advance to carry out the annual maintenance of the customer's equipment mentioned in the schedule attached herewith. The company also agrees to keep the equipment in good working condition for a period of
+                            <span style="font-weight:bold; text-decoration:underline; text-underline-offset: 2px;"><t t-esc="doc.visit_frequency or ''"/></span>
+                            months from the date mentioned in the schedule as "Effective Date".
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">CALL PRIORITY:</span>
+                            The customer is here by assured of priority for services to be provided on his instrument.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">CHARGEABILITY:</span>
+                            The customer is required to pay cost for the replacement of parts and/or consumables during the term of this A.M.C.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">PREVENTIVE MAINTENANCE VISITS:</span>
+                            <span style="display:inline-block; min-width: 30px; border-bottom: 1px solid #000; margin: 0 5px 0 8px; vertical-align: text-bottom; height: 14px;"><t t-esc="doc.visit_frequency or ''"/></span>
+                            Preventive maintenance visits will be provided at an interval of 4 months during this term of AMC for calibration, maintenance procedure in order to prevent any possible breakdown by the company's Service Engineers.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">BREAKDOWN CALLS:</span> The company agrees to honour breakdown calls during the term of this AMC for malfunctioning of the equipment arising due to causes other than inadequate environment fault, electrical condition, stabilizer malfunctioning and misuse.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            The Service Engineer of the Company shall prepare a service report regarding the jobs carried out during his visit to customer and the same shall be treated as evidence of the visit. The company undertakes to put its best efforts to carryout its obligation arising out of the conditions of the agreement but it is not supposed to be held liable for any loss, cost or expenses incurred directly or indirectly for any delay in doing so.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            The customer here by undertakes to keep the instrument clean, in a dust free environment and at a place approved by the company's engineer, ensuring it's correct operation, preventing misuse and to report correctly any problems related to it's operation. The customer also agrees further to provide proper electrical installations &amp; proper voltage stabilization. Any damage to the instrument caused due to improper electrical installation is not covered under the preview of this AMC.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">Undertaking:</span>
+                            We, <span style="font-weight:bold; text-decoration:underline; text-underline-offset: 2px;"><t t-esc="doc.partner_id.name"/></span>
+                            allow the company's Engineer to open my Instrument <span style="display:inline-block; min-width: 80px; border-bottom: 1px solid #000; margin: 0 5px; vertical-align: text-bottom; height: 14px;"></span> &amp; Sr. No. <span style="display:inline-block; min-width: 80px; border-bottom: 1px solid #000; margin: 0 5px; vertical-align: text-bottom; height: 14px;"></span> for Service purpose as it is under AMC, and resolve problem. While Opening the instrument if any other parts found damaged, it will not be Vector Engineer's responsibility.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            This agreement shall be deemed null &amp; void in case the instrument is shifted from its original place of installation or the ownership of instrument is transferred, Instrument is misused, dismantled, altered or serviced by any person other than company's deputed Service Engineer. The company reserves the right to charge separately if the instrument requires to be reinstalled elsewhere from its original place. Any dispute or difference arising at any time during the term of this agreement shall be resolved in accordance with the provision of Indian Arbitration Act 1940 and only the courts of Navsari shall have the Jurisdiction in all matters.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            The company reserves the right to refuse service in case the customer is found to use reagent supplied from any other company or from any distributor other than those authorized by the company.
+                        </li>
+                    </ol>
+                    <div style="height: 25px;"></div>
+                    <table style="width: 400px; border-collapse: collapse; font-size: 12pt; margin-bottom: 25px; margin-left: 0; table-layout: fixed;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px 10px; width: 45%; font-weight: bold;">Instrument Model:</td>
+                            <td style="border: 1px solid #000; padding: 8px 10px;"><t t-esc="doc.asset_line_ids and doc.asset_line_ids[0].product_id.name or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px 10px; font-weight: bold;">Instrument Sr. No:</td>
+                            <td style="border: 1px solid #000; padding: 8px 10px;"><t t-esc="doc.asset_line_ids and doc.asset_line_ids[0].serial_number_ids and doc.asset_line_ids[0].serial_number_ids[0].name or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px 10px; font-weight: bold;">Date of Installation:</td>
+                            <td style="border: 1px solid #000; padding: 8px 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px 10px; font-weight: bold;">Effective Date:</td>
+                            <td style="border: 1px solid #000; padding: 8px 10px;"><t t-esc="doc.start_date or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px 10px; font-weight: bold;">Expiry Date:</td>
+                            <td style="border: 1px solid #000; padding: 8px 10px;"><t t-esc="doc.end_date or ''"/></td>
+                        </tr>
+                    </table>
+                    <div style="height: 25px;"></div>
+                    <table style="width:100%; font-size: 12pt; border: 1px solid #000; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: 1px solid #000; width:50%; padding: 8px 10px; font-weight: bold;">For, <span style="color:#000;">VECTOR BIOTEK PVT. LTD.</span></td>
+                            <td style="border: 1px solid #000; width:50%; padding: 8px 10px; font-weight: bold;">Customer's Name:</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; height: 60px; padding: 8px 10px;"></td>
+                            <td style="border: 1px solid #000; height: 60px; padding: 8px 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; font-style: italic; padding: 8px 10px;">Authorized Signatory</td>
+                            <td style="border: 1px solid #000; font-style: italic; padding: 8px 10px;">Sign &amp; Stamp</td>
+                        </tr>
+                    </table>
+                    <div style="text-align:right; font-size:10pt; margin-top: 25px;">
+                        Page <span t-esc="page"/> of <span t-esc="page_count"/><br/>
+                        VEC/IS/AMC/IN/002-00
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <template id="report_pdf_template_cmc">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <!-- Page 1 -->
+                <div class="page" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; color: #000; max-width: 800px; margin: 0 auto; padding-left: 60px; padding-right: 60px;">
+                    <div style="text-align:center; margin-bottom: 10px;">
+                        <span style="font-size: 15pt; font-weight: bold; text-decoration: underline;">
+                            COMPREHENSIVE MAINTENANCE CONTRACT (CMC)
+                        </span>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div style="text-align:justify; line-height: 1.6;">
+                        This Comprehensive Maintenance agreement between
+                        <span style="font-weight:bold;">VECTOR BIOTEK PVT. LTD.</span>
+                        425 New GIDC kabilpore, Navsari Gujarat (hereafter called "the company" which term includes its successor and assigns) of one part and
+                        <span style="font-weight:bold; text-decoration:underline;">To</span>
+                        <span style="font-weight:bold; text-decoration:underline;">__________________________________________</span>
+                        (Here after called "the customer" which term includes its/his/her, successors and assigns) on the other part.
+                    </div>
+                    <div style="height: 18px;"></div>
+                    <ol style="padding-left: 18px; text-align:justify; line-height: 1.7;">
+                        <li>
+                            The company agrees in consideration of <span style="font-weight:bold;">Rs.</span>
+                            <span style="font-weight:bold; text-decoration:underline;">____________________</span>
+                            per annum payable in advance to carry out the Comprehensive maintenance of the customer's equipment mentioned in the schedule attached herewith. The company also agrees to keep the equipment in good working condition for a period of
+                            <span style="font-weight:bold; text-decoration:underline;">___</span>
+                            months from the date mentioned in the schedule as "Effective Date".
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">CALL PRIORITY:</span>
+                            The customer is here by assured of priority for services to be provided to his instrument.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">PREVENTIVE MAINTENANCE VISITS:</span>
+                            <span style="min-width: 40px; vertical-align: middle;">___________</span>
+                            Preventive maintenance visits will be provided at an interval of 3 months during this term of CMC for maintenance procedure in order to prevent any possible breakdown by the company's Service Engineers.
+                        </li>
+                        <div style="height: 10px;"></div>
+                        <li>
+                            <span style="font-weight:bold;">BREAKDOWN CALLS:</span> The company agrees to honour breakdown calls during the term of this AMC for malfunctioning of the equipment arising due to causes other than inadequate environment fault, electrical condition, stabilizer malfunctioning and misuse.
+                        </li>
+                    </ol>
+                    <div style="text-align:right; font-size:10pt; margin-top: 30px;">
+                        Page <span t-esc="page"/> of <span t-esc="page_count"/><br/>
+                        VEC/IS/CMC/IN/002-00
+                    </div>
+                </div>
+                <!-- Page 2 -->
+                <div class="page" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; color: #000; max-width: 800px; margin: 0 auto; padding-left: 60px; padding-right: 60px;">
+                    <div style="text-align:center; margin-bottom: 10px; font-weight: bold; text-decoration: underline;">SCOPE OF CMC</div>
+                    <ol style="padding-left: 18px; text-align:justify; line-height: 1.7;">
+                        <li>This analyzer will be under CMC for ___ year after the expiry of the warranty period.</li>
+                        <li>VECTOR will ensure proper functioning of analyzer during the said CMC, provided the analyzer is used by customer as per conditions recommended by VECTOR as below:
+                            <ol type="a" style="padding-left: 20px;">
+                                <li>Analyzer will be operated in air-conditioned environment.</li>
+                                <li>Analyzer shall be operated using regulated Power supply through on-line UPS / CVT</li>
+                                <li>Proper earthling as per norms.</li>
+                                <li>Analyzer should be operated by technicians trained by VECTOR.</li>
+                            </ol>
+                        </li>
+                        <li>VECTOR will ensure 92% up time of the analyzer. Any breakdown will be attended with in max 24 working hours by VECTOR based on written communication from customer.</li>
+                        <li>The CMC is limited only to the analyzer unit and VECTOR will not be responsible to provide the CMC on the peripherals supplied along with analyzer like Computer, printer, RO Plant etc.</li>
+                        <li>This Agreement is non-negotiable.</li>
+                        <li>Vector will, at its option, repair or replace the defective parts free of charge, provided the customer notifies Vector of the analyzer defect within the scope of CMC in writing.</li>
+                        <li>Vector will not accept any request of analyzer replacement</li>
+                        <li>Vector will use parts from company available stock for repair work during the period of CMC.</li>
+                        <li>The replaced defective parts from the analyzer t will be the property of vector.</li>
+                        <li>Vector will, at its option either repair the analyzer at customer site or carry the analyzer to their service center to carry out the repair works, and during this period vector will not be responsible to provide any stand by analyzer to customer.</li>
+                    </ol>
+                    <div style="text-align:right; font-size:10pt; margin-top: 30px;">
+                        Page <span t-esc="page"/> of <span t-esc="page_count"/><br/>
+                        VEC/IS/CMC/IN/002-00
+                    </div>
+                </div>
+                <!-- Page 3 -->
+                <div class="page" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; color: #000; max-width: 800px; margin: 0 auto; padding-left: 60px; padding-right: 60px;">
+                    <div style="font-weight: bold; margin-bottom: 10px;">The Following are excluded from Scope of CMC:</div>
+                    <ol style="padding-left: 18px; text-align:justify; line-height: 1.7;">
+                        <li>This Agreement does not cover consumable parts (i.e. – ___________________________________________).</li>
+                        <li>Reagents loss during servicing/breakdown.</li>
+                        <li>Vector will not be responsible for providing service or support under the terms of this agreement if, and not limited to:
+                            <ol type="a" style="padding-left: 20px;">
+                                <li>The analyzer has been misused, neglected, physically damaged, damage by renters or altered; either internally or externally or damaged due to improper environment conditions.</li>
+                                <li>The analyzer is not warranted for the defects due to fire, water, natural disasters, and high input voltages.</li>
+                                <li>If any reagents other than those supplied by Vector or their Authorized Distributors have been used on the analyzer.</li>
+                                <li>The analyzer repaired/service by unauthorized service engineers.</li>
+                                <li>The analyzer original identification (trademark, serial No) marking have been altered or removed.</li>
+                                <li>This agreement does not warrant uninterrupted or error free operation of the analyzer.</li>
+                                <li>If analyzer is transferred or shifted to other site from the original site of installation.</li>
+                            </ol>
+                        </li>
+                    </ol>
+                    <div style="text-align:right; font-size:10pt; margin-top: 30px;">
+                        Page <span t-esc="page"/> of <span t-esc="page_count"/><br/>
+                        VEC/IS/CMC/IN/002-00
+                    </div>
+                </div>
+                <!-- Page 4 -->
+                <div class="page" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; color: #000; max-width: 800px; margin: 0 auto; padding-left: 60px; padding-right: 60px;">
+                    <div style="font-weight: bold; text-align:center; margin-bottom: 10px;">Termination of Contract</div>
+                    <div style="text-align:justify; line-height: 1.6; margin-bottom: 20px;">
+                        Vector has the right of terminating this contract if the customer is found to have violated any clause as mentioned above. In such a scenario Vector shall send a communication to the customer mentioning the same and the CMC shall stand cancelled from the date of such communication. The payment of the CMC made by the customer shall stand forfeited.
+                    </div>
+                    <table style="width: 420px; border-collapse: collapse; font-size: 13pt; margin-bottom: 30px; margin-left: 0;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px 6px; width: 180px;"><strong>Instrument Model:</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px 6px; width: 240px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px 6px;"><strong>Instrument Sr. No:</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px 6px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px 6px;"><strong>Date of Installation:</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px 6px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px 8px;"><strong>Effective Date:</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px 8px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px 8px;"><strong>Expiry Date:</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px 8px;"></td>
+                        </tr>
+                    </table>
+                    <div style="height: 30px;"></div>
+                    <table style="width:100%; font-size: 13pt; border: 1px solid #000; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: 1px solid #000; width:50%; padding: 6px 10px; vertical-align: top;">
+                                <div style="font-weight: bold;">Signed, sealed and delivered by</div>
+                                <div style="font-weight: bold;">BUYER</div>
+                            </td>
+                            <td style="border: 1px solid #000; width:50%; padding: 6px 10px; vertical-align: top;">
+                                <div style="font-weight: bold;">Signed, sealed and delivered by</div>
+                                <div style="font-weight: bold;">VECTOR</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; height: 40px;"></td>
+                            <td style="border: 1px solid #000;"></td>
+                        </tr>
+                    </table>
+                    <div style="text-align:right; font-size:10pt; margin-top: 30px;">
+                        Page <span t-esc="page"/> of <span t-esc="page_count"/><br/>
+                        VEC/IS/CMC/IN/002-00
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

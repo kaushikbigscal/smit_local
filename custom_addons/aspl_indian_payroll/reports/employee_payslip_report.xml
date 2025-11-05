@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="custom_employee_payroll">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t style="page-break-before:always;"/>
+
+                    <style type="text/css">
+                        td, th {
+                        min-height: 44px;
+                        padding: 10px;
+                        }
+                    </style>
+
+                    <h2 class="text-center font-weight-bold"
+                        style="border: 1px solid black; margin-bottom: 0; padding: 10px;">
+                        <span t-esc="o.name"/>
+                    </h2>
+
+                    <div class="row" style="margin: 0; border-left: 1px solid black; border-right: 1px solid black;">
+                        <div class="col-6 mx-0" style="padding: 0; border-right: 1px solid black;">
+                            <table class="w-100">
+                                <tbody>
+                                    <tr>
+                                        <td style="min-width: 150px;">Employee Name</td>
+                                        <td t-esc="o.employee_id.name"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Designation</td>
+                                        <td t-esc="o.employee_id.job_title"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Joining Date</td>
+                                        <td t-esc="o.employee_id.first_contract_date"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6 mx-0" style="padding: 0;">
+                            <table class="w-100">
+                                <tbody>
+
+                                    <tr>
+                                        <td style="min-width: 150px;">Working Days</td>
+                                        <t t-set="total_days" t-value="0.0"/>
+                                        <t t-set="lop" t-value="0.0"/>
+                                        <t t-foreach="o.worked_days_line_ids" t-as="attendance">
+                                            <t t-if="attendance.code == 'WORK100'">
+                                                <t t-set="total_days" t-value="attendance.number_of_days"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-set="lop" t-value="attendance.number_of_days"/>
+                                            </t>
+                                            <t t-set="working_days" t-value="total_days + lop"/>
+                                        </t>
+                                        <td t-esc="working_days"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Total Days</td>
+                                        <t t-foreach="o.worked_days_line_ids" t-as="attendance">
+                                            <t t-if="attendance.code == 'WORK100'">
+                                                <td t-esc="attendance.number_of_days"/>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                    <tr t-foreach="o.worked_days_line_ids" t-as="attendance">
+                                        <t t-if="attendance.name == 'LOP'">
+                                            <td style="min-width: 150px;">LOP</td>
+                                            <t t-if="attendance.number_of_days > 0">
+                                                <td t-esc="attendance.number_of_days * -1.0"/>
+                                            </t>
+                                            <t t-else="">
+                                                <td t-esc="attendance.number_of_days * 1.0"/>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Bank A/C No.</td>
+                                        <td t-esc="o.employee_id.bank_account_no"/>
+                                    </tr>
+
+                                    <t t-set="pf_count" t-value="0"/>
+                                    <t t-foreach="o.line_ids" t-as="pf">
+                                        <t t-if="'PF' in pf.code  and pf.total != 0 and pf_count != 1">
+                                            <t t-set="pf_count" t-value="1"/>
+                                            <tr>
+                                                <td style="min-width: 150px;">UAN No.
+                                                </td>
+                                                <td t-esc="o.employee_id.uan"/>
+                                            </tr>
+                                            <tr>
+                                                <td style="min-width: 150px;">PF No.
+                                                </td>
+                                                <td t-esc="o.employee_id.pf_number"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <t t-set="actual_earning_count" t-value="0"/>
+                        <t t-set="actual_deduction_count" t-value="0"/>
+                        <t t-set="earning_count" t-value="0"/>
+                        <t t-set="deduction_count" t-value="0"/>
+
+                        <tr t-foreach="o.line_ids" t-as="li">
+                            <t t-if="li.salary_rule_id.taxable and li.salary_rule_id.appears_on_payslip and li.category_id.name != 'Gross' and li.category_id.name != 'Net' and li.total != 0">
+                                <t t-set="actual_earning_count" t-value="actual_earning_count + 1"/>
+                            </t>
+                            <t t-if="li.salary_rule_id.is_deduction and li.salary_rule_id.appears_on_payslip and li.total != 0 and li.name != 'Total Deduction'">
+                                <t t-set="actual_deduction_count" t-value="actual_deduction_count + 1"/>
+
+                            </t>
+                        </tr>
+
+                        <t t-set="max_value" t-value="max(actual_earning_count,actual_deduction_count)"/>
+
+                        <!-- <b><td class="text-right" t-esc="max_value"/></b> -->
+
+                    </div>
+                    <div class="row" style="border: 1px solid black; margin: 0">
+
+                        <div class="col-6" style="padding: 0; border-right: 1px solid black;">
+                            <table class="w-100">
+                                <thead>
+                                    <tr>
+                                        <th class="w-75"
+                                            style="border-right: 1px solid black; border-bottom: 1px solid black; color: black;">
+                                            Earning Component
+                                        </th>
+                                        <th class="w-25"
+                                            style="text-align: right; border-bottom: 1px solid black; color: black;">
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="li">
+                                        <t t-if="li.salary_rule_id.taxable and li.salary_rule_id.appears_on_payslip and li.category_id.name != 'Gross' and li.category_id.name != 'Net' and li.total != 0">
+                                            <t t-set="earning_count" t-value="earning_count + 1"/>
+                                            <td t-esc="li.name" style="border-right: 1px solid black;"/>
+                                            <td class="text-right" t-esc="li.total"/>
+                                        </t>
+                                    </tr>
+                                    <t t-foreach="range(max_value)" t-as="item">
+                                        <t t-if="max_value != earning_count">
+                                            <t t-set="earning_count" t-value="earning_count + 1"/>
+                                            <tr>
+                                                <td style="border-right: 1px solid black;min-height:44px;padding:22px"></td>
+                                                <td class="text-right;min-height:44px;padding:22px"></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6" style="padding: 0;">
+                            <table class="w-100">
+                                <thead>
+                                    <tr>
+                                        <th class="w-75"
+                                            style="border-right: 1px solid black; border-bottom: 1px solid black; color: black;">
+                                            Deduction Component
+                                        </th>
+                                        <th class="w-25"
+                                            style="text-align: right; border-bottom: 1px solid black; color: black;">
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="li">
+                                        <!--Note: If you want to add any other category name in deduction then you just need to add 'and' operator and add it in t-if condition-->
+                                        <t t-if="li.salary_rule_id.is_deduction and li.salary_rule_id.appears_on_payslip and li.total != 0 and li.name != 'Total Deduction'">
+                                            <t t-set="deduction_count" t-value="deduction_count + 1"/>
+                                            <td t-esc="li.name" style="border-right: 1px solid black;"/>
+                                            <td class="text-right" t-esc="li.total"/>
+                                        </t>
+                                    </tr>
+
+                                    <t t-foreach="range(max_value)" t-as="item">
+                                        <t t-if="max_value != deduction_count">
+                                            <t t-set="deduction_count" t-value="deduction_count + 1"/>
+                                            <tr>
+                                                <td style="border-right: 1px solid black;min-height:44px;padding:22px"></td>
+                                                <td class="text-right;min-height:44px;padding:22px"></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin: 0; border-left: 1px solid black;border-right: 1px solid black;">
+                        <div class="col-6" style="padding: 0; border-right: 1px solid black;">
+                            <table class="w-100">
+                                <tr>
+                                    <td class="w-75" style="width: 290px;">Total
+                                        Earnings
+                                    </td>
+                                    <t t-foreach="o.line_ids" t-as="line">
+                                        <t t-if="line.name == 'Gross'">
+                                            <td class="w-25 text-right" t-esc="line.total"/>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6" style="padding: 0;">
+                            <table class="w-100">
+                                <tr>
+                                    <td class="w-75" style="width: 290px;">Total
+                                        Deductions
+                                    </td>
+                                    <t t-foreach="o.line_ids" t-as="line">
+                                        <t t-if="line.code == 'TOTAL_DED'">
+                                            <td class="w-25 text-right" t-esc="line.total"/>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin: 0; border: 1px solid black;">
+                        <table class="w-100">
+                            <tr class="font-weight-bold">
+                                <td>Net Amount:
+                                    <span t-esc="net_salary_word"/>
+                                </td>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <t t-if="line.name == 'Net Salary'">
+                                        <td class="text-right" t-esc="line.total"/>
+                                    </t>
+                                </t>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="height: 100px; margin-top: 10px !important;">
+                        <div class="row" style="height: 100px;">
+                            <div class="col-6"/>
+                            <div class="col-6"
+                                 style="height: 50px; padding-left: 0 !important; margin-top: 15px !important;">For,
+                            </div>
+                        </div>
+                        <div class="row" style="height: 100px;">
+                            <div class="col-6"/>
+                            <div class="col-6"
+                                 style="height: 50px; padding-left: 0 !important; margin-top: 15px !important;">
+                                AUTHORISED SIGNATORY
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_payslip">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="aspl_indian_payroll.custom_employee_payroll"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="om_hr_payroll.action_report_payslip" model="ir.actions.report">
+        <field name="name">Payslip Details</field>
+    </record>
+
+    <record id="om_hr_payroll.payslip_details_report" model="ir.actions.report">
+    </record>
+
+
+    <record id="report_employee_payslip" model="ir.actions.report">
+        <field name="name">Payslip</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aspl_indian_payroll.report_payslip</field>
+        <field name="report_file">aspl_indian_payroll.report_payslip</field>
+        <field name="print_report_name">('Payslip - %s' % (object.employee_id.name))</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

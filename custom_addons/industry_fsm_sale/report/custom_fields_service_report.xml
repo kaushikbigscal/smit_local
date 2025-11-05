@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="report_field_service_document">
+        <t t-call="web.external_layout">
+            <div class="oe_structure" style="margin-bottom: -50px"></div>
+            <div class="page">
+                <main>
+                    <t t-foreach="docs" t-as="doc">
+                        <div class="row">
+                            <div t-att-class="'col-6' if report_type == 'pdf' else 'col-md-6 col-12'">
+                                <div class="mb-3" t-foreach="doc.user_ids" t-as="user">
+                                    <div>
+                                        <strong>Worker:</strong>
+                                    </div>
+                                    <div t-out="user" t-options='{
+                                        "widget": "contact",
+                                        "fields": ["name", "address", "phone", "email"]}'
+                                    >Marc Demo
+                                    </div>
+                                </div>
+                            </div>
+                            <div t-attf-class="{{ 'col-6' if report_type == 'pdf' else 'col-md-6 col-12' }} mb-3"
+                                 t-if="doc.partner_id">
+                                <div>
+                                    <strong>Customer:</strong>
+                                </div>
+                                <div t-out="doc.partner_id" t-options='{
+                                    "widget": "contact",
+                                    "fields": ["name", "address", "phone", "email"]}'
+                                >Jane smith
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Report Title -->
+                        <h2>Service Report:
+                            <span t-field="doc.name"/>
+                        </h2>
+
+                        <!-- References -->
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <h5>
+                                    <t t-if="doc.customer_product_id.order_id">
+                                        <t t-foreach="doc.customer_product_id.order_id" t-as="order">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="order.order_id.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="order.order_id.date_order"
+                                                          t-options='{"widget": "datetime"}'/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </h5>
+                            </div>
+                        </div>
+
+                        <!-- Time & Material Section -->
+                        <h3>Time &amp; Material</h3>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-right">Quantity</th>
+                                    <th class="text-right">Unit Price</th>
+                                    <th class="text-right">Taxes</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--<t t-foreach="doc.sale_line_id.order_lines" t-as="line">-->
+                                <t t-foreach="docs.sale_order_id.order_line" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <span t-field="line.product_id.name"/>
+                                            <br/>
+                                            <span t-field="line.name" style="font-size: 0.9em;"/>
+
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.product_uom_qty"/>
+                                            <span t-field="line.product_uom"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="', '.join(map(lambda x: str(x.amount) + '%', line.tax_id))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.price_subtotal"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Totals -->
+                        <div class="row">
+                            <div class="col-4 offset-8">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>
+                                            <strong>Untaxed Amount</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="doc.sale_order_id.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Taxes</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="doc.sale_order_id.amount_tax"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="doc.sale_order_id.amount_total"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Amount Due:</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="doc.sale_order_id.invoice_ids.amount_residual"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div name="worksheet_task_timesheet">
+                            <t t-set='is_uom_day' t-value='docs.timesheet_ids._is_timesheet_encode_uom_day()'/>
+                            <t t-if="docs.allow_timesheets and docs.timesheet_ids">
+                                <h2>Timesheets</h2>
+                                <div t-att-class="'table-responsive-sm' if report_type != 'pdf' else ''">
+                                    <table class="table table-sm o_main_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-start">Date</th>
+                                                <th class="text-start">Worker</th>
+                                                <th class="text-start">Description</th>
+                                                <th t-if="is_uom_day" class="text-end">Days Spent</th>
+                                                <th t-else="" class="text-end">Hours Spent</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="sale_tbody">
+                                            <t t-foreach="docs.timesheet_ids" t-as="line">
+                                                <tr t-att-style="'background-color: #F1F1F1;' if line_index % 2 == 0 else ''">
+                                                    <td>
+                                                        <span t-field="line.date"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="line.employee_id.name"/>
+                                                    </td>
+                                                    <td class="text-start">
+                                                        <span t-field="line.display_name"/>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span t-if="is_uom_day"
+                                                              t-out="line._convert_hours_to_days(line.unit_amount)"
+                                                              t-options='{"widget": "timesheet_uom"}'>5 days
+                                                        </span>
+                                                        <span t-else="" t-out="line.unit_amount"
+                                                              t-options="{'widget': 'float_time'}">10:00
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                    <div class="row justify-content-end">
+                                        <div t-att-class="'col-sm-2' if report_type == 'pdf' else 'col-auto'">
+                                            <table class="table table-sm">
+                                                <tr class="border-black o_total">
+                                                    <td colspan="4" class="text-end">
+                                                        <strong class="me-2">Total</strong>
+                                                        <span t-if="is_uom_day"
+                                                              t-out="line._convert_hours_to_days(docs.effective_hours)">
+                                                            10 days
+                                                        </span>
+                                                        <span t-else="" t-field="docs.effective_hours"
+                                                              t-options='{"widget": "float_time"}'>10:00
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <t t-if="doc.report_signature">
+                            <div class="row mt-4">
+                                <div class="col-12 text-end">
+                                    <h5>Customer Signature</h5>
+                                    <img t-att-src="image_data_uri(doc.report_signature)"
+                                         style="max-height: 6rem; max-width: 100%; color:black;"/>
+                                    <br/>
+                                    <span t-field="doc.report_signed_by"/>
+                                </div>
+                            </div>
+                        </t>
+
+
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+
+    <record id="action_custom_report_field_service" model="ir.actions.report">
+        <field name="name">Service Details</field>
+        <field name="model">project.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">industry_fsm_sale.report_field_service_document</field>
+        <field name="report_file">industry_fsm_sale.report_field_service_document</field>
+        <field name="binding_model_id" ref="model_project_task"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+</odoo>

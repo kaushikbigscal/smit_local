@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- User Form View - Add Device Lock Tab -->
+    <record id="view_users_form_device_locks" model="ir.ui.view">
+        <field name="name">res.users.form.device.locks</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Device Lock" name="device_locks" groups="base.group_system"
+                      invisible="show_device_lock_page">
+                    <field name="show_device_lock_page" invisible="1"/>
+                    <group>
+                        <group name="device_security" string="Device Security">
+                            <field name="login_restriction" widget="radio"
+                                   options="{'horizontal': true}"/>
+                        </group>
+                        <group string="Debug Device Lock" name="debug_lock">
+                            <label for="debug_access_token"/>
+                            <div class="o_row">
+                                <field name="debug_access_token"/>
+                                <button name="open_debug_login_page"
+                                        type="object"
+                                        string="Test Login"
+                                        class="btn btn-primary"/>
+                            </div>
+                            <field name="debug_token_last_used" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <separator string="Device Detail"/>
+                    <field name="device_lock_ids" readonly="1">
+                        <tree no_open="True">
+                            <field name="device_uuid"/>
+                            <button name="copy_device_uuid_and_update_debug"
+                                    string="Copy UUID"
+                                    type="object"
+                                    class="btn btn-sm btn-secondary"
+                                    icon="fa-clipboard"
+                                    help="Copy UUID to clipboard and update debug token"/>
+                            <field name="login_type"/>
+                            <field name="last_used"/>
+                            <button name="reset_device_lock" type="object"
+                                    string="Reset Device"
+                                    class="btn-primary"
+                                    help="Reset this device lock"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- User List View - Add Login Restriction Column -->
+    <record id="view_users_tree_login_restrictions" model="ir.ui.view">
+        <field name="name">res.users.tree.login.restrictions</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='login_date']" position="after">
+                <field name="login_restriction" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

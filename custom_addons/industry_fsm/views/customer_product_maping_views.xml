@@ -1,0 +1,161 @@
+<odoo>
+    <record id="action_export_customer_product_xml" model="ir.actions.server">
+        <field name="name">Export All</field>
+        <field name="model_id" ref="model_customer_product_mapping"/>
+        <field name="binding_model_id" ref="model_customer_product_mapping"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_export_all_to_xlsx()
+        </field>
+        <field name="binding_view_types">list</field> <!-- Show only in list view -->
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_customer_product_mapping_tree_fsm" model="ir.ui.view">
+        <field name="name">customer.product.mapping.tree</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="unique_number" optional="hide"/>
+                <field name="customer_id" optional="show"/>
+
+                <field name="product_category" optional="show"/>
+
+                <field name="product_id" optional="show"/>
+                <field name="serial_number_ids" optional="show"/>
+
+                <field name="status" optional="show"/>
+                <field name="start_date" optional="show"/>
+                <field name="end_date" optional="show"/>
+                <field name="source_type" optional="show"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_customer_product_mapping_form" model="ir.ui.view">
+        <field name="name">customer.product.mapping.form</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Customer Product Mapping">
+                <sheet>
+
+
+                    <group>
+                        <group>
+                            <field name="source_type" widget="radio"/>
+
+                            <field name="display_name" invisible="1"/>
+
+
+                            <field name="unique_number" readonly="1"/>
+                            <field name="customer_id"/>
+                            <field name="product_category" readonly="source_type == 'sale_order'"/>
+
+
+                            <field name="product_id"/>
+                            <field name="order_id" invisible="source_type != 'sale_order'"/>
+
+
+                            <field name="serial_number_ids"
+                                   context="{'default_product_id': product_id}"/>
+                            <field name="available_product_ids" invisible="1"/>
+                            <field name="available_serial_numbers" invisible="1"/>
+
+
+                        </group>
+
+                        <group>
+                            <field name="status"/>
+<!--                            <field name="stock_count" invisible="1"/>-->
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                <!-- Chatter Box -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="many2many_tags" options="{'no_create': True}"
+                           readonly="1"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- Search View -->
+    <record id="view_customer_product_mapping_search" model="ir.ui.view">
+        <field name="name">customer.product.mapping.search</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="arch" type="xml">
+            <search string="Customer Product Mapping Search">
+
+                <field name="unique_number" invisible="1"/>
+                <field name="product_id"/>
+                <field name="customer_id"/>
+                <field name="status"/>
+                <field name="source_type"/>
+                <field name="serial_number_ids"/>
+                <field name="product_category"/>
+
+
+                <!-- Filters -->
+
+                <filter name="out_of_warranty" string="Out Of Warranty"
+                        domain="[('end_date', '&lt;', context_today()), ('status', '=', 'warranty')]"/>
+                <filter name="out_of_amc" string="Out Of AMC"
+                        domain="[('end_date', '&lt;', context_today()), ('status', '=', 'amc')]"/>
+                <filter name="under_warranty" string="Under Warranty"
+                        domain="[('end_date', '&gt;=', context_today()), ('status', '=', 'warranty')]"/>
+                <filter name="under_amc" string="Under AMC"
+                        domain="[('end_date', '&gt;=', context_today()), ('status', '=', 'amc')]"/>
+                <filter name="going_out_of_warranty" string="Going Out Of Warranty"
+                        domain="[('status', '=', 'warranty'), 
+                 ('end_date', '&gt;=', context_today()), 
+                 ('end_date', '&lt;=', (context_today() + relativedelta(months=1)))]"/>
+
+                <filter name="going_out_of_amc" string="Going Out Of AMC"
+                        domain="[('status', '=', 'amc'), 
+                 ('end_date', '&gt;=', context_today()), 
+                 ('end_date', '&lt;=', (context_today() + relativedelta(months=1)))]"/>
+                <separator/>
+
+                <filter string="Archived" name="archived" domain="[('active','=',False)]"/>
+                <filter string="Un-Archived" name="un-archived" domain="[('active','=',True)]"/>
+                <separator/>
+                <filter string="Start Date" name="start_date" date="start_date"/>
+                <filter string="End Date" name="end_date" date="end_date"/>
+                <separator/>
+
+
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+                    <filter name="group_by_customer" string="Customer" context="{'group_by':'customer_id'}"/>
+                    <filter name="group_by_product" string="Product" context="{'group_by':'product_id'}"/>
+                    <filter name="group_by_status" string="Unit Status" context="{'group_by':'status'}"/>
+                    <filter name="group_by_source_type" string="Source Type" context="{'group_by':'source_type'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="industry_fsm_action_customer_product_mapping" model="ir.actions.act_window">
+        <field name="name">Customer Product Mapping</field>
+        <field name="res_model">customer.product.mapping</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="customer_product_mapping_menu"
+              name="Customer Assets"
+              sequence="2"
+              action="industry_fsm.industry_fsm_action_customer_product_mapping"
+              groups="industry_fsm.group_fsm_supervisor"
+              parent="industry_fsm.fsm_menu_settings"
+    />
+
+
+</odoo>

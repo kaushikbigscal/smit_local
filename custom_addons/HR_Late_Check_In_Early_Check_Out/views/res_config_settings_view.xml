@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.payroll</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="45"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div class="app_settings_block" data-string="Attendances" string="Attendances">
+                    <h2>Attendance Counter Setting</h2>
+                    <div class="row mt16 o_settings_container" id="om_hr_payroll_account">
+                        <div class="col-lg-6 col-12 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="max_late_check_ins"/>
+                            </div>
+
+                            <div class="o_setting_right_pane">
+                                <label for="max_late_check_ins"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="max_early_check_outs"/>
+                            </div>
+
+                            <div class="o_setting_right_pane">
+                                <label for="max_early_check_outs"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="minute_allowed"/>
+                            </div>
+
+                            <div class="o_setting_right_pane">
+                                <label for="minute_allowed"/>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-12 o_setting_box">
+
+                            <label for="leave_type_id"/>
+                            <field name="leave_type_id"/>
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <!--    <data>-->
+    <!--        <record id="late_day_in_notification" model="ir.ui.view">-->
+    <!--            <field name="name">late.day.in.notification</field>-->
+    <!--            <field name="model">res.config.settings</field>-->
+    <!--            <field name="priority" eval="45"/>-->
+    <!--            <field name="inherit_id" ref="base.res_config_settings_view_form"/>-->
+    <!--            <field name="arch" type="xml">-->
+    <!--                <xpath expr="//field[@name='minute_allowed']" position="after">-->
+    <!--                    <div class="col-lg-12 col-12 o_setting_box">-->
+    <!--                        <div class="o_setting_left_pane">-->
+    <!--                            <field name="notification_late_day_in"/>-->
+    <!--                        </div>-->
+    <!--                        <div class="o_setting_right_pane">-->
+    <!--                            <label for="notification_late_day_in"/>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </xpath>-->
+
+    <!--            </field>-->
+    <!--        </record>-->
+    <!--    </data>-->
+</odoo>
+
+ 

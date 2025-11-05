@@ -1,0 +1,22 @@
+<odoo>
+    <record id="hr_employee_view_form_inherit_attendance" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.attendance</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div class="oe_button_box" position="inside">
+                <button class="oe_stat_button"
+                        icon="fa-clock-o"
+                        disabled="1">
+			<field name="late_check_in_count" widget="statinfo" string="Late Check-ins"/>
+
+                </button>
+                <button class="oe_stat_button"
+                        icon="fa-clock-o"
+                        disabled="1">
+			<field name="early_check_out_count" widget="statinfo" string="Early Check-outs"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

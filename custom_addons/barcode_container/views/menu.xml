@@ -1,0 +1,12 @@
+<odoo>
+    <!-- Top level menu -->
+    <menuitem id="menu_barcode_container_root"
+              name="Packaging"
+              sequence="30"/>
+
+    <!-- Submenus -->
+    <menuitem id="menu_barcode_container"
+              name="Container"
+              parent="menu_barcode_container_root"
+              action="barcode_container.action_barcode_container"/>
+</odoo>

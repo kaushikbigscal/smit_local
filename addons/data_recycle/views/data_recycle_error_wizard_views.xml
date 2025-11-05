@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_data_recycle_error_wizard_form" model="ir.ui.view">
+        <field name="name">data.recycle.error.wizard.form</field>
+        <field name="model">data.recycle.error.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Error Log" create="0" edit="0">
+                <sheet>
+                    <h2><field name="title" readonly="1"/></h2>
+                    <field name="error_log" nolabel="1" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

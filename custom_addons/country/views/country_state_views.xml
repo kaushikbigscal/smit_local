@@ -1,0 +1,38 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_country_state_tree" model="ir.ui.view">
+        <field name="name">view.country.state.tree</field>
+        <field name="model">country.state</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="country_id" />
+                <field name="state_id" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_country_state_form" model="ir.ui.view">
+        <field name="name">view.country.state.form</field>
+        <field name="model">country.state</field>
+        <field name="arch" type="xml">
+            <form string="Country and State">
+                <group>
+                    <field name="country_id" />
+                    <field name="state_id" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_country_state" model="ir.actions.act_window">
+        <field name="name">Country States</field>
+        <field name="res_model">country.state</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_country_state_root" name="Country and State" sequence="10"/>
+    <menuitem id="menu_country_state" parent="menu_country_state_root" name="Manage" action="action_country_state"/>
+</odoo>

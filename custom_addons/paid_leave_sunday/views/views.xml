@@ -1,0 +1,43 @@
+<odoo>
+    <record id="view_company_form1" model="ir.ui.view">
+        <field name="name">view_company_form1</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='color']" position="after">
+
+                <field name="Enable_Sunday_Rule"/>
+
+                <field name="compensation_preference" invisible="not Enable_Sunday_Rule"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_company_form" model="ir.ui.view">
+        <field name="name">view_company_form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="compensation_preferencee" invisible="1"/>
+                <field name="Enable_Sunday_Rule" invisible="1"/>
+            </xpath>
+            <xpath expr="//group//field[@name='user_id']" position="after">
+                <field name="Allow_work_on_sunday" invisible="not Enable_Sunday_Rule"/>
+
+            </xpath>
+            <div class="oe_button_box" position="inside">
+                <button class="oe_stat_button"
+                        icon="fa-clock-o"
+                        string="Sundays Worked" invisible="compensation_preferencee != 'extra_pay'">
+                    <field name="worked_sundays_count" widget="statinfo" string="Sunday Count"/>
+                </button>
+            </div>
+
+        </field>
+    </record>
+</odoo>
+
+
+

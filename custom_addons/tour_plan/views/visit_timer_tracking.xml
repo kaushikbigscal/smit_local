@@ -1,0 +1,68 @@
+<odoo>
+    <data>
+        <record id="inherit_crm_salesperson_planner_visit_form_view" model="ir.ui.view">
+            <field name="name">Inherit CRM Salesperson Planner Visit Form</field>
+            <field name="model">crm.salesperson.planner.visit</field>
+            <field name="inherit_id" ref="crm_salesperson_planner_visit_form_view" />
+            <field name="arch" type="xml">
+                <div class="oe_button_box" name="button_box" position="inside">
+                    <field name="show_time_control" invisible="1" />
+                    <button
+                        name="button_start_work"
+                        string="Start Work"
+                        type="object"
+                        icon="fa-play-circle text-success"
+                        invisible="show_time_control != 'start'"
+                        class="oe_stat_button"
+                        widget="stateinfo"
+                    />
+                    <button
+                        name="button_end_work"
+                        string="Stop Work"
+                        type="object"
+                        icon="fa-stop-circle text-warning"
+                        invisible="show_time_control != 'stop'"
+                        class="oe_stat_button"
+                        widget="stateinfo"
+                    />
+                </div>
+            </field>
+        </record>
+         <record id="view_end_work_wizard" model="ir.ui.view">
+            <field name="name">end.work.wizard.form</field>
+            <field name="model">end.work.wizard</field>
+            <field name="arch" type="xml">
+                <form string="End Work">
+                    <sheet>
+                        <group>
+                            <field name="visit_id" readonly="1"/>
+                        </group>
+                        <footer>
+                            <button string="Save" type="object" name="action_end_work" class="btn-primary"/>
+                            <button string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+         <record id="view_start_work_wizard" model="ir.ui.view">
+            <field name="name">start.work.wizard.form</field>
+            <field name="model">start.work.wizard</field>
+            <field name="arch" type="xml">
+                <form string="start Work">
+                    <sheet>
+                        <group>
+                            <field name="visit_id" readonly="1"/>
+                        </group>
+                        <footer>
+                            <button string="Save" type="object" name="action_start_work" class="btn-primary"/>
+                            <button string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

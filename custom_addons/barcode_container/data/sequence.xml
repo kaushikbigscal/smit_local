@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_barcode_container" model="ir.sequence">
+            <field name="name">Container Sequence</field>
+            <field name="code">barcode.container</field>
+            <field name="prefix">ETT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

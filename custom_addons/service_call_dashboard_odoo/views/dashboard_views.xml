@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action for Project Dashboard-->
+    <record id="service_call_dashboard_action" model="ir.actions.client">
+        <field name="name">Service Call Dashboard</field>
+        <field name="tag">service_call_dashboard</field>
+    </record>
+    <!-- Dashboard menu item -->
+    <menuitem id="service_call_menu_open_Dashboard"
+              name="Service Call Dashboard"
+              action="service_call_dashboard_action"
+              parent="industry_fsm.fsm_menu_root"
+              sequence="45"/>
+</odoo>

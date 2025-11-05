@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_form_inherit_sale_project" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.project</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']//tree" position="inside">
+                    <field string="Related Task" name="task_id" optional="hidden"/>
+                </xpath>
+                <xpath expr="//page[@name='other_information']" position="after">
+                    <page string="Parts List" name="parts_list">
+                        <field name="order_parts_ids" readonly="1">
+                            <tree>
+                                <field name="product_id"/>
+                                <field name="part_name"/>
+                                <field name="quantity"/>
+                                <field name="minimum_warranty_period"/>
+                                <field name="description" />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

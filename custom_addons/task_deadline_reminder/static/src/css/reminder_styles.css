@@ -1,0 +1,66 @@
+.notification-tab-active {
+      background-color: #e9ecef !important;
+      color: #495057 !important;
+      border-color: #adb5bd !important;
+      font-weight: bold !important;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+    .notification-tab-inactive {
+      background-color: #f8f9fa !important;
+      color: #6c757d !important;
+      border-color: #dee2e6 !important;
+      font-weight: normal !important;
+      position: relative;
+    }
+    .notification-tab-active:hover {
+      background-color: #dee2e6 !important;
+      color: #495057 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    }
+    .notification-tab-inactive:hover {
+      background-color: #e9ecef !important;
+      color: #495057 !important;
+      border-color: #adb5bd !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+
+      /* Ensure button group styling */
+      .notification-btn-group .btn {
+        transition: all 0.2s ease !important;
+        margin: 0 1px !important;
+      }
+
+      .mark-as-read-btn {
+        position: relative;
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .mark-as-read-btn:hover::after {
+        content: '✔';
+        position: absolute;
+        right: -20px;
+        top: 0;
+        color: green;
+        font-size: 18px;
+      }
+
+      .o_notification_systray .dropdown-item.hovered {
+        background-color: #f1f1f1;  /* Highlight the item on hover */
+      }
+
+      .o_notification_systray .dropdown-item .btn-link {
+        display: none;
+      }
+
+      .o_notification_systray .dropdown-item.hovered .btn-link {
+        display: inline-block;  /* Show the button on hover */
+      }

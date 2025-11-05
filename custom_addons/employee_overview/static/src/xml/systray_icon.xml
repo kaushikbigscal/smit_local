@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+   <t t-name="systray_icon" owl="1">
+       <div class="new_icon d-flex align-items-center justify-content-center" t-on-click="_openApprovedLeaves">
+           <div class="icon_div d-flex align-items-center justify-content-center">
+               <div class="toggle-icon d-flex align-items-center justify-content-center" role="button">
+                   <i id="create_order"
+                      class="custom-systray-icon d-flex align-items-center justify-content-center"
+                      style="margin-bottom:0px;"
+                      role="img" aria-label="Approved Leaves">
+                       <img t-att-src="'/employee_overview/static/src/img/1.svg'"
+                            style="height:30px; width:35.78px; display: block;"/>
+                   </i>
+               </div>
+           </div>
+       </div>
+   </t>
+</templates>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_task_form_template_inherit" model="ir.ui.view">
+        <field name="name">project.task.template.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='date_deadline_and_recurring_task']" position="after">
+                <field name="is_project_template" invisible="1"/>
+                <field name="allocated_days_template" string="Task Duration" invisible="not is_project_template or is_fsm"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

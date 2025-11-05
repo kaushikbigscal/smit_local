@@ -1,0 +1,18 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Rule for employees to see their own certifications -->
+        <record id="rule_employee_certification_self" model="ir.rule">
+            <field name="name">Employee Certification: Own Records</field>
+            <field name="model_id" ref="model_employee_certification"/>
+            <field name="domain_force">[('employee_id', '=', user.employee_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+         <record id="rule_manager_certification_access" model="ir.rule">
+            <field name="name">Manager can create and edit certifications</field>
+            <field name="model_id" ref="model_employee_certification"/>
+            <field name="domain_force">[(1, '=', 1)]</field> <!-- Allows all records for managers -->
+            <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/> <!-- Replace with your manager group reference -->
+        </record>
+    </data>
+</odoo>

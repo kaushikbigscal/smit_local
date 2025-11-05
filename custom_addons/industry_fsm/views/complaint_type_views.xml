@@ -1,0 +1,79 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_complaint_type_tree" model="ir.ui.view">
+        <field name="name">complaint.type.tree</field>
+        <field name="model">complaint.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <!--                <field name="show_in_portal"/>-->
+                <field name="attachment_on_out"/>
+                <field name="signed_required"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+
+    <record id="view_complaint_type_form" model="ir.ui.view">
+        <field name="name">complaint.type.form</field>
+        <field name="model">complaint.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color" widget="color_picker"/>
+                            <!--			                <field name="report_id"/>-->
+                        </group>
+                        <group>
+                            <field name="show_portal_field" invisible="1"/>
+                            <field name="show_in_portal" invisible="not show_portal_field"/>
+                            <field name="attachment_on_out"/>
+                            <field name="resolved_required_fields" widget="many2many_tags"/>
+                            <field name="signed_required"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Custom Fields">
+                            <group>
+                                <field name="custom_field" widget="many2many_tags" options="{'no_create': true}"/>
+                            </group>
+                            <!--                                <tree editable="bottom">-->
+                            <!--                                    <field name="custom_field"/>-->
+                            <!--                                </tree>-->
+                            <!--                            </field>-->
+                        </page>
+                        <page string="Reason Codes">
+                            <field name="reason_code_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_complaint_type" model="ir.actions.act_window">
+        <field name="name">Complaint Types</field>
+        <field name="res_model">complaint.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_config_complaint_types"
+              name="Complaint Types"
+              sequence="55"
+              parent="fsm_menu_settings"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_complaint_type"/>
+</odoo>
+
+
+
+

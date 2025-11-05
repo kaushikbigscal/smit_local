@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Settings View -->
+    <record id="view_res_config_settings_timeline" model="ir.ui.view">
+        <field name="name">res.config.settings.timeline</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="priority" eval="100"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="customer_timeline" string="Timeline" name="timeline"
+                     groups="base.group_system">
+
+                    <!-- Main Timeline Configuration Block -->
+                    <block title="Timeline Configuration" id="timeline_configuration">
+
+                        <!-- Customer Timeline Model Selection -->
+                        <setting name="Customer Timeline Models"
+                                 help="Select which models should be included in the customer timeline.">
+                            <field name="customer_timeline_model_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   placeholder="Select models for customer timeline..."/>
+                            <div class="mt-2">
+                                <div class="text-muted">
+                                    <i class="fa fa-info-circle"/>
+                                    These models will be scanned for customer/partner relationships.
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- Employee Timeline Model Selection -->
+                        <setting name="Employee Timeline Models"
+                                 help="Select which models should be included in the employee timeline.">
+                            <field name="employee_timeline_model_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   placeholder="Select models for employee timeline..."/>
+                            <div class="mt-2">
+                                <div class="text-muted">
+                                    <i class="fa fa-info-circle"/>
+                                    These models will be scanned for employee/user relationships.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

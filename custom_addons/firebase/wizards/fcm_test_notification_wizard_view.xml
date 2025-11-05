@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fcm_test_notification_wizard_form" model="ir.ui.view">
+        <field name="name">fcm.test.notification.wizard.form</field>
+        <field name="model">fcm.test.notification.wizard</field>
+        <field name="arch" type="xml">
+            <form string="FCM Test Notification">
+                <header>
+                    <button
+                        name="send_test_notification"
+                        string="Send Test Notification"
+                        type="object"
+                        class="oe_highlight"
+                    />
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="title"/>
+                        <field name="message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fcm_test_notification_wizard" model="ir.actions.act_window">
+        <field name="name">Test FCM Notification</field>
+        <field name="res_model">fcm.test.notification.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_fcm_test_notification"
+        name="Test FCM Notification"
+        parent="base.menu_administration"
+        action="action_fcm_test_notification_wizard"
+        sequence="102"
+    />
+</odoo>

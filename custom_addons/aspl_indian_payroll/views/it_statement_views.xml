@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_it_statement" model="ir.actions.client">
+        <field name="name">ItStatement</field>
+        <field name="tag">it_statement</field>
+    </record>
+
+    <menuitem id="menu_it_statement" name="IT Statement" sequence="42"
+              parent="om_hr_payroll.menu_hr_payroll_root" action="action_it_statement"
+              groups="aspl_indian_payroll.group_employee_category,om_hr_payroll.group_hr_payroll_manager"/>
+
+    <record id="om_hr_payroll.menu_payroll_employee" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,30 @@
+<odoo>
+    <record id="call_type_report_form" model="ir.ui.view">
+        <field name="name">Call Report</field>
+        <field name="model">call.report</field>
+        <field name="arch" type="xml">
+            <form string="Call type Report" create="false" >
+                <group>
+                    <field name="dates" widget="month"/>
+                </group>
+                <header>
+                    <button type="object" name="generate_excel_report" string="Download Report" display="always"
+                            class="btn btn-primary" />
+                </header>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_call_report" model="ir.actions.act_window">
+        <field name="name">Call type Report</field>
+        <field name="res_model">call.report</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <menuitem id="menu_calltype_report"
+              name="Call Typewise Summary Report"
+              parent="fsm_menu_reporting"
+              action="action_call_report"
+              sequence="10"/>
+
+</odoo>

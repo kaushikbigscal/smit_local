@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_validate_task_wizard,access.validate.task.wizard,model_validate_task_wizard,,1,1,1,1
+inventory_custom_tracking_installation_delivery.access_stock_picking_parts,access_stock_picking_parts,inventory_custom_tracking_installation_delivery.model_stock_picking_parts,base.group_user,1,1,1,1
+access_inventory_delivery_responsible,res.users.delivery.responsible,base.model_res_users,base.group_user,1,1,1,1
+access_amc_contract_user,Access AMC Contract,model_amc_contract,base.group_user,1,1,1,1
+access_amc_contract_portal,access.amc.contract.portal,model_amc_contract,base.group_portal,1,1,0,0
+access_contract_type_user,access.contract.type.user,model_contract_type,base.group_user,1,1,1,1
+access_sla_term_user,access.sla.term.user,model_sla_term,base.group_user,1,1,1,1
+access_amc_contract_asset_line_user,access_amc_contract_asset_line_user,model_amc_contract_asset_line,base.group_user,1,1,1,1
+access_amc_contract_asset_line_wizard_user,access.amc.contract.asset.line.wizard.user,model_amc_contract_asset_line_wizard,base.group_user,1,1,1,0
+access_amc_attachment_line,access.amc.attachment.line,model_amc_attachment_line,base.group_user,1,1,1,1
+access_amc_contract_visit,access.amc.contract.visit,model_amc_contract_visit,base.group_user,1,1,1,1
+access_amc_visit_scheduler,amc.visit.scheduler,model_amc_visit_scheduler,base.group_user,1,1,1,1
+access_customer_product_mapping_part_user,access.customer.product.mapping.part.user,model_customer_product_mapping_part,base.group_user,1,1,1,1
+access_part_history_user,access.part.history.user,model_part_history,base.group_user,1,1,1,1
+access_part_service_wizard_user,access.part.service.wizard.user,model_part_service_wizard,base.group_user,1,1,1,0
+access_project_task_part_user,access.project.task.part.user,model_project_task_part,base.group_user,1,1,1,1

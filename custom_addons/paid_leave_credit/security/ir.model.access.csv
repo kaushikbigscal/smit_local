@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+paid_leave_credit.access_paid_leave_config,access_paid_leave_config,paid_leave_credit.model_paid_leave_config,base.group_user,1,1,1,1
+paid_leave_credit.access_paid_leave_config_line,access_paid_leave_config_line,paid_leave_credit.model_paid_leave_config_line,base.group_user,1,1,1,1

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_activity_form2_inherit" model="ir.ui.view">
+        <field name="name">view.activity.form2.inherit</field>
+        <field name="model">mail.activity.schedule</field>
+        <field name="inherit_id" ref="mail.mail_activity_schedule_view_form"/>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="before">
+                <label for="set_reminder" invisible="activity_category == 'meeting'"/>
+                <div class="o_row">
+                    <!--                    <field name="is_meeting_type" invisible="1"/>-->
+                    <field name="set_reminder" invisible="activity_category == 'meeting'"/>
+                    <field name="reminder_type_ids" widget="many2many_tags" options='{"no_create": True}'
+                           invisible="not set_reminder" required="[('set_reminder', '=', True)]"/>
+                </div>
+                <field name="is_custom_selected" invisible="1"/>
+                <field name="custom_reminder_datetime"
+                       invisible="not set_reminder or not is_custom_selected"
+                       required="is_custom_selected"/>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="replace">
+                <label for="date_deadline" invisible="activity_category == 'meeting'"/>
+                <div class="o_row">
+                    <field name="date_deadline" invisible="activity_category == 'meeting'"/>
+                    <field name="char_time" placeholder="HH:MM" nolabel="1" required="set_reminder"
+                           invisible="activity_category == 'meeting'"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="inherit_view_quick_create_form_reminder" model="ir.ui.view">
+        <field name="name">inherit.view.quick.create.form.reminder</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="before">
+                <label for="set_reminder" invisible="activity_category == 'meeting'"/>
+                <div class="o_row">
+                    <!--                    <field name="is_meeting_type" invisible="1"/>-->
+                    <field name="set_reminder" invisible="activity_category == 'meeting'"/>
+                    <field name="reminder_type_ids" widget="many2many_tags" options='{"no_create": True}'
+                           invisible="not set_reminder" required="[('set_reminder', '=', True)]"/>
+                </div>
+                <field name="is_custom_selected" invisible="1"/>
+                <field name="custom_reminder_datetime"
+                       invisible="not set_reminder or not is_custom_selected"
+                       required="is_custom_selected"/>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="replace">
+                <label for="date_deadline" invisible="activity_category == 'meeting'"/>
+                <div class="o_row">
+                    <field name="date_deadline" invisible="activity_category == 'meeting'"/>
+                    <field name="char_time" placeholder="HH:MM" nolabel="1" required="set_reminder"
+                           invisible="activity_category == 'meeting'"/>
+                    <field name="datetime_combined" invisible="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

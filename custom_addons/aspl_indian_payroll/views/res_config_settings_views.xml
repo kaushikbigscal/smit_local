@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_payroll_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.payroll</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="45"/>
+        <field name="inherit_id" ref="om_hr_payroll.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='om_hr_payroll_account']" position="after">
+                <h2>
+                    Payroll
+                </h2>
+                <div class="row mt16 o_settings_container" id="hr_payroll_mail">
+                    <div class="col-lg-6 col-12 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="send_payslip_by_email"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="send_payslip_by_email" string="Payroll Email Notification"/>
+                            <div class="text-muted">
+                                Automatically send Email with Payslip details On Confirmation of Payslip.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="mandatory_bank_details"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="mandatory_bank_details" string="Mandatory Bank Details"/>
+                            <div class="text-muted">
+                                When this is Enable Bank, Account type, Name as per bank record and Accound Number is
+                                required for employee.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="mandatory_identity_details"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="mandatory_identity_details" string="Mandatory Identity Details"/>
+                            <div class="text-muted">
+                                When this is Enable Aadhar-Card No, Pan-Card No and Passport-size photo is required for
+                                employee.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

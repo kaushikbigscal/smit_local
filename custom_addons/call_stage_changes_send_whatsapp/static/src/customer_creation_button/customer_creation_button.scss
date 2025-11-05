@@ -1,0 +1,55 @@
+.quick-create-customer {
+    display: flex;
+    gap: 2px;
+//     padding: 0 8px 8px 0;
+
+    .pos-input {
+        height: 35px;
+        padding: 4px;
+        border: 1px solid #e2e2e2;
+        border-radius: 1px;
+        background: white;
+        font-size: 14px;
+        color: #555555;
+
+        &.customer-name {
+            width: 230px;
+        }
+
+        &.customer-mobile {
+            width: 150px;
+        }
+
+        &::placeholder {
+            color: #999999;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: #7c7bad;
+        }
+    }
+
+    .create-button {
+        height: 35px;
+        padding: 0 28px;
+        background-color: #7c7bad;
+        border: none;
+        border-radius: 1px;
+        color: white;
+        font-size: 14px;
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        gap: 1px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #6c6a9d;
+        }
+
+        i {
+            font-size: 14px;
+        }
+    }
+}

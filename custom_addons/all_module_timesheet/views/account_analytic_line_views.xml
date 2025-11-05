@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="hr_timesheet_line_custom_form" model="ir.ui.view">
+            <field name="name">account.analytic.line.custom.timesheet</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//sheet//group//group//field[@name='project_id']" position="attributes">
+                    <attribute name="required">False</attribute>
+                </xpath>
+                <field name="task_id" position="after">
+                    <field name="category_id"/>
+                    <field name="source_model"/>
+                    <field name="source_record_id"/>
+                    <field name="source_record_name"/>
+                    <field name="is_timer_running" invisible="1"/>
+                    <field name="is_fsm" invisible="1"/>
+                </field>
+                <field name="unit_amount" position="after">
+                    <field name="date_time"/>
+                    <field name="end_date_time"/>
+                </field>
+                <field name="name" position="after">
+                    <group string="Location Info">
+                        <group>
+                            <field name="start_latitude"/>
+                            <field name="start_longitude"/>
+                            <field name="start_address"/>
+                        </group>
+                        <group>
+                            <field name="end_latitude"/>
+                            <field name="end_longitude"/>
+                            <field name="end_address"/>
+                        </group>
+                    </group>
+                </field>
+            </field>
+        </record>
+
+        <record id="hr_timesheet_line_custom_tree" model="ir.ui.view">
+            <field name="name">account.analytic.line.custom.timesheet.tree</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="edit">0</attribute>
+                    <attribute name="create">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="attributes">
+                    <attribute name="column_invisible">0</attribute>
+                    <attribute name="widget">many2one_avatar_employee</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">Name</attribute>
+                </xpath>
+                <field name="date" position="after">
+                    <field name="category_id"/>
+                </field>
+                <field name="name" position="after">
+                    <field name="date_time"/>
+                    <field name="start_latitude" optional="hide"/>
+                    <field name="start_longitude" optional="hide"/>
+                    <field name="start_address"/>
+                    <field name="end_date_time"/>
+                    <field name="end_latitude" optional="hide"/>
+                    <field name="end_longitude" optional="hide"/>
+                    <field name="end_address"/>
+                </field>
+                <xpath expr="//field[@name='project_id']" position="attributes">
+                    <attribute name="column_invisible">True</attribute>
+                </xpath>
+                <xpath expr="//field[@name='task_id']" position="attributes">
+                    <attribute name="column_invisible">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale_timesheet_line_custom_tree" model="ir.ui.view">
+            <field name="name">account.analytic.line.custom.timesheet.sale.tree</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="sale_timesheet.hr_timesheet_line_tree_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='so_line']" position="attributes">
+                    <attribute name="column_invisible">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_timesheet_line_custom_search" model="ir.ui.view">
+            <field name="name">account.analytic.line.custom.timesheet.search</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+            <field name="arch" type="xml">
+                <!-- Add a filter for group by -->
+                <xpath expr="//field[@name='project_id']" position="after">
+                    <field name="category_id"/>
+                </xpath>
+                <xpath expr="//filter[@name='groupby_project']" position="after">
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Override action -->
+        <record id="hr_timesheet.act_hr_timesheet_line" model="ir.actions.act_window">
+            <field name="name">My Timesheets</field>
+            <field name="res_model">account.analytic.line</field>
+            <field name="view_mode">tree,form,kanban,pivot,graph</field>
+            <field name="domain">[('user_id', '=', uid)]</field>
+            <field name="context">
+                {
+                "search_default_group_by_category": 1,
+                "search_default_week": 1,
+                "is_timesheet": 1
+                }
+            </field>
+            <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_my_timesheet_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No activities found. Let's start a new one!
+                </p>
+                <p>
+                    Track your working hours by projects every day and invoice this time to your customers.
+                </p>
+            </field>
+        </record>
+
+        <!-- All Timesheets -->
+        <record id="hr_timesheet.timesheet_action_all" model="ir.actions.act_window">
+            <field name="name">All Timesheets</field>
+            <field name="res_model">account.analytic.line</field>
+            <field name="view_mode">tree,form,kanban,pivot,graph</field>
+            <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+            <field name="domain">[]</field>
+            <field name="context">
+                {
+                "search_default_group_by_category": 1,
+                "search_default_week": 1,
+                "is_timesheet": 1
+                }
+            </field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No activities found. Let's start a new one!
+                </p>
+                <p>
+                    Track your working hours by projects every day and invoice this time to your customers.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
+

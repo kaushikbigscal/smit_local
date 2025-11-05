@@ -1,0 +1,66 @@
+<odoo>
+    <!-- Paid Leave Configuration Menu -->
+
+
+    <record id="action_paid_leave_config" model="ir.actions.act_window">
+        <field name="name">Leave Credit Configuration</field>
+        <field name="res_model">paid.leave.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_paid_leave_config_tree" model="ir.ui.view">
+        <field name="name">paid.leave.config.tree</field>
+        <field name="model">paid.leave.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>  <!-- Display the 'name' field here -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_paid_leave_config_form" model="ir.ui.view">
+        <field name="name">paid.leave.config.form</field>
+        <field name="model">paid.leave.config</field>
+        <field name="arch" type="xml">
+            <form string="Leave Credit Configuration">
+                <sheet style="max-width: 1000px;">
+                    <group>
+                        <field name="name"/>
+                        <field name="leave_type_id"/>
+                        <field name="start_calculation_date"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Leave Credit Levels">
+                            <field name="leave_credit_lines">
+                                <tree>
+                                    <field name="min_years"/>
+                                    <field name="max_years"/>
+                                    <field name="leave_credit"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="min_years"/>
+                                        <field name="max_years"/>
+                                        <field name="leave_credit"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_paid_leave_configuration"
+              name="Leave Credit Configuration"
+              parent="hr_holidays.menu_hr_holidays_configuration"
+              groups="hr_holidays.group_hr_holidays_manager"
+              action="action_paid_leave_config"
+              sequence="6"/>
+</odoo>
+
+        <!--access_paid_leave_credit_paid_leave_credit,paid_leave_credit.paid_leave_credit,model_paid_leave_credit_paid_leave_credit,base.group_user,1,1,1,1
+                            <div class="py-1 px-2 border rounded bg-view">
+-->

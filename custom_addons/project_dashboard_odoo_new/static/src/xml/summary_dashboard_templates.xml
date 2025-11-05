@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="project_dashboard_odoo_new.ProjectDashboardMain" owl="1">
+        <div class="dashboard-container">
+            <div t-attf-class="sidebar-container {{ state.sidebarOpen ? 'sidebar-open' : '' }}">
+                <div class="oh_dashboards sidebar">
+                    <div class="sidebar-header">
+                        <h3>Project Dashboard</h3>
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="sections-container">
+                            <!-- Departments Section -->
+                            <div class="sidebar-section">
+                                <div class="sidebar-section-title-container" t-on-click="toggleDepartmentsSection">
+                                    <h4 class="sidebar-section-title">DEPARTMENTS</h4>
+                                    <i t-att-class="'fa ' + (state.departmentsExpanded ? 'fa-chevron-down' : 'fa-chevron-right')"/>
+                                </div>
+                                <div class="departments-list" t-if="state.departmentsExpanded">
+                                    <t t-if="state.departments.length">
+                                        <t t-foreach="state.departments" t-as="department" t-key="department.id">
+                                            <div class="department-item"
+                                                 t-att-class="{'active': isDepartmentActive(department.id)}">
+                                                <input type="checkbox"
+                                                       t-att-id="'dept_' + department.id"
+                                                       t-att-checked="isDepartmentActive(department.id)"
+                                                       t-on-change="() => this.toggleSelection(department.id)"
+                                                       class="checkbox-spacing"/>
+                                                <label t-att-for="'dept_' + department.id" class="department-label">
+                                                    <t t-esc="department.name"/>
+                                                </label>
+                                            </div>
+                                        </t>
+                                    </t>
+                                    <div t-else="" class="no-departments">
+                                        <span class="text-muted">No active departments found</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Project Templates Section -->
+                            <div class="sidebar-section">
+                                <div class="sidebar-section-title-container"
+                                     t-on-click="() => this.toggleTemplatesSection()">
+                                    <h4 class="sidebar-section-title">TEMPLATES</h4>
+                                    <i t-att-class="'fa ' + (state.templatesExpanded ? 'fa-chevron-down' : 'fa-chevron-right')"/>
+                                </div>
+                                <div class="templates-list" t-if="state.templatesExpanded">
+                                    <t t-foreach="state.templates" t-as="template" t-key="template.id">
+                                        <div class="template-item"
+                                             t-att-class="{'active': state.selectedTemplates.has(template.id)}">
+                                            <input type="checkbox"
+                                                   t-att-id="'template_' + template.id"
+                                                   t-att-checked="state.selectedTemplates.has(template.id)"
+                                                   t-on-click="() => this.toggleTemplateSelection(template.id)"
+                                                   class="checkbox-spacing"/>
+                                            <label t-att-for="'template_' + template.id" class="template-label">
+                                                <t t-esc="template.name"/>
+                                            </label>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Buttons at Bottom -->
+                        <div class="filter-container">
+                            <button type="button" class="btn btn-primary apply-filters" t-on-click="filters">
+                                Apply Filters
+                            </button>
+                            <button type="button" class="btn btn-secondary clear-filters" t-on-click="clearFilters">
+                                Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-toggle-tab" t-on-click="toggleSidebar">
+                    <i t-attf-class="fa {{ state.sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right' }}"/>
+                </div>
+            </div>
+            <div t-attf-class="main-content {{ state.sidebarOpen ? 'main-content-shifted' : '' }}">
+                <h2 class="heading-dashboard">Project Wise Data</h2>
+                <div class="date-picker-container">
+                    <div class="input-wrapper">
+                        <i class="fa fa-calendar"></i>
+                        <input type="text"
+                               id="date_input"
+                               class="date-picker"
+                               t-on-change="onDateChange"
+                               placeholder="Pick an Expiry Date"/>
+                    </div>
+                </div>
+                <div class="main-section">
+                    <div class="start-card active-projects">
+                        <div class="oh-card" t-on-click="show_active_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-active"><i class="fa fa-briefcase" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Active Projects</div>
+                                    <div class="stat_count" id="active_projects">
+                                        <t t-esc="state.active_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card running-projects">
+                        <div class="oh-card" t-on-click="show_running_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-running"><i class="fa fa-play" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Running Projects</div>
+                                    <div class="stat_count" id="running_projects">
+                                        <t t-esc="state.running_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card done-projects">
+                        <div class="oh-card" t-on-click="show_done_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-done"><i class="fa fa-check" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Done Projects</div>
+                                    <div class="stat_count" id="done_projects">
+                                        <t t-esc="state.done_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card canceled-projects">
+                        <div class="oh-card" t-on-click="show_canceled_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-canceled"><i class="fa fa-ban" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Canceled Projects</div>
+                                    <div class="stat_count" id="canceled_projects">
+                                        <t t-esc="state.canceled_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-projects">
+                        <div class="oh-card" t-on-click="show_expired_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-projects"><i class="fa fa-times" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Projects</div>
+                                    <div class="stat_count" id="expired_projects">
+                                        <t t-esc="state.expired_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-yesterday">
+                        <div class="oh-card" t-on-click="show_expired_yesterday">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-yesterday"><i class="fa fa-calendar-times-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Yesterday</div>
+                                    <div class="stat_count" id="expired_yesterday">
+                                        <t t-esc="state.expired_yesterday"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-today">
+                        <div class="oh-card" t-on-click="show_expired_today">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-today"><i class="fa fa-hourglass-half" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Today</div>
+                                    <div class="stat_count" id="expired_today">
+                                        <t t-esc="state.expired_today"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card will-expire-tomorrow">
+                        <div class="oh-card" t-on-click="show_will_expire_tomorrow">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-tomorrow"><i class="fa fa-clock-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Tomorrow</div>
+                                    <div class="stat_count" id="will_expire_tomorrow">
+                                        <t t-esc="state.will_expire_tomorrow"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="heading-dashboard">Task Wise Data</h2>
+                <div class="main-section">
+                    <div class="start-card not-started">
+                        <div class="oh-card" t-on-click="show_not_started">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-active"><i class="fa fa-hourglass-start" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Not Started</div>
+                                    <div class="stat_count" id="not_started">
+                                        <t t-esc="state.not_started"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card running-tasks">
+                        <div class="oh-card" t-on-click="show_running_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-running-tasks"><i class="fa fa-tasks" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Running Tasks</div>
+                                    <div class="stat_count" id="running_tasks">
+                                        <t t-esc="state.running_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card done-tasks">
+                        <div class="oh-card" t-on-click="show_done_task">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-done-tasks"><i class="fa fa-check" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Done Tasks</div>
+                                    <div class="stat_count" id="done_tasks">
+                                        <t t-esc="state.done_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card canceled-tasks">
+                        <div class="oh-card" t-on-click="show_canceled_task">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-canceled-tasks"><i class="fa fa-ban" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Canceled Tasks</div>
+                                    <div class="stat_count" id="canceled_tasks">
+                                        <t t-esc="state.canceled_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-projects">
+                        <div class="oh-card" t-on-click="show_expired_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-projects"><i class="fa fa-times" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Tasks</div>
+                                    <div class="stat_count" id="expired_tasks">
+                                        <t t-esc="state.expired_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-yesterday">
+                        <div class="oh-card" t-on-click="show_expired_yesterday_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-yesterday"><i class="fa fa-calendar-times-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Yesterday</div>
+                                    <div class="stat_count" id="expired_yesterday_tasks">
+                                        <t t-esc="state.expired_yesterday_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-today">
+                        <div class="oh-card" t-on-click="show_expired_today_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-today"><i class="fa fa-hourglass-half" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Today</div>
+                                    <div class="stat_count" id="expired_today_tasks">
+                                        <t t-esc="state.expired_today_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card will-expire-tomorrow">
+                        <div class="oh-card" t-on-click="show_will_expire_tomorrow_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-tomorrow"><i class="fa fa-clock-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Overdue Tomorrow</div>
+                                    <div class="stat_count" id="will_expire_tomorrow_tasks">
+                                        <t t-esc="state.will_expire_tomorrow_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="heading-dashboard">Charts</h2>
+                <div class="main-section charts-section">
+                    <div class="graph_view">
+                        <h2 class="chart-title">Tag Wise Task Count</h2>
+                        <canvas id="task_tags_chart"/>
+                    </div>
+                    <div class="graph_view">
+                        <h2 class="chart-title">Employee Task Distribution</h2>
+                        <canvas id="employee_task_chart"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

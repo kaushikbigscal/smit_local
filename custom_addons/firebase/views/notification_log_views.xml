@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="notification_log_view_tree" model="ir.ui.view">
+        <field name="name">notification.log.tree</field>
+        <field name="model">notification.log</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="body"/>
+                <field name="receiver_ids"/>
+                <field name="model"/>
+                <field name="data"/>
+                <field name="description"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="notification_log_action" model="ir.actions.act_window">
+        <field name="name">Notification Logs</field>
+        <field name="res_model">notification.log</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem
+            id="menu_notification_logs"
+            name="Notification Logs"
+            parent="base.menu_administration"
+            action="notification_log_action"
+            sequence="101"/>
+</odoo>

@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <!-- Cron job to run the create_project_for_today_visits method daily -->
+        <!--        <record id="ir_cron_amc_create_project" model="ir.cron">-->
+        <!--            <field name="name">Create Project for Today AMC Visits</field>-->
+        <!--            <field name="model_id" ref="model_amc_contract_visit"/>-->
+        <!--            <field name="state">code</field>-->
+        <!--            <field name="code">model.create_project_for_today_visits()</field>-->
+        <!--            <field name="user_id" ref="base.user_admin"/>-->
+        <!--            <field name="active" eval="True"/>-->
+        <!--            <field name="interval_number">1</field>  &lt;!&ndash; Runs every 1 day &ndash;&gt;-->
+        <!--            <field name="interval_type">days</field>-->
+        <!--&lt;!&ndash;            <field name="nextcall" eval="(datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)"/>&ndash;&gt;-->
+        <!--        </record>-->
+        <record id="ir_cron_create_amc_service_calls" model="ir.cron">
+            <field name="name">Create AMC Service Calls</field>
+            <field name="model_id" ref="model_amc_visit_scheduler"/>
+            <field name="state">code</field>
+            <field name="code">model.create_service_calls_for_today()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=18, minute=31, second=0, microsecond=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+    </data>
+</odoo>

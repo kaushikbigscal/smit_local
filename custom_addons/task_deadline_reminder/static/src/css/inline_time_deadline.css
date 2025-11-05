@@ -1,0 +1,11 @@
+.inline_deadline_fields {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between fields */
+}
+
+.inline_deadline_fields .o_field_date,
+.inline_deadline_fields .o_field_float_time {
+  flex: none;
+  width: auto;
+}

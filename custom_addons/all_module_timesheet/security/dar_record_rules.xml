@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <!-- Only own timesheets -->
+        <record id="account_analytic_line_rule_own" model="ir.rule">
+            <field name="name">Timesheet: Own records</field>
+            <field name="model_id" ref="account.model_account_analytic_line"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- All timesheets (approver) -->
+        <record id="account_analytic_line_rule_all" model="ir.rule">
+            <field name="name">Timesheet: All records</field>
+            <field name="model_id" ref="account.model_account_analytic_line"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_approver'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- All timesheets (admin/manager) -->
+<!--        <record id="account_analytic_line_rule_manager" model="ir.rule">-->
+<!--            <field name="name">Timesheet: Manager</field>-->
+<!--            <field name="model_id" ref="account.model_account_analytic_line"/>-->
+<!--            <field name="domain_force">[]</field>-->
+<!--            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_manager'))]"/>-->
+<!--            <field name="perm_read" eval="True"/>-->
+<!--            <field name="perm_write" eval="True"/>-->
+<!--            <field name="perm_create" eval="True"/>-->
+<!--            <field name="perm_unlink" eval="True"/>-->
+<!--        </record>-->
+    </data>
+</odoo>

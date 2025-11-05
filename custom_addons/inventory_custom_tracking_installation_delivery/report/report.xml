@@ -1,0 +1,19 @@
+<odoo>
+    <record id="report_amc_customer_pdf" model="ir.actions.report">
+        <field name="name">Customer Info PDF</field>
+        <field name="model">amc.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_custom_tracking_installation_delivery.report_pdf_template</field>
+        <field name="report_file">inventory_custom_tracking_installation_delivery.report_pdf_template</field>
+        <field name="print_report_name">'Customer Info - %s' % (object.name or '')</field>
+    </record>
+
+    <record id="report_cmc_customer_pdf" model="ir.actions.report">
+        <field name="name">Customer Info PDF</field>
+        <field name="model">amc.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_custom_tracking_installation_delivery.report_pdf_template_cmc</field>
+        <field name="report_file">inventory_custom_tracking_installation_delivery.report_pdf_template_cmc</field>
+        <field name="print_report_name">'Customer Info - %s' % (object.name or '')</field>
+    </record>
+</odoo>

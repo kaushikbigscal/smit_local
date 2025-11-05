@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+        <!-- Create custom group -->
+        <record id="group_custom_action_window_access" model="res.groups">
+            <field name="name">Custom Action Window Access</field>
+            <!--            <field name="category_id" ref="base.module_category_usability"/>-->
+        </record>
+
+
+
+
+        <!-- Access rights for Action Window -->
+        <record id="access_ir_actions_act_window_custom" model="ir.model.access">
+            <field name="name">ir_actions_act_window_custom_access</field>
+            <field name="model_id" ref="base.model_ir_actions_act_window"/>
+            <field name="group_id" ref="group_custom_action_window_access"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- Access rights for Fields -->
+        <record id="access_ir_model_fields_custom" model="ir.model.access">
+            <field name="name">ir_model_fields_all_custom_access</field>
+            <field name="model_id" ref="base.model_ir_model_fields"/>
+            <field name="group_id" ref="group_custom_action_window_access"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+    </data>
+</odoo>

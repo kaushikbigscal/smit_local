@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Bulk Mail Payslip Template-->
+    <record id="employee_payslip_mail_template" model="mail.template">
+        <field name="name">Employee Payslip Mail</field>
+        <field name="model_id" ref="om_hr_payroll.model_hr_payslip"/>
+        <field name="email_from">{{(user.email)}}</field>
+        <field name="email_to">{{ ctx.get('mail_to') }}</field>
+        <field name="subject">{{object.name}}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; max-width: 700px; font-size: 14px; margin: 0 auto; ;padding: 0px; box-sizing: border-box;border:1px solid #ddd;">
+                <!-- BODY -->
+                <table class="body-wrap" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                    <tbody>
+                        <tr>
+                            <td bgcolor="#FFFFFF">
+                                <div class="container"
+                                     style="display: block!important; max-width: 600px!important; margin: 0 auto!important; clear: both!important;">
+                                    <div class="content"
+                                         style="padding: 10px; max-width: 80%; margin: 0 auto; display: block;">
+                                        <table width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Dear
+                                                        <t t-out="object.employee_id.name"/>
+                                                        <br/>
+                                                        <p style="margin-bottom: 10px; font-weight: normal; font-size: 14px; line-height: 1.4;">
+                                                            We are sending your payslip for the month
+                                                            <t t-esc="object.date_from.strftime('%b %Y')"/>
+                                                            as an attachment with this mail.
+                                                        </p>
+                                                        <p style="margin-bottom: 10px; font-weight: normal; font-size: 14px; line-height: 1.4;">
+                                                            Note: This is an auto-generated mail. Please do not
+                                                            reply.
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </field>
+        <field name="report_template_ids"
+               eval="[(4, ref('aspl_indian_payroll.report_employee_payslip'))]"/>
+    </record>
+
+</odoo>

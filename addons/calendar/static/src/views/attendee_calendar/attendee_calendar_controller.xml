@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="calendar.AttendeeCalendarController" t-inherit="web.CalendarController" t-inherit-mode="primary">
+        <xpath expr="//Layout" position="inside">
+            <CalendarDashboard/>
+        </xpath>
+        <xpath expr="//Layout" position="inside">
+            <t t-set-slot="control-panel-create-button">
+                <style>
+                    /* Mobile: Show dropdown */
+                    .mobile-dropdown {
+                        display: block;
+                    }
+                    .desktop-buttons {
+                        display: none;
+                    }
+
+                    /* Desktop: Show separate buttons */
+                    @media (min-width: 768px) {
+                        .mobile-dropdown {
+                            display: none;
+                        }
+                        .desktop-buttons {
+                            display: flex;
+                            gap: 0.5rem;
+                        }
+                    }
+                </style>
+
+                <!-- Mobile Dropdown -->
+                <div class="mobile-dropdown btn-group me-1">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        New
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#" t-on-click="onClickNewMeeting">
+                                <i class="fa fa-calendar me-2"></i>Meeting
+                            </a>
+                        </li>
+                        <t t-if="state.moduleInfo.visit and state.menuAccess.visit">
+                            <li t-if="state.isFieldVisitAvailable">
+                                <a class="dropdown-item" href="#" t-on-click="onClickNewFieldVisit">
+                                    <i class="fa fa-exclamation-circle me-2"></i>Instant Visit
+                                </a>
+                            </li>
+                            <li t-if="state.isFieldVisitAvailable">
+                                <a class="dropdown-item" href="#" t-on-click="onClickNewFieldVisit">
+                                    <i class="fa fa-briefcase me-2"></i>Office Work
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </div>
+
+                <!-- Desktop Separate Buttons -->
+                <div class="desktop-buttons me-1">
+                    <button class="btn btn-primary" t-on-click="onClickNewMeeting">
+                        <i class="fa fa-calendar me-2"></i>Meeting
+                    </button>
+                    <t t-if="state.moduleInfo.visit and state.menuAccess.visit">
+                        <div class="dropdown desktop-quick-dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-map-marker me-2"></i>Visit
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#" t-on-click.prevent="onClickNewFieldVisit">
+                                        <i class="fa fa-exclamation-circle me-2"></i>Instant Visit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" t-on-click.prevent="onClickOfficialVisit">
+                                        <i class="fa fa-briefcase me-2"></i>Official Work
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" t-on-click.prevent="onClickNearestCustomer">
+                                        <i class="fa fa-briefcase me-2"></i>Nearest Customer
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>

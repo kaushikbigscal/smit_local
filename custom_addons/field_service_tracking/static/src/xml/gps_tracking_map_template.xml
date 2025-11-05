@@ -1,0 +1,808 @@
+<odoo>
+    <t t-name="field_service_tracking.tracking_route_template">
+        <div class="o_gps_tracking_container">
+
+            <!-- Mobile Filter Section (Hidden on Desktop) -->
+            <div class="o_mobile_filter_section d-lg-none mb-3">
+                <div class="d-flex flex-wrap gap-3 align-items-end">
+                    <t t-if="state.isAdmin">
+                        <div class="d-flex flex-column">
+                            <label class="o_form_label small fw-bold mb-1">Select Employee</label>
+                            <select class="form-select" name="employeeId" t-on-change="onChangeFilter">
+                                <option value="">-- Select Employee --</option>
+                                <t t-foreach="state.employees" t-as="emp" t-key="emp.id">
+                                    <option t-att-value="emp.id" t-att-selected="emp.id == state.employeeId">
+                                        <t t-esc="emp.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </t>
+                    <div class="d-flex flex-column">
+                        <label class="o_form_label small fw-bold mb-1">Select Date</label>
+                        <input type="date" name="date" class="form-control" t-att-value="state.date"
+                               t-on-change="onChangeFilter"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Layout -->
+            <div class="o_gps_main_layout">
+                <!-- Sidebar Panel -->
+                <div class="o_sidepanel">
+                    <!-- Desktop Filter Section (Hidden on Mobile) -->
+                    <div class="o_desktop_filter_section d-none d-lg-block mb-3">
+                        <div class="o_filter_card">
+                            <div class="o_filter_header mb-2">
+                                <i class="fa fa-filter me-1 text-primary"></i>
+                                <span>Filters</span>
+                            </div>
+                            <t t-if="state.isAdmin">
+                                <div class="mb-3">
+                                    <label class="o_form_label small fw-bold mb-1">Select Employee</label>
+                                    <select class="form-select form-select-sm" name="employeeId"
+                                            t-on-change="onChangeFilter">
+                                        <option value="">-- Select Employee --</option>
+                                        <t t-foreach="state.employees" t-as="emp" t-key="emp.id">
+                                            <option t-att-value="emp.id" t-att-selected="emp.id == state.employeeId">
+                                                <t t-esc="emp.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </t>
+                            <div class="mb-0">
+                                <label class="o_form_label small fw-bold mb-1">Select Date</label>
+                                <input type="date" name="date" class="form-control form-control-sm"
+                                       t-att-value="state.date"
+                                       t-on-change="onChangeFilter"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <t t-if="state.info">
+                        <!-- Employee Info Card -->
+                        <div class="o_employee_card mb-3">
+                            <div class="text-center mb-3">
+                                <img t-if="state.info.image_128" t-att-src="state.info.image_128"
+                                     class="o_employee_avatar rounded-circle" width="60" height="60"/>
+                                <div t-if="!state.info.image_128" class="o_default_avatar">
+                                    <i class="fa fa-user fa-lg text-muted"></i>
+                                </div>
+                                <div class="fw-semibold mt-2 text-900">
+                                    <t t-esc="state.info.name"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Map Information -->
+                    <div class="o_info_section">
+                        <div class="o_section_title mb-2">
+                            <i class="fa fa-map me-1 text-primary"></i>
+                            <span>Route Information</span>
+                        </div>
+                        <div class="o_info_list">
+                            <div class="o_info_item">
+                                <div class="o_info_icon">
+                                    <i class="fa fa-map-marker text-danger"></i>
+                                </div>
+                                <div class="o_info_content">
+                                    <span class="o_info_label">Locations:</span>
+                                    <span class="o_info_value">
+                                        <t t-esc="state.info and state.info.total_points or 0"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <t t-if="state.info and state.info.distance">
+                                <div class="o_info_item">
+                                    <div class="o_info_icon">
+                                        <i class="fa fa-route text-success"></i>
+                                    </div>
+                                    <div class="o_info_content">
+                                        <span class="o_info_label">Distance:</span>
+                                        <span class="o_info_value">
+                                            <t t-esc="state.info.distance"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="state.info and state.info.duration">
+                                <div class="o_info_item">
+                                    <div class="o_info_icon">
+                                        <i class="fa fa-clock-o text-warning"></i>
+                                    </div>
+                                    <div class="o_info_content">
+                                        <span class="o_info_label">Duration:</span>
+                                        <span class="o_info_value">
+                                            <t t-esc="state.info.duration"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="o_main_map">
+                    <div t-ref="map" id="gps_map" class="o_gps_map"></div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* Odoo 17 Variables and Base Styles */
+            .o_gps_tracking_container {
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            }
+
+            /* Mobile Filter Section */
+            .o_mobile_filter_section {
+            background: white;
+            padding: 16px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            }
+
+            /* Desktop Filter Section */
+            .o_desktop_filter_section {
+            margin-bottom: 16px;
+            }
+
+            .o_filter_card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 12px;
+            }
+
+            .o_filter_header {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            }
+
+            .o_filter_card .form-select-sm,
+            .o_filter_card .form-control-sm {
+            font-size: 12px;
+            padding: 6px 10px;
+            }
+
+            .o_form_label {
+            color: #374151;
+            font-weight: 500;
+            font-size: 13px;
+            }
+
+            .form-select, .form-control {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 13px;
+            padding: 8px 12px;
+            background-color: white;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+
+            .form-select:focus, .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+            }
+
+            /* Main Layout */
+            .o_gps_main_layout {
+            display: flex;
+            gap: 16px;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+            }
+
+            /* Sidebar Panel */
+            .o_sidepanel {
+            width: 280px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 16px;
+            overflow-y: auto;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+            }
+
+            /* Employee Card */
+            .o_employee_card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 16px;
+            }
+
+            .o_employee_avatar {
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .o_default_avatar {
+            width: 60px;
+            height: 60px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .text-900 {
+            color: #1f2937;
+            }
+
+            /* Information Section */
+            .o_info_section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 12px;
+            }
+
+            .o_section_title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            }
+
+            .o_info_list {
+            margin-top: 12px;
+            }
+
+            .o_info_item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            }
+
+            .o_info_item:last-child {
+            border-bottom: none;
+            }
+
+            .o_info_icon {
+            width: 32px;
+            display: flex;
+            justify-content: center;
+            margin-right: 12px;
+            }
+
+            .o_info_content {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            }
+
+            .o_info_label {
+            color: #6b7280;
+            font-size: 13px;
+            }
+
+            .o_info_value {
+            color: #1f2937;
+            font-weight: 500;
+            font-size: 13px;
+            }
+
+            /* Map Container */
+            .o_main_map {
+            flex: 1;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            }
+
+            .o_gps_map {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            }
+
+            /* Mobile Responsive Design */
+            @media (max-width: 991.98px) {
+            .o_gps_tracking_container {
+            padding: 12px;
+            }
+
+            .o_gps_main_layout {
+            flex-direction: column;
+            height: auto;
+            min-height: auto;
+            gap: 12px;
+            }
+
+            .o_sidepanel {
+            width: 100%;
+            order: 2;
+            max-height: none;
+            }
+
+            .o_main_map {
+            order: 1;
+            height: 400px;
+            }
+
+            .o_gps_map {
+            min-height: 400px;
+            }
+
+            /* Mobile Sidebar Layout */
+            .o_employee_card {
+            margin-bottom: 12px;
+            }
+
+            .o_info_section {
+            background: #f8fafc;
+            }
+
+            .o_info_list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 8px;
+            }
+
+            .o_info_item {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            flex-direction: column;
+            text-align: center;
+            gap: 8px;
+            }
+
+            .o_info_icon {
+            width: auto;
+            margin-right: 0;
+            margin-bottom: 4px;
+            }
+
+            .o_info_content {
+            flex-direction: column;
+            gap: 4px;
+            }
+
+            .o_info_label {
+            font-size: 12px;
+            }
+
+            .o_info_value {
+            font-size: 14px;
+            font-weight: 600;
+            }
+            }
+
+            @media (max-width: 767.98px) {
+            .o_gps_tracking_container {
+            padding: 8px;
+            }
+
+            .o_mobile_filter_section {
+            padding: 12px;
+            }
+
+            .o_mobile_filter_section .d-flex {
+            flex-direction: column;
+            gap: 12px;
+            }
+
+            .o_mobile_filter_section .d-flex > div {
+            width: 100%;
+            }
+
+            .o_sidepanel {
+            padding: 12px;
+            }
+
+            .o_employee_card {
+            text-align: center;
+            padding: 12px;
+            }
+
+            .o_employee_avatar, .o_default_avatar {
+            width: 50px;
+            height: 50px;
+            }
+
+            .o_main_map {
+            height: 350px;
+            }
+
+            .o_gps_map {
+            min-height: 350px;
+            }
+
+            .o_info_item {
+            min-width: 100px;
+            padding: 8px;
+            }
+            }
+
+            @media (max-width: 575.98px) {
+            .o_gps_tracking_container {
+            padding: 4px;
+            }
+
+            .o_mobile_filter_section {
+            padding: 8px;
+            }
+
+            .o_main_map {
+            height: 300px;
+            }
+
+            .o_gps_map {
+            min-height: 300px;
+            }
+
+            .o_info_list {
+            gap: 8px;
+            }
+
+            .o_info_item {
+            min-width: 80px;
+            padding: 6px;
+            }
+
+            .o_employee_card {
+            padding: 8px;
+            }
+            }
+
+            /* Tablet Landscape Optimization */
+            @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .o_gps_main_layout {
+            flex-direction: row;
+            height: calc(100vh - 180px);
+            }
+
+            .o_sidepanel {
+            width: 250px;
+            order: 1;
+            }
+
+            .o_main_map {
+            order: 2;
+            }
+            }
+
+            /* Loading States */
+            .o_gps_map.loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1000;
+            }
+
+            @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+
+            /* Hover Effects for Desktop */
+            @media (hover: hover) {
+            .o_info_item:hover {
+            background-color: #f8fafc;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            }
+
+            .form-select:hover, .form-control:hover {
+            border-color: #9ca3af;
+            }
+            }
+
+            /* Focus States for Accessibility */
+            .o_info_item:focus-within {
+            outline: 2px solid #6366f1;
+            outline-offset: 2px;
+            border-radius: 4px;
+            }
+
+            /* Print Styles */
+            @media print {
+            .o_filter_section {
+            display: none;
+            }
+
+            .o_sidepanel {
+            width: 200px;
+            }
+
+            .o_gps_main_layout {
+            height: auto;
+            }
+
+            .o_gps_map {
+            min-height: 500px;
+            }
+            }
+        </style>
+    </t>
+</odoo>
+
+
+        <!-- main -->
+        <!--<odoo>-->
+        <!--    <t t-name="field_service_tracking.tracking_route_template">-->
+        <!--        <div class="o_gps_tracking_container">-->
+
+        <!--            &lt;!&ndash; Filter Section &ndash;&gt;-->
+        <!--            <div class="d-flex flex-wrap gap-3 align-items-end mb-3">-->
+        <!--                <t t-if="state.isAdmin">-->
+        <!--                    <div class="d-flex flex-column">-->
+        <!--                        <label class="small fw-bold mb-1">Select Employee</label>-->
+        <!--                        <select class="form-select" name="employeeId" t-on-change="onChangeFilter">-->
+        <!--                            <option value="">&#45;&#45; Select Employee &#45;&#45;</option>-->
+        <!--                            <t t-foreach="state.employees" t-as="emp" t-key="emp.id">-->
+        <!--                                <option t-att-value="emp.id" t-att-selected="emp.id == state.employeeId">-->
+        <!--                                    <t t-esc="emp.name"/>-->
+        <!--                                </option>-->
+        <!--                            </t>-->
+        <!--                        </select>-->
+        <!--                    </div>-->
+        <!--                </t>-->
+        <!--                <div class="d-flex flex-column">-->
+        <!--                    <label class="small fw-bold mb-1">Select Date</label>-->
+        <!--                    <input type="date" name="date" class="form-select" t-att-value="state.date"-->
+        <!--                           t-on-change="onChangeFilter"/>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+
+        <!--            &lt;!&ndash; Employee Info Card &ndash;&gt;-->
+
+        <!--            <t t-if="state.info">-->
+        <!--                <div class="card mb-3 shadow-sm">-->
+        <!--                    <div class="card-body d-flex align-items-center">-->
+        <!--                        &lt;!&ndash; Avatar &ndash;&gt;-->
+        <!--                        <img t-if="state.info.image_128"-->
+        <!--                             t-att-src="state.info.image_128"-->
+        <!--                             class="rounded-circle me-3"-->
+        <!--                             width="60" height="60"/>-->
+
+        <!--                        &lt;!&ndash; Info Block &ndash;&gt;-->
+        <!--                        <div class="flex-grow-1">-->
+        <!--                            <h5 class="mb-1 fw-semibold">-->
+        <!--                                <t t-esc="state.info.name"/>-->
+        <!--                            </h5>-->
+        <!--                            <div class="row text-muted small">-->
+        <!--                                <div class="col-auto">-->
+        <!--                                    📍-->
+        <!--                                    <strong>Locations:</strong>-->
+        <!--                                    <t t-esc="state.info.total_points"/>-->
+        <!--                                </div>-->
+
+        <!--                                <t t-if="state.info.distance and state.info.duration">-->
+        <!--                                    <div class="col-auto">-->
+        <!--                                        🚶-->
+        <!--                                        <strong>Distance:</strong>-->
+        <!--                                        <t t-esc="state.info.distance"/>-->
+        <!--                                    </div>-->
+        <!--                                    <div class="col-auto">-->
+        <!--                                        ⏱-->
+        <!--                                        <strong>Expected Duration:</strong>-->
+        <!--                                        <t t-esc="state.info.duration"/>-->
+        <!--                                    </div>-->
+        <!--                                    <t t-if="state.info.traveled_duration">-->
+        <!--                                        <div class="col-auto">-->
+        <!--                                            🕒-->
+        <!--                                            <strong>Traveled Duration:</strong>-->
+        <!--                                            <t t-esc="state.info.traveled_duration"/>-->
+        <!--                                        </div>-->
+        <!--                                    </t>-->
+        <!--                                    <t t-if="state.info.speed_kmh">-->
+        <!--                                        <div class="col-auto">-->
+        <!--                                            🚗-->
+        <!--                                            <strong>Avg Speed:</strong>-->
+        <!--                                            <span t-att-class="state.info.speed_is_unusual ? 'text-danger fw-bold' : ''">-->
+        <!--                                                <t t-esc="state.info.speed_kmh"/> km/h-->
+        <!--                                            </span>-->
+        <!--                                            <t t-if="state.info.any_suspicious">-->
+        <!--                                                <span class="badge bg-danger ms-2" title="Suspicious GPS points detected!">-->
+        <!--                                                    Suspicious-->
+        <!--                                                </span>-->
+        <!--                                            </t>-->
+        <!--                                        </div>-->
+        <!--                                    </t>-->
+        <!--                                </t>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </t>-->
+
+        <!--            &lt;!&ndash; GPS Map Container &ndash;&gt;-->
+        <!--            <div class="o_gps_map_container card mt-3">-->
+        <!--                <div class="card-header">-->
+        <!--                    <h5 class="mb-0">-->
+        <!--                        <i class="fa fa-map text-success"></i>-->
+        <!--                        GPS Tracking Map-->
+        <!--                    </h5>-->
+        <!--                </div>-->
+        <!--                <div class="card-body">-->
+        <!--                    <div t-ref="map" id="gps_map" class="o_gps_map"></div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            &lt;!&ndash; Manual Control Panel &ndash;&gt;-->
+        <!--&lt;!&ndash;            <div class="o_gps_controls_panel card mt-3">&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div class="card-header">&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <h6 class="mb-0">&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <i class="fa fa-cogs text-secondary"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        Manual Controls&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </h6>&ndash;&gt;-->
+        <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div class="card-body">&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <div class="btn-toolbar" role="toolbar">&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <div class="btn-group mr-2" role="group">&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <button&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    type="button"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    class="btn btn-success"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    id="manual_start_btn"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    onclick="odoo.gpsTracker.startGPSTracking()">&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <i class="fa fa-play"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                Start Manual Tracking&ndash;&gt;-->
+        <!--&lt;!&ndash;                            </button>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <button&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    type="button"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    class="btn btn-danger"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    id="manual_stop_btn"&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    onclick="odoo.gpsTracker.stopGPSTracking()">&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <i class="fa fa-stop"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                Stop Tracking&ndash;&gt;-->
+        <!--&lt;!&ndash;                            </button>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <div class="mt-2">&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <small class="text-muted">&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <i class="fa fa-exclamation-triangle"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            Manual controls are for testing purposes. Normal operation uses automatic attendance&ndash;&gt;-->
+        <!--&lt;!&ndash;                            integration.&ndash;&gt;-->
+        <!--&lt;!&ndash;                        </small>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;            </div>&ndash;&gt;-->
+
+        <!--            &lt;!&ndash; Integration Information &ndash;&gt;-->
+        <!--&lt;!&ndash;            <div class="o_gps_integration_info card mt-3">&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div class="card-header">&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <h6 class="mb-0">&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <i class="fa fa-info text-info"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        How GPS Integration Works&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </h6>&ndash;&gt;-->
+        <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div class="card-body">&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <div class="row">&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <div class="col-md-6">&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <h6>Automatic Features:</h6>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <ul class="list-unstyled">&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-check text-success"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Starts on attendance check-in&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-check text-success"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Stops on attendance check-out&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-check text-success"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Records location every 10 seconds&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-check text-success"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Works offline with local storage&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            </ul>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        <div class="col-md-6">&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <h6>Data Storage:</h6>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            <ul class="list-unstyled">&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-database text-info"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Linked to attendance records&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-cloud text-info"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Syncs automatically when online&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-map-marker text-info"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Accurate GPS coordinates&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                <li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    <i class="fa fa-clock text-info"></i>&ndash;&gt;-->
+        <!--&lt;!&ndash;                                    Timestamped location data&ndash;&gt;-->
+        <!--&lt;!&ndash;                                </li>&ndash;&gt;-->
+        <!--&lt;!&ndash;                            </ul>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;            </div>&ndash;&gt;-->
+        <!--        </div>-->
+
+        <!--        <style>-->
+        <!--            .o_gps_tracking_container {-->
+        <!--            padding: 10px;-->
+        <!--            max-width: 1200px;-->
+        <!--            margin: 0 auto;-->
+        <!--            }-->
+
+        <!--            .o_gps_map {-->
+        <!--            width: 100%;-->
+        <!--            height: 550px;-->
+        <!--            border: 2px solid #ddd;-->
+        <!--            border-radius: 8px;-->
+        <!--            }-->
+
+        <!--            .status-item {-->
+        <!--            display: flex;-->
+        <!--            justify-content: space-between;-->
+        <!--            align-items: center;-->
+        <!--            margin-bottom: 10px;-->
+        <!--            padding: 5px 0;-->
+        <!--            }-->
+
+        <!--            .status-item label {-->
+        <!--            font-weight: 600;-->
+        <!--            margin-bottom: 0;-->
+        <!--            }-->
+
+        <!--            .card-header {-->
+        <!--            background-color: #f8f9fa;-->
+        <!--            border-bottom: 1px solid #dee2e6;-->
+        <!--            }-->
+
+        <!--            .btn-toolbar .btn-group {-->
+        <!--            margin-right: 10px;-->
+        <!--            }-->
+
+        <!--            .list-unstyled li {-->
+        <!--            margin-bottom: 5px;-->
+        <!--            padding: 2px 0;-->
+        <!--            }-->
+
+        <!--            .list-unstyled li i {-->
+        <!--            margin-right: 8px;-->
+        <!--            width: 16px;-->
+        <!--            }-->
+        <!--        </style>-->
+        <!--    </t>-->
+        <!--</odoo>-->
+

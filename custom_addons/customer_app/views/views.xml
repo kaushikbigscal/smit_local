@@ -1,0 +1,59 @@
+<odoo>
+    <record id="view_product_template_form_inherit_display_catalog" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.display.catalog</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="inside">
+                <span class="d-inline-block">
+                    <field name="display_in_catalog"/>
+                    <label for="display_in_catalog"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_template_tree_inherit_display_catalog" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit.display.catalog</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="display_in_catalog" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_category_form_inherit_display_catalog" model="ir.ui.view">
+        <field name="name">product.category.form.inherit.display.catalog</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="display_in_catalog_category"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="view_sale_order_form_inherit_portal_invoice" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.form.portal.invoice</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            &lt;!&ndash; Hide "Create Invoice" button if portal-created invoice exists OR invoice_status != 'to invoice' &ndash;&gt;-->
+<!--            <xpath expr="//button[@id='create_invoice']" position="attributes">-->
+<!--                <attribute name="invisible">-->
+<!--                    ('invoice_status', '!=', 'to invoice'), ('invoice_ids.created_from_portal', '=', True)-->
+<!--                </attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Hide "Create Invoice (percentage)" button similarly &ndash;&gt;-->
+<!--            <xpath expr="//button[@id='create_invoice_percentage']" position="attributes">-->
+<!--                <attribute name="invisible">-->
+<!--                    ('invoice_status', '!=', 'no'), ('state', '!=', 'sale'), ('invoice_ids.created_from_portal', '=', True)-->
+<!--                </attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

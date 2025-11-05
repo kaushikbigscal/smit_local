@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Form View - Customer Dashboard -->
+    <record id="view_customer_timeline_form" model="ir.ui.view">
+        <field name="name">customer.timeline.form</field>
+        <field name="model">customer.timeline</field>
+        <field name="arch" type="xml">
+            <form string="Customer Timeline" create="false">
+                <group>
+                    <group>
+                        <field name="partner_id" placeholder="Select Customer..."
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               string="Customer"/>
+                    </group>
+                    <group>
+                        <field name="date_from"
+                               widget="daterange"
+                               options="{'end_date_field': 'date_to', 'always_range': '1'}"/>
+                        <field name="date_to" invisible="1"/>
+                        <field name="is_loaded" invisible="1"/>
+                    </group>
+                </group>
+                <div class="text-center my-3">
+                    <button type="object" name="action_load_timeline" class="btn btn-primary">LOAD TIMELINE</button>
+                </div>
+                <div class="col-12">
+                    <field name="unified_timeline_display" widget="html" nolabel="1" readonly="1"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for listing (optional) -->
+    <record id="view_customer_timeline_tree" model="ir.ui.view">
+        <field name="name">customer.timeline.tree</field>
+        <field name="model">customer.timeline</field>
+        <field name="arch" type="xml">
+            <tree string="Customer Timelines" create="false" edit="false" delete="false">
+                <field name="partner_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for the customer timeline dashboard -->
+    <record id="action_customer_timeline_dashboard" model="ir.actions.act_window">
+        <field name="name">Customer Timeline Dashboard</field>
+        <field name="res_model">customer.timeline</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_customer_timeline_form"/>
+        <field name="target">current</field>
+        <field name="context">{
+            'default_date_from': (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'),
+            'default_date_to': context_today().strftime('%Y-%m-%d'),
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Customer Timeline!
+            </p>
+            <p>
+                The Customer Timeline Dashboard shows you a chronological view of all activities
+                for a specific Customer across different modules in your Odoo system.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_customer_timeline"
+              name="Timeline"
+              parent="contacts.menu_contacts"
+              action="action_customer_timeline_dashboard"
+              groups="timeline.group_timeline_customer_access"
+              sequence="6"/>
+
+</odoo>

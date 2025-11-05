@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_timeline,customer_timeline_access,model_customer_timeline,timeline.group_timeline_customer_access,1,1,1,0
+access_employee_timeline,employee_timeline_access,model_employee_timeline,timeline.group_timeline_employee_access,1,1,1,0

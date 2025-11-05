@@ -1,0 +1,72 @@
+<odoo>
+    <!-- Tree View-->
+    <record id="view_service_type_tree" model="ir.ui.view">
+        <field name="name">service.type.tree</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="default_in_call"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_service_type_form" model="ir.ui.view">
+        <field name="name">service.type.form</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="bypass_geofencing_for_service_call"/>
+                        <field name="default_in_call"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action-->
+    <record id="action_service_type" model="ir.actions.act_window">
+        <field name="name">Service Type</field>
+        <field name="res_model">service.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_config_service_type"
+              name="Service Types"
+              parent="fsm_menu_settings"
+              sequence="60"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_service_type"/>
+
+    <!--  call_type_views  -->
+
+    <record id="view_call_type_tree" model="ir.ui.view">
+        <field name="name">call.type.tree</field>
+        <field name="model">call.type</field>
+        <field name="arch" type="xml">
+            <tree string="Call Types" editable="bottom">
+                <field name="name"/>
+                <field name="is_system_defined" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_call_type" model="ir.actions.act_window">
+        <field name="name">Call Types</field>
+        <field name="res_model">call.type</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_service_call_type"
+              name="Call Type"
+              parent="fsm_menu_settings"
+              sequence="58"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_call_type"/>
+</odoo>

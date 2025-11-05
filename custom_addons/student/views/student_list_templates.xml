@@ -1,0 +1,13 @@
+<odoo>
+    <template id="student_list_templates">
+        <t t-foreach="students" t-as="student">
+            <div>
+                <h3 t-esc="student.name" />
+                <p>Student Roll no: <t t-esc="student.roll_no" /></p>
+                <p>Address: <t t-esc="student.address" /></p>
+                <p>Country id: <t t-esc="student.country_id" /></p>
+                <p>state id: <t t-esc="student.state_id" /></p>
+            </div>
+        </t>
+    </template>
+</odoo>

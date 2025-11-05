@@ -1,0 +1,65 @@
+<odoo>
+    <!-- Action -->
+    <record id="action_calendar_rule" model="ir.actions.act_window">
+        <field name="name">Calendar Rules</field>
+        <field name="res_model">calendar.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create calendar rules to dynamically fetch events from any model.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item under Calendar -->
+    <menuitem id="menu_calendar_rule_root"
+              name="Calendar Rules"
+              parent="calendar.mail_menu_calendar"
+              action="action_calendar_rule"
+              sequence="100" />
+
+    <!-- Tree View -->
+    <record id="view_calendar_rule_tree" model="ir.ui.view">
+        <field name="name">calendar.rule.tree</field>
+        <field name="model">calendar.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="domain"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_calendar_rule_form" model="ir.ui.view">
+        <field name="name">calendar.rule.form</field>
+        <field name="model">calendar.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync_existing_records"
+                        string="Sync Events"
+                        type="object"
+                        class="btn-primary"
+                        />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="model_id"/>
+                        <field name="domain"/>
+                    </group>
+                    <group string="Fields Mapping">
+                        <field name="name_field_id"/>
+                        <field name="start_date_field_id"/>
+                        <field name="stop_date_field_id"/>
+                        <field name="attendee_field_id"/>
+                        <field name="description_field_id"/>
+                        <field name="company_field_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

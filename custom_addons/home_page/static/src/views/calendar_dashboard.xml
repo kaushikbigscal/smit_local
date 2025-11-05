@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="CalendarDashboard" owl="1">
+        <style>
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 150px));
+                justify-content: center; /* Center the grid */
+                gap: 1rem;
+
+            }
+
+            @media (max-width: 768px) {
+                .calendar-grid {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    overflow-x: auto;
+                    gap: 0.75rem;
+                    justify-content: flex-start;
+                    padding: 0 0.75rem;
+                    margin: 0;
+                    box-sizing: border-box;
+                    scroll-snap-type: x mandatory;
+                    scroll-behavior: smooth;
+                    overscroll-behavior: contain;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                .calendar-grid::-webkit-scrollbar {
+                    display: none; /* Chrome, Safari */
+                }
+
+                .dashboard-card {
+                    flex: 0 0 auto;
+                    width: 130px;
+                    height: 100px;
+                    margin: 0; /* Remove margin on cards */
+                    scroll-snap-align: start;
+
+                }
+            }
+
+
+            .dashboard-card .card-title {
+                padding: 0.3rem 0;
+                font-size: 0.85rem;
+            }
+
+            .dashboard-card .card-value {
+                padding: 0.4rem 0;
+                font-size: 1.1rem;
+            }
+
+        </style>
+        <t t-if="showDashboard">
+            <div class="o_calendar_dashboard container-fluid py-4 border-bottom bg-white"
+                 style="position: relative; z-index: 1;">
+                <div class="row justify-content-center gap-3 gap-lg-0">
+                    <div class="col-12 col-lg-10 col-xl-10 col-xxl-8 flex-grow-1 flex-lg-grow-0 flex-shrink-0">
+                        <!-- Calendar Event Cards -->
+                            <div class="calendar-grid">                            <!-- Card 1: Total Events -->
+                                <div title="Total Events" class="dashboard-card">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Total Events</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom" t-out="calendarData['total_events'] || 0"/>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Today's Events -->
+                                <div title="Today's Events" class="dashboard-card">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Meetings</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['meeting_count'] || 0"/>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: This Week's Events -->
+                                <t t-if="moduleInfo.crm">
+                                    <div title="Leads"  class="dashboard-card">
+                                        <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                            <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Leads</div>
+                                            <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                                 t-out="calendarData['lead_count'] || 0"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Card 4: Calls -->
+                                <t t-if="moduleInfo.crm">
+                                    <div title="Calls" class="dashboard-card">
+                                        <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                            <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Calls</div>
+                                            <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                                 t-out="calendarData['call_count'] || 0"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Card 5: Projects -->
+                                <t t-if="moduleInfo.project">
+                                    <div title="Projects" class="dashboard-card">
+                                        <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                            <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Projects</div>
+                                            <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                                 t-out="calendarData['project_count'] || 0"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Card 6: Tasks -->
+                                <t t-if="moduleInfo.project">
+                                    <div title="Tasks" class="dashboard-card">
+                                        <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                            <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Tasks</div>
+                                            <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                                 t-out="calendarData['task_count'] || 0"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+</templates>

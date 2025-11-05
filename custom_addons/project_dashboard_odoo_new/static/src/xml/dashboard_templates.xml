@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Template for the project dashboard -->
+<templates id="template" xml:space="preserve">
+	<t t-name="ProjectDashboard">
+		<div class="dashboard-wrapper">
+			<!-- Main Dashboard Content -->
+			<div class="dashboard-content">
+				<div class="oh_dashboards">
+					<div class="container-fluid">
+						<div class="row mb-3 justify-content-center">
+							<div class="col-md-9">
+								<div class="filter-section">
+									<div class="inner_select">
+										<div class="filter-item">
+<!--											<label class="filter-label">Department</label>-->
+											<select class="form-control custom-select" t-ref="departmentSelect" t-on-change="onDepartmentChange" t-key="'dept_filter'">
+												<option value="">Select Department</option>
+												<t t-foreach="departments" t-as="dept" t-key="dept.id">
+													<option t-att-value="dept.id">
+														<t t-esc="dept.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+
+										<div class="filter-item">
+<!--											<label class="filter-label">Project Type</label>-->
+											<select class="form-control custom-select" t-ref="templateSelect" t-on-change="onTemplateChange" t-key="'template-filter'">
+												<option value="">Select Project Type</option>
+												<t t-foreach="templates" t-as="temp" t-key="temp.id">
+													<option t-att-value="temp.name">
+														<t t-esc="temp.name"/>
+													</option>
+												</t>
+											</select>
+										</div>
+
+
+                                        <div class="filter-item">
+<!--                                            <label class="filter-label">Start Date</label>-->
+                                            <input type="date" class="form-control" t-on-change="onStartDateChange" t-ref="startDateInput" />
+                                        </div>
+
+                                        <div class="filter-item">
+<!--                                            <label class="filter-label">End Date</label>-->
+                                            <input type="date" class="form-control" t-on-change="onEndDateChange" t-ref="endDateInput" />
+                                        </div>
+
+                                        <div class="filter-item">
+<!--											<label class="filter-label">  </label>-->
+											<button class="btn btn-primary apply-filters" t-on-click="applyFilters">Apply Filters</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<t t-call="DashboardProject"/>
+						<t t-call="DashboardChart"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</t>
+    <t t-name="DashboardProject">
+        <div class="oh_dashboards">
+            <div class="container-fluid">
+                <h2 class="heading-dashboard">Project Wise Data</h2>
+                <div class="main-section">
+                    <div class="start-card active-projects">
+                        <div class="oh-card" t-on-click="show_active_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-active"><i class="fa fa-briefcase" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Active Projects</div>
+                                    <div class="stat_count" id="active_projects">
+                                        <t t-esc="state.active_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card running-projects">
+                        <div class="oh-card" t-on-click="show_running_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-running"><i class="fa fa-play" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Running Projects</div>
+                                    <div class="stat_count" id="running_projects">
+                                        <t t-esc="state.running_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card done-projects">
+                        <div class="oh-card" t-on-click="show_done_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-done"><i class="fa fa-check" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Done Projects</div>
+                                    <div class="stat_count" id="done_projects">
+                                        <t t-esc="state.done_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card canceled-projects">
+                        <div class="oh-card" t-on-click="show_canceled_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-canceled"><i class="fa fa-ban" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Canceled Projects</div>
+                                    <div class="stat_count" id="canceled_projects">
+                                        <t t-esc="state.canceled_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-projects">
+                        <div class="oh-card" t-on-click="show_expired_projects">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-projects"><i class="fa fa-times" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Expired Projects</div>
+                                    <div class="stat_count" id="expired_projects">
+                                        <t t-esc="state.expired_projects"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-yesterday">
+                        <div class="oh-card" t-on-click="show_expired_yesterday">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expired-yesterday"><i class="fa fa-calendar-times-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Expired Yesterday</div>
+                                    <div class="stat_count" id="expired_yesterday">
+                                        <t t-esc="state.expired_yesterday"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card expired-today">
+                        <div class="oh-card" t-on-click="show_expired_today">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-today"><i class="fa fa-hourglass-half" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Expiring Today</div>
+                                    <div class="stat_count" id="expired_today">
+                                        <t t-esc="state.expired_today"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card will-expire-tomorrow">
+                        <div class="oh-card" t-on-click="show_will_expire_tomorrow">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-expiring-tomorrow"><i class="fa fa-clock-o" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Expiring Tomorrow</div>
+                                    <div class="stat_count" id="will_expire_tomorrow">
+                                        <t t-esc="state.will_expire_tomorrow"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="heading-dashboard">Task Wise Data</h2>
+                <div class="main-section">
+                    <div class="start-card running-tasks">
+                        <div class="oh-card" t-on-click="show_running_tasks">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-running-tasks"><i class="fa fa-tasks" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Running Tasks</div>
+                                    <div class="stat_count" id="running_tasks">
+                                        <t t-esc="state.running_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card done-tasks">
+                        <div class="oh-card" t-on-click="show_done_task">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-done-tasks"><i class="fa fa-check" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Done Tasks</div>
+                                    <div class="stat_count" id="done_tasks">
+                                        <t t-esc="state.done_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="start-card canceled-tasks">
+                        <div class="oh-card" t-on-click="show_canceled_task">
+                            <div class="stat-widget-one">
+                                <div class="stat-icon icon-canceled-tasks"><i class="fa fa-ban" /></div>
+                                <div class="stat-content">
+                                    <div class="stat-head">Canceled Tasks</div>
+                                    <div class="stat_count" id="canceled_tasks">
+                                        <t t-esc="state.canceled_tasks"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="DashboardChart">
+		<!-- Template for charts -->
+        <div class="main-section charts-section">
+			<div class="graph_view">
+				<h2 class="chart-title">Tag Wise Task Count</h2>
+                <canvas id="task_tags_chart"/>
+			</div>
+            <div class="graph_view">
+				<h2 class="chart-title">Employee Task Distribution</h2>
+                <canvas id="employee_task_chart"/>
+			</div>
+		</div>
+	</t>
+</templates>
+
+

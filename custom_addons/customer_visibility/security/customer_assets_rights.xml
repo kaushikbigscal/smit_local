@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="0">
+        <!-- Access group for WhatsApp configuration and messaging -->
+        <record id="customer_assets_group_user" model="res.groups">
+            <field name="name">Allowed customer assets access in Contact</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+    </data>
+</odoo>

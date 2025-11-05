@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">-->
+    <!--        <field name="name">Quotations</field>-->
+    <!--        <field name="res_model">sale.order</field>-->
+    <!--        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>-->
+    <!--        <field name="domain">[('is_amc', '=', False)]</field>-->
+    <!--        <field name="context">{'search_default_my_quotation': 1}</field>-->
+    <!--    </record>-->
+    <record id="view_order_form_amc" model="ir.ui.view">
+        <field name="name">sale.order.form.amc</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Example: Add AMC field after partner_id -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_amc" invisible="1"/>
+
+                <field name="amc_contract_id" invisible="not is_amc"/>
+            </xpath>
+            <xpath expr="//field[@name='warranty_start_date']" position="attributes">
+                <attribute name="invisible">is_amc</attribute>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>
+
+

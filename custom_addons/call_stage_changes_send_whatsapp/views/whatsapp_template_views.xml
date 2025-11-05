@@ -1,0 +1,58 @@
+<odoo>
+    <!-- WhatsApp Template Tree View -->
+    <record id="view_whatsapp_template_tree" model="ir.ui.view">
+        <field name="name">whatsapp.template.tree</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <tree string="WhatsApp Templates">
+                <field name="model_id"/>
+                <field name="project_id"/>
+                <field name="stage_id"/>
+                <field name="message"/>
+                <field name="attachment_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- WhatsApp Template Form View -->
+<record id="view_whatsapp_template_form" model="ir.ui.view">
+    <field name="name">whatsapp.template.form</field>
+    <field name="model">whatsapp.template</field>
+    <field name="arch" type="xml">
+        <form string="WhatsApp Template">
+            <sheet>
+                <group>
+
+                    <field name="model_id"/>
+                    <field name="show_project" invisible="1"/>
+                    <field name="project_id" invisible="not show_project"/>
+                    <field name="show_stage" invisible="1"/>
+                    <field name="stages_available" invisible="1"/>
+                    <field name="stage_id" invisible="not show_stage" />
+                    <field name="message"/>
+                </group>
+                <group>
+                    <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+    <!-- WhatsApp Template Action -->
+    <record id="action_whatsapp_template" model="ir.actions.act_window">
+        <field name="name">WhatsApp Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">whatsapp.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- WhatsApp Template Menu Item -->
+    <menuitem id="menu_whatsapp_template"
+              name="Template"
+              parent="menu_qr_whatsapp_messaging_root"
+              action="action_whatsapp_template"
+              sequence="10"
+             />
+
+</odoo>

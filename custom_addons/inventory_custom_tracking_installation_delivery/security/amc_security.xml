@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="amc_contract_rule_portal" model="ir.rule">
+            <field name="name">Portal User: Own AMC Contracts</field>
+            <field name="model_id" ref="inventory_custom_tracking_installation_delivery.model_amc_contract"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</odoo>
+

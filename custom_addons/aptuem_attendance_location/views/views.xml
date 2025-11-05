@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_inherit_geofence" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.geofence</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Attendance Settings" groups="hr_attendance.group_hr_attendance_manager">
+                    <group name="attendance_configuration">
+                        <group string="Geofence setting">
+                            <field name="enable_geofence"/>
+                            <field name="enable_geofence_day_out"/>
+                        </group>
+
+                        <group string="Reminder Settings">
+                            <field name="day_in_reminder_enabled"/>
+                            <field name="day_out_reminder_enabled"/>
+                            <field name="auto_day_out"/>
+                        </group>
+                        <group string="Attendance Capture Modes">
+                            <field name="attendance_capture_mode" widget="radio"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_company_form_inherit_geofence" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.geofence</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page name="attendance_reminder" string="Attendance Settings">
+                    <group name="attendance_configuration">
+                        <group string="Geofence setting">
+                            <field name="enable_geofence"/>
+                            <field name="enable_geofence_day_out"/>
+                            <field name="company_latitude"
+                                   invisible="not enable_geofence and not enable_geofence_day_out"/>
+                            <field name="company_longitude"
+                                   invisible="not enable_geofence and not enable_geofence_day_out"/>
+                            <field name="allowed_distance"
+                                   invisible="not enable_geofence and not enable_geofence_day_out"/>
+                        </group>
+                        <group string="Reminder Settings">
+                            <field name="day_in_reminder_enabled"/>
+                            <field name="day_out_reminder_enabled"/>
+                            <field name="auto_day_out"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--    <record id="view_users_form_inherit_geofence" model="ir.ui.view">-->
+    <!--        <field name="name">res.users.form.inherit.geofence</field>-->
+    <!--        <field name="model">res.users</field>-->
+    <!--        <field name="inherit_id" ref="base.view_users_form"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//notebook" position="inside">-->
+    <!--                <page string="Attendance Settings" groups="hr_attendance.group_hr_attendance_manager">-->
+    <!--                    <group>-->
+    <!--                        <field name="enable_geofence"/>-->
+    <!--                        <field name="enable_geofence_day_out"/>-->
+    <!--                    </group>-->
+    <!--                </page>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="view_company_form_inherit_geofence" model="ir.ui.view">-->
+    <!--        <field name="name">res.company.form.inherit.geofence</field>-->
+    <!--        <field name="model">res.company</field>-->
+    <!--        <field name="inherit_id" ref="base.view_company_form"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//sheet/notebook" position="inside">-->
+    <!--                <page name="attendance_reminder" string="Attendance">-->
+    <!--                    <group name="attendance_configuration">-->
+    <!--                        <group string="Geofence setting">-->
+    <!--                            <field name="enable_geofence"/>-->
+    <!--                            <field name="enable_geofence_day_out"/>-->
+    <!--                            <field name="company_latitude"-->
+    <!--                                   invisible="not enable_geofence and not enable_geofence_day_out"/>-->
+    <!--                            <field name="company_longitude"-->
+    <!--                                   invisible="not enable_geofence and not enable_geofence_day_out"/>-->
+    <!--                            <field name="allowed_distance"-->
+    <!--                                   invisible="not enable_geofence and not enable_geofence_day_out"/>-->
+    <!--                        </group>-->
+
+    <!--                    </group>-->
+    <!--                </page>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+</odoo>

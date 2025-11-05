@@ -1,0 +1,29 @@
+<odoo>
+    <data noupdate="1">
+        <record id="call_type_warranty" model="call.type">
+            <field name="name">Warranty</field>
+            <field name="code">warranty</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="call_type_amc" model="call.type">
+            <field name="name">AMC</field>
+            <field name="code">amc</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="call_type_chargeable" model="call.type">
+            <field name="name">Chargeable</field>
+            <field name="code">chargeable</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="call_type_free" model="call.type">
+            <field name="name">Free</field>
+            <field name="code">free</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="call_type_project" model="call.type">
+            <field name="name">Project</field>
+            <field name="code">project</field>
+            <field name="is_system_defined">1</field>
+        </record>
+    </data>
+</odoo>

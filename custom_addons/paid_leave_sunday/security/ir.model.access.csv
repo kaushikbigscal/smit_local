@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_paid_lave_sunday_paid_lave_sunday,paid_lave_sunday.paid_lave_sunday,model_paid_lave_sunday_paid_lave_sunday,base.group_user,1,1,1,1
+access_hr_sunday_attendance_user,hr_sunday_attendance.hr_sunday_attendance,model_hr_sunday_attendance_hr_sunday_attendance,base.group_user,1,1,1,1

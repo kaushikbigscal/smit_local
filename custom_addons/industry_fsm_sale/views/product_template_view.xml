@@ -1,0 +1,42 @@
+<odoo>
+    <record id="view_product_template_form" model="ir.ui.view">
+        <field name="name">view.product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="inside">
+                <span class="d-inline-block">
+                    <field name="is_part"/>
+                    <label for="is_part"/>
+                </span>
+            </xpath>
+            <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="number_of_month"/>
+                <field name="number_of_call"/>
+                <field name="is_warranty"/>
+
+                <label for="minimum_warranty_period" invisible="not sale_ok or is_warranty != True"/>
+                <div invisible="not sale_ok or is_warranty != True">
+
+                    <field name="minimum_warranty_period" class="oe_inline" style="vertical-align:baseline"/>
+                    months
+                </div>
+            </xpath>
+            <notebook>
+                <page string="Service">
+                    <group>
+                        <group string="General">
+                            <field name='service_charge'/>
+                        </group>
+                        <group string="Preventive Maintenance">
+                            <field name="number_of_call"/>
+                            <field name="number_of_month"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+
+        </field>
+    </record>
+</odoo>
+

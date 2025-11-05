@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="industry_fsm.ExportWithTimesheets">
+        <button type="button" class="btn" t-on-click="onExport">
+            <i class="fa fa-download me-1"></i>
+            Export With Timesheets
+        </button>
+    </t>
+</templates>

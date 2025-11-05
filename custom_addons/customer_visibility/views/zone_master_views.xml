@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_zone_master_tree" model="ir.ui.view">
+        <field name="name">zone.master.tree</field>
+        <field name="model">zone.master</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_zone_master_form" model="ir.ui.view">
+        <field name="name">zone.master.form</field>
+        <field name="model">zone.master</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sub-Zones">
+                            <field name="zone_code_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_zone_master" model="ir.actions.act_window">
+        <field name="name">Zone Master</field>
+        <field name="res_model">zone.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Zone!
+            </p>
+            <p>
+                Manage zones for your organization.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_zone_master"
+              action="action_zone_master"
+              name="Zone Master"
+              parent="contacts.menu_localisation"
+              sequence="2"/>
+</odoo>

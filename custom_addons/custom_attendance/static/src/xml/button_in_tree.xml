@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="button.ListView.Buttons" t-inherit="web.ListView.Buttons">
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+            <button name="action_create_fields" type="object" class="btn btn-primary" style="margin-left: 10px;">
+                Create Fields
+            </button>
+        </xpath>
+    </t>
+</templates>

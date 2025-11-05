@@ -1,0 +1,64 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_report_project_task_user_fsm,access_report_project_task_user_fsm,model_report_project_task_user_fsm,group_fsm_manager,1,0,0,0
+access_report_project_task_user_project_user_fsm,access_report_project_task_user_project_user_fsm,model_report_project_task_user_fsm,group_fsm_user,1,0,0,0
+
+access_complaint_type_manager,access_complaint_type_manager,model_complaint_type,industry_fsm.group_fsm_manager,1,1,1,1
+access_complaint_type_user,access_complaint_type_user,model_complaint_type,industry_fsm.group_fsm_user,1,1,1,0
+
+access_reason_code_manager,access_reason_code_manager,model_reason_code,industry_fsm.group_fsm_manager,1,1,1,1
+access_reason_code_user,access_reason_code_user,model_reason_code,industry_fsm.group_fsm_user,1,1,1,0
+
+access_service_type_manager,access_service_type_manager,model_service_type,industry_fsm.group_fsm_manager,1,1,1,1
+access_service_type_user,access_service_type_user,model_service_type,industry_fsm.group_fsm_user,1,1,1,0
+
+access_pending_reason_manager,access_pending_reason_manager,model_pending_reason,industry_fsm.group_fsm_manager,1,1,1,1
+access_pending_reason_user,access_pending_reason_user,model_pending_reason,industry_fsm.group_fsm_user,1,1,1,0
+
+access_actual_problem_manager,access_actual_problem_manager,model_actual_problem,industry_fsm.group_fsm_manager,1,1,1,1
+access_actual_problem_user,access_actual_problem_user,model_actual_problem,industry_fsm.group_fsm_user,1,0,0,0
+
+access_department_service_manager,access_department_service_manager,model_department_service,industry_fsm.group_fsm_manager,1,1,1,1
+
+access_project_task_reopen_log_manager,Re-Open Task Log user,model_project_task_reopen_log,industry_fsm.group_fsm_manager,1,1,1,1
+access_project_task_reopen_log_user,Re-Open Task Log manager,model_project_task_reopen_log,industry_fsm.group_fsm_user,1,1,1,0
+
+access_end_work_wizard_user,Access End Work Wizard,model_end_service_call_wizard,base.group_user,1,1,1,1
+
+access_service_charge_type_user,access_service_charge_type_user,model_service_charge_type,industry_fsm.group_fsm_user,1,1,1,0
+access_service_charge_type_manager,access_service_charge_type_manager,model_service_charge_type,industry_fsm.group_fsm_manager,1,1,1,1
+
+access_service_charge_user,access_service_charge_user,model_service_charge,industry_fsm.group_fsm_user,1,1,1,0
+access_service_charge_manager,access_service_charge_manager,model_service_charge,industry_fsm.group_fsm_manager,1,1,1,1
+
+access_service_call_payment_wizard,access_service_call_payment_wizard,model_service_call_payment_wizard,base.group_user,1,1,1,1
+
+access_project_task_reopen_wizard,access_project_task_reopen_wizard,model_project_task_reopen_wizard,base.group_user,1,1,1,1
+
+access_customer_product_mapping_user,Customer Product Mapping User,model_customer_product_mapping,base.group_user,1,1,1,1
+access_customer_product_mapping_portal,access_customer_product_mapping_portal,model_customer_product_mapping,base.group_portal,1,1,0,0
+
+access_manager_configuration_fsm,access_manager_configuration_fsm,model_manager_configuration,send_whatsapp_group_user,1,1,1,1
+access_manager_configuration_user,access_manager_configuration_user,model_manager_configuration,base.group_user,1,0,0,0
+access_message_whatsapp_user,message.whatsapp user,model_message_whatsapp,base.group_user,1,0,0,0
+access_message_whatsapp_manager,message.whatsapp manager,model_message_whatsapp,base.group_system,1,1,1,1
+access_template_whatsapp_user,template.whatsapp user,model_template_whatsapp,base.group_user,1,0,0,0
+access_template_whatsapp_manager,template.whatsapp manager,model_template_whatsapp,base.group_system,1,1,1,1
+access_authenticate_whatsapp_user,access.authenticate.whatsapp.user,model_authenticate_whatsapp,base.group_user,1,1,1,1
+access_authenticate_whatsapp_manager,access.authenticate.whatsapp.manager,model_authenticate_whatsapp,base.group_system,1,1,1,1
+
+access_item_receipt_field_user,access_item_receipt_field_user,model_item_receipt_field,industry_fsm.group_fsm_user,1,1,1,0
+access_item_receipt_field_manager,access_item_receipt_field_manager,model_item_receipt_field,industry_fsm.group_fsm_manager,1,1,1,1
+
+access_call_visibility_user,service_call_visibility_user,model_call_visibility,base.group_user,1,1,1,1
+
+access_call_report,access_call_report,model_call_report,base.group_user,1,1,1,1
+access_service_charge_report,access_service_charge_report,model_service_charge_report,base.group_user,1,1,1,1
+
+
+access_feedback_notification_user,access.feedback.notification.user,model_feedback_notification,base.group_user,1,1,1,1
+
+
+industry_fsm.access_call_type_admin,access_call_type_admin,industry_fsm.model_call_type,industry_fsm.group_fsm_manager,1,1,1,1
+industry_fsm.access_call_type_user,access_call_type_user,industry_fsm.model_call_type,industry_fsm.group_fsm_user,1,0,0,0
+industry_fsm.access_call_type_portal,access_call_type_portal,industry_fsm.model_call_type,base.group_portal,1,0,0,0

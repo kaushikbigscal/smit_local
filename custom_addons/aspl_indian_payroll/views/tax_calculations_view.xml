@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_it_declaration_tree" model="ir.ui.view">
+        <field name="name">it.declaration.tree</field>
+        <field name="model">it.declaration.payslip</field>
+        <field name="arch" type="xml">
+            <tree string="IT Declaration">
+                <field name="employee_id"/>
+                <field name="financial_year"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_it_declaration_kanban" model="ir.ui.view">
+        <field name="name">it.declaration.kanban</field>
+        <field name="model">it.declaration.payslip</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="employee_id"/>
+                <field name="financial_year"/>
+                <field name="status"/>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_it_declaration_form" model="ir.ui.view">
+        <field name="name">it.declaration.form</field>
+        <field name="model">it.declaration.payslip</field>
+        <field name="arch" type="xml">
+            <form string="IT Declaration">
+                <header>
+                    <field name="status" invisible="1"/>
+                    <field name="status" widget="statusbar"
+                           groups="om_hr_payroll.group_hr_payroll_manager"/>
+                    <button string="Submit" name="submit" type="object"
+                            class="oe_highlight"
+                            invisible="status != 'unlocked'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1>
+                            <field name="employee_id"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="financial_year" string="Financial Year" required="1"/>
+         
+                            <div class="o_form_label" colspan="2" style="font-style: italic; color:red;">
+                                * You can enter information in below sections to compare tax liability under both the
+                                regime. Select your regime for salary calculation.
+                            </div>
+
+                            <field name="tax_regime" widget="radio"
+                                   required="1" options="{'horizontal': true}"/>
+                        </group>
+                        <group>
+                            <field name="grand_total" string="Total" invisible="1"/>
+                            <field name="gratuity_from_previous_system"
+                                   string="Accumulated Gratuity(From previous system)" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sec 80C">
+                            <group>
+                                <group>
+                                    <field name="show_employee_provident_fund" invisible="1"/>
+
+                                    <field
+                                            name="employee_provident_fund"
+                                            placeholder="Enter Amount"
+                                            invisible="not show_employee_provident_fund"/>
+                                    <field
+                                            name="five_year_fixed_deposite"
+                                            width="275px"
+                                            string="80C Five Years of Fixed Deposit in Scheduled Bank"
+                                            placeholder="Enter Amount"/>
+                                    <field
+                                            name="unit_linked_insurance_premium"
+                                            string="80C Unit Linked Insurance Premium (ULIP)"
+                                            placeholder="Enter Amount"/>
+                                    <field name="deposite_in_nss"
+                                           string="80C Deposit in NSS"
+                                           placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="equity_linked_saving_scheme"
+                                            string="80C Equity Linked Savings Scheme (ELSS)"
+                                            placeholder="Enter Amount"/>
+
+                                    <field name="kisan_vikas_patra"
+                                           string="80C Kisan Vikas Patra (KVP)"
+                                           placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="long_term_infrastructure_bond"
+                                            string="80C Long term Infrastructure Bonds"
+                                            placeholder="Enter Amount"/>
+
+                                    <field name="nabard_rural_funds"
+                                           string="80C NABARD Rural Bonds"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="nhb_scheme"
+                                           string="80C NHB Scheme"
+                                           placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="pradhan_mantri_suraksha_bima"
+                                            string="80C Pradhan Mantri Suraksha Bima Yojana"
+                                            placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="repayment_of_housing_loan"
+                                            string="80C Repayment of Housing loan(Principal amount)"
+                                            placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="sukanya_samriddhi_yojana"
+                                            string="80C Sukanya Samriddhi Yojana"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;"></div>
+                                </group>
+                                <group>
+                                    <field name="children_tution_fees"
+                                           string="80C Children Tuition Fees"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="deposite_in_nsc"
+                                           string="80C Deposit in NSC"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="deposite_in_post_office"
+                                           string="80C Deposit in Post Office Savings Schemes"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="interest_on_nsc"
+                                           string="80C Interest on NSC Reinvested"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="life_insurance_premium"
+                                           string="80C Life Insurance Premium"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="mutual_funds"
+                                           string="80C Mutual Funds"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="national_pension_scheme"
+                                           string="80C National Pension Scheme"
+                                           placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="post_office_time_deposite"
+                                            string="80C Post office time deposit for 5 years"
+                                            placeholder="Enter Amount"/>
+
+                                    <field name="public_provident_fund"
+                                           string="80C Public Provident Fund"
+                                           placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="stamp_duty_registration_charges"
+                                            string="80C Stamp duty and Registration charges"
+                                            placeholder="Enter Amount"/>
+
+                                    <field
+                                            name="contribution_to_pension_fund"
+                                            string="80CCC Contribution to Pension Fund"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;"></div>
+                                </group>
+                            </group>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_declared_80c"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                            <span>Max limit in ?:1,50,000.00</span>
+
+                            <group string="Total Applicable in ?">
+                                <field name="applicable_declared_80c"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"
+                                       readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Other Chapter VI-A Deductions">
+                            <group>
+                                <group>
+<!--				    <field name="section_24b" string="Section 24(b) The property must be self-occupied."-->
+<!--        				placeholder="Enter Amount"/>-->
+<!--			            <div style="width: 275px;">Max limit in ?:2,00,000.00</div>-->
+<!--				    <br/>-->
+
+                                    <field
+                                            name="additional_interest_on_housing_2016"
+                                            string="80EE Additional Interest on housing loan borrowed as on 1st Apr 2016"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:50,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="interest_on_electric_vehicle"
+                                            string="80EEB Interest on Electric Vehicle borrowed as on 1st Apr 2019"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,50,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="employee_age" invisible="1"/>
+                                    <field name="interest_on_savings_etc"
+                                           string="80TTB Interest on Deposits in Savings Account, FDs, Post Office And Cooperative Society for Senior Citizen"
+                                           placeholder="Enter Amount" readonly="employee_age &lt; 60"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:50,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="donation_100_exemption"
+                                           string="80G Donation - 100 Percent Exemption"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:9,99,99,999.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="donation_children_education"
+                                            string="80G Donation - Children Education"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:9,99,99,999.00
+                                    </div>
+                                    <br/>
+                                    <field name="interests_on_deposites"
+                                           string="80TTA Interest on Deposits in Savings Account, FDs, Post Office And Cooperative Society"
+                                           placeholder="Enter Amount" readonly="employee_age >= 60"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:10,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="medical_insurance_for_handicapped"
+                                            string="80DD Medical Treatment / Insurance of handicapped Dependant"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:75,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="medical_insurance_specified_disease_only"
+                                            string="80DDB Medical Treatment ( Specified Disease only )"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:40,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="permanent_physical_disability_above_80"
+                                            string="80U Permanent Physical Disability (Above 80 percent)"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,25,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="rajiv_gandhi_equity_scheme"
+                                            string="80CCG Rajiv Gandhi Equity Scheme"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:25,000.00
+                                    </div>
+                                </group>
+                                <group>
+                                    <field
+                                            name="additional_interest_on_housing_2019"
+                                            string="80EEA Additional Interest on Housing loan borrowed as on 1st Apr 2019"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,50,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="contribution_to_nps"
+                                           string="80CCD1(B) Contribution to NPS 2015"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:50,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="superannuation_exemption"
+                                            string="10(13) Superannuation Exemption"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,50,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="donation_50_exemption"
+                                           string="80G Donation - 50 Percent Exemption"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:9,99,99,999.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="donation_political_parties"
+                                            string="80G Donation - Political Parties"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:9,99,99,999.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="interests_on_loan_self_higher"
+                                            string="80E Interest on Loan of higher Self education"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:9,99,99,999.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="medical_insurance_for_handicapped_severe"
+                                            string="80DD Medical Treatment / Insurance of handicapped Dependant (Severe)"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,25,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="medical_insurance_specified_disease_only_senior_citizen"
+                                            string="80DDB Medical Treatment (Specified Disease only)- Senior Citizen"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:1,00,000.00
+                                    </div>
+                                    <br/>
+                                    <field
+                                            name="permanent_physical_disability_40_80"
+                                            string="80U Permanent Physical Disability (Between 40 - 80 Percent)"
+                                            placeholder="Enter Amount"/>
+                                    <div style="width: 275px;">Max limit
+                                        in ?:75,000.00
+                                    </div>
+                                </group>
+                            </group>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_declared_vi_a_deductions"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                            <group string="Total Applicable in ?">
+                                <field
+                                        name="applicable_declared_vi_a_deductions"
+                                        string="Total Amount"
+                                        placeholder="Total Amount"
+                                        readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="House Rent">
+                            <div class="row">
+                                <field mode="tree"
+                                       name="house_allowance_ids">
+                                    <tree>
+                                        <field
+                                                name="house_name_number"
+                                                string="House Name/Number"/>
+                                        <field
+                                                name="street_area_locality"
+                                                string="Street/Area/Locality"/>
+                                        <field name="town_city"
+                                               string="Town/City"/>
+                                        <field name="state"
+                                               string="State"/>
+                                        <field name="pin_code"
+                                               string="Pincode"/>
+                                        <field name="from_possession"
+                                               string="Possession Start"/>
+                                        <field name="to_possession"
+                                               string="Possession End"/>
+                                        <field
+                                                name="monthly_rent_amount"
+                                                string="Monthly Rent Amount"/>
+                                        <field
+                                                name="annual_rent_amount"
+                                                string="Annual Rent Amount"/>
+                                    </tree>
+                                    <form>
+                                        <group
+                                                string="Full Details of House">
+                                            <group>
+                                                <field
+                                                        name="house_name_number"
+                                                        string="House Name/Number"
+                                                        placeholder="Enter Details"/>
+
+                                                <field
+                                                        name="town_city"
+                                                        string="Town/City"
+                                                        placeholder="Enter Details"/>
+
+                                                <field
+                                                        name="country"
+                                                        string="Country"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                            <group>
+                                                <field
+                                                        name="street_area_locality"
+                                                        string="Street/Area/Locality"
+                                                        placeholder="Enter Details"/>
+
+                                                <field
+                                                        name="state"
+                                                        string="State"
+                                                        placeholder="Enter Details"/>
+
+                                                <field
+                                                        name="pin_code"
+                                                        string="Pincode"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                        </group>
+                                        <group string="Rent Details (According to Current FY)">
+                                            <group>
+                                                <field
+                                                        name="from_possession"
+                                                        string="Possession Start"
+                                                        placeholder="Enter Details"/>
+                                                <field
+                                                        name="to_possession"
+                                                        string="Possession End"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                            <group>
+                                                <field
+                                                        name="monthly_rent_amount"
+                                                        string="Monthly Rent Amount"
+                                                        placeholder="Enter Amount"/>
+                                                <field
+                                                        name="annual_rent_amount"
+                                                        string="Annual Rent Amount"/>
+                                            </group>
+                                            <field
+                                                    name="pan_info_landlord"
+                                                    invisible="1"/>
+                                        </group>
+                                        <group string="Provide Landlord's PAN Details" invisible="pan_info_landlord != 'yes'">
+                                            <group>
+                                                <field
+                                                        name="landlord_name"
+                                                        string="Landlord's Name"
+                                                        placeholder="Enter Details"/>
+                                                <field
+                                                        name="landlord_house_name_number"
+                                                        string="House Name/Number"
+                                                        placeholder="Enter Details"/>
+                                                <field
+                                                        name="landlord_town_city"
+                                                        string="Town/City"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                            <group>
+                                                <field
+                                                        name="landlord_pan"
+                                                        string="Landlord's PAN"
+                                                        placeholder="Enter Details"/>
+                                                <field
+                                                        name="landlord_street_area"
+                                                        string="Street/Area/Locality"
+                                                        placeholder="Enter Details"/>
+                                                <field
+                                                        name="landlord_pincode"
+                                                        string="Pincode"
+                                                        placeholder="Enter Details"/>
+
+                                                <field name="agreement"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </div>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_declared_hra"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                        </page>
+                        <page string="Medical (Sec 80D)">
+                            <group>
+
+                                <group
+                                        string="80D Medical Insurance Premium">
+                                    <field name="declared_amount_3"
+                                           string="Declared Amount"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 200px;">Max limit
+                                        in ?:25,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="age"
+                                           string="Age (As Per Employee DOB)"
+                                           />
+
+                                </group>
+                                <group
+                                        string="80D Medical Insurance Premium - Dependant Parents">
+                                    <field name="declared_amount_4"
+                                           string="Declared Amount"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 200px;">Max limit
+                                        in ?:50,000.00
+                                    </div>
+                                    <br/>
+                                    <field name="age_dependant"
+                                           string="Age"
+                                           />
+                                </group>
+
+                            </group>
+                            <group>
+                                <group
+                                        string="80D Preventive Health Check-up">
+                                    <field name="declared_amount_5"
+                                           string="Declared Amount"
+                                           placeholder="Enter Amount"
+                                           />
+                                    <div style="width: 200px;">Max limit
+                                        in ?:5,000.00
+                                    </div>
+                                </group>
+                                <group
+                                        string="80D Preventive Health Checkup - Dependant Parents">
+                                    <field name="declared_amount_1"
+                                           string="Declared Amount"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 200px;">Max limit
+                                        in ?:5,000.00
+                                    </div>
+                                </group>
+
+                            </group>
+                            <group>
+                                <group>
+
+                                </group>
+                                <group
+                                        string="80D Medical Bills - Senior Citizen">
+                                    <field name="declared_amount_2"
+                                           string="Declared Amount"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 200px;">Max limit
+                                        in ?:50,000.00
+                                    </div>
+                                </group>
+
+                            </group>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_declared_medical"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                            <group string="Total Applicable in ?">
+                                <field name="applicable_declared_medical"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"
+                                       readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Income/loss from House Property">
+                            <group string="Income from Self-Occupied Property (24(b))">
+                                <field name="interest_on_housing_loan"
+                                       string="Interest on Housing Loan (Self Occupied) in ?"
+                                       placeholder="Enter Amount"/>
+                                <div style="width: 350px;">Eligible Amount
+                                    in ?:2,00,000.00
+                                </div>
+                                <br/>
+                                <field name="lender_self_name"
+                                       string="Lenders Name"
+                                       placeholder="Enter Details"/>
+                                <field name="lender_self_pan"
+                                       string="Lenders PAN"
+                                       placeholder="Enter Details"/>
+                            </group>
+                            <group string="Income from Let-out Property (24(a))"></group>
+                            <div class="row">
+                                <field mode="tree" name="income_loss_ids">
+                                    <tree>
+                                        <field
+                                                name="annual_letable_received"
+                                                string="Annual Letable Value/Rent Received or Receivable"
+                                                placeholder="Enter Amount"/>
+                                        <field
+                                                name="munciple_tax_paid"
+                                                string="Less: Municipal Taxes Paid During the Year"
+                                                placeholder="Enter Amount"/>
+                                        <field name="unreleased_rent"
+                                               string="Less: Unrealized Rent"
+                                               placeholder="Enter Amount"/>
+                                        <field name="tax_on_income"
+                                               string="NET VALUE IN ?"
+                                               placeholder="Enter Amount"/>
+                                        <field
+                                                name="standard_deduction"
+                                                string="Standard Deduction"
+                                                placeholder="Enter Amount"/>
+                                        <field
+                                                name="income_loss_let_out"
+                                                string="Income/Loss from Let Out Property"
+                                                placeholder="Enter Amount"/>
+                                    </tree>
+                                    <form>
+                                        <group
+                                                string="Income from Let-out Property">
+                                            <field
+                                                    name="annual_letable_received"
+                                                    string="Annual Letable Value/Rent Received or Receivable"
+                                                    placeholder="Enter Amount"/>
+
+                                            <field
+                                                    name="munciple_tax_paid"
+                                                    string="Less: Municipal Taxes Paid During the Year"
+                                                    placeholder="Enter Amount"/>
+
+                                            <field
+                                                    name="unreleased_rent"
+                                                    string="Less: Unrealized Rent"
+                                                    placeholder="Enter Amount"/>
+
+                                            <field
+                                                    name="tax_on_income"
+                                                    string="NET VALUE IN ?"
+                                                    placeholder="Enter Amount"/>
+                                        </group>
+                                        <group
+                                                string="Less: Deductions from Net Annual Value">
+                                            <group>
+                                                <field
+                                                        name="standard_deduction"
+                                                        string="Standard Deduction at 30 Percent of Net Annual Value"
+                                                        placeholder="Enter Amount"/>
+
+                                                <field
+                                                        name="lender_name"
+                                                        string="Lenders Name"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                            <group>
+                                                <field
+                                                        name="interest_housing_loan"
+                                                        string="Interest on Housing Loan"
+                                                        placeholder="Enter Amount"/>
+
+                                                <field
+                                                        name="lender_pan"
+                                                        string="Lenders PAN"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <field
+                                                    name="income_loss_let_out"
+                                                    string="Income/Loss from Let Out Property"
+                                                    placeholder="Enter Amount"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </div>
+
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_income_loss"
+                                       string=" Total Income/Loss from Let Out Property"
+                                       placeholder="Enter Amount"/>
+
+                                <field name="total_exemption"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                                <div style="width: 270px;"></div>
+                            </group>
+                        </page>
+                        <page string="Other Income">
+                            <div class="row">
+                                <field mode="tree" name="other_income_ids">
+                                    <tree>
+                                        <field name="particulars"
+                                               string="Particulars"
+                                               placeholder="Enter Details"/>
+                                        <field name="declared_amount"
+                                               string="Declared Amount"
+                                               placeholder="Enter Amount"/>
+                                    </tree>
+                                    <form>
+                                        <group string="Other Income">
+                                            <group>
+                                                <field
+                                                        name="particulars"
+                                                        string="Particulars"
+                                                        placeholder="Enter Details"/>
+                                            </group>
+                                            <group>
+                                                <field
+                                                        name="declared_amount"
+                                                        string="Declared Amount"
+                                                        placeholder="Enter Amount"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </div>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_declared_other"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                        </page>
+                        <page string="Previous Employment">
+                            <group>
+                                <group>
+                                    <field name="income_after_exemptions"
+                                           string="Income After Exemptions"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="professional_tax"
+                                           string="Profession Tax - PT"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="provident_fund"
+                                           string="Provident Fund - PF"
+                                           placeholder="Enter Amount"/>
+                                    <div style="width: 270px;"></div>
+                                </group>
+                                <group>
+                                    <field name="tax_on_income"
+                                           string="Tax On Income"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="surcharge"
+                                           string="Surcharge"
+                                           placeholder="Enter Amount"/>
+
+                                    <field name="education_cess"
+                                           string="Education Cess"
+                                           placeholder="Enter Amount"/>
+                                </group>
+                            </group>
+                            <group string="Total Amount Declared in ?">
+                                <field name="total_tax_previous_employer"
+                                       string="Total Amount"
+                                       placeholder="Total Amount"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_it_declaration" model="ir.actions.act_window">
+        <field name="name">IT Declaration</field>
+        <field name="res_model">it.declaration.payslip</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_it_declaration_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="act_window_id" ref="action_it_declaration"/>
+        <field name="view_id" ref="view_it_declaration_tree"/>
+    </record>
+
+    <record id="action_it_declaration_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="act_window_id" ref="action_it_declaration"/>
+        <field name="view_id" ref="view_it_declaration_kanban"/>
+    </record>
+
+
+    <record id="action_it_declaration_form" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">form</field>
+        <field name="act_window_id" ref="action_it_declaration"/>
+        <field name="view_id" ref="view_it_declaration_form"/>
+    </record>
+
+    <record model="ir.actions.server" id="action_locked">
+        <field name="name">Lock</field>
+        <field name="model_id" ref="model_it_declaration_payslip"/>
+        <field name="binding_model_id" ref="model_it_declaration_payslip"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id"
+               eval="[(4,ref('om_hr_payroll.group_hr_payroll_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.lock()
+        </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_unlocked">
+        <field name="name">Unlock</field>
+        <field name="model_id" ref="model_it_declaration_payslip"/>
+        <field name="binding_model_id" ref="model_it_declaration_payslip"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id"
+               eval="[(4,ref('om_hr_payroll.group_hr_payroll_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.unlock()
+        </field>
+    </record>
+
+    <menuitem action="action_it_declaration" id="menu_it_declaration"
+              parent="om_hr_payroll.menu_hr_payroll_root"
+              groups="aspl_indian_payroll.group_employee_category,om_hr_payroll.group_hr_payroll_manager"/>
+    <menuitem name="Reports" id="menu_hr_payslip_reports"
+              parent="om_hr_payroll.menu_hr_payroll_root"
+              groups="om_hr_payroll.group_hr_payroll_manager" sequence="45"/>
+</odoo>

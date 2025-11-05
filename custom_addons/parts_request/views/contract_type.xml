@@ -1,0 +1,190 @@
+<odoo>
+<!--    <record id="view_part_service_wizard_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">view.part.service.wizard.form.inherit</field>-->
+<!--        <field name="model">part.service.wizard</field>-->
+<!--        <field name="inherit_id" ref="inventory_custom_tracking_installation_delivery.view_part_service_wizard_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//form//group//field[@name='description']" position="after">-->
+<!--                <field name="coverage"/>-->
+<!--                <field name="amount"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="view_product_template_inherit_pending_request" model="ir.ui.view">
+        <field name="name">product.template.inherit.pending.request</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='uom_po_id']" position="after">
+                <field name="payment_required_first" invisible="not is_part"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_contract_type_form_inherit" model="ir.ui.view">
+        <field name="name">contract.type.form.inherit.coverage</field>
+        <field name="model">contract.type</field>
+        <field name="inherit_id" ref="inventory_custom_tracking_installation_delivery.view_contract_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="with_parts"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="view_task_form_inherit_parts_list" model="ir.ui.view">-->
+<!--        <field name="name">project.task.form.inherit.parts.list.coverage</field>-->
+<!--        <field name="model">project.task</field>-->
+<!--        <field name="inherit_id" ref="project.view_task_form2"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//page[@name='parts_list']/field[@name='task_part_ids']/tree/field[@name='description']"-->
+<!--                   position="after">-->
+<!--                <field name="coverage" readonly="1"-->
+<!--                       decoration-success="coverage == 'foc'"-->
+<!--                       decoration-danger="coverage == 'chargeable'"/>-->
+<!--                <field name="amount" />-->
+<!--            </xpath>-->
+<!--            <xpath expr="//page[@name='parts_list']/field[@name='task_part_ids']/tree/field[@name='description']"-->
+<!--                   position="attributes">-->
+<!--                <attribute name="optional">hide</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//page[@name='parts_list']/field[@name='task_part_ids']/tree/field[@name='last_update_date_time']"-->
+<!--                   position="attributes">-->
+<!--                <attribute name="optional">hide</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='task_part_ids']//tree/button[@name='open_part_service_wizard']"-->
+<!--                   position="attributes">-->
+<!--                <attribute name="string">Update</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='task_part_ids']//tree/button[@name='open_part_service_wizard']"-->
+<!--                   position="after">-->
+<!--&lt;!&ndash;                <field name="show_customer_approval" column_invisible="True"/>&ndash;&gt;-->
+<!--                <button string="Request"-->
+<!--                        type="object"-->
+<!--                        name="action_check_availability"-->
+<!--                        class="btn-success"/>-->
+<!--                <button string="Customer Request"-->
+<!--                        type="object"-->
+<!--                        name="action_customer_approval"-->
+<!--                        class="btn-success"-->
+<!--                        invisible="coverage != 'chargeable'"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="fsm_management"-->
+<!--              name="Managements"-->
+<!--              sequence="30"-->
+<!--              parent="industry_fsm.fsm_menu_root"-->
+<!--              groups="industry_fsm.group_fsm_supervisor"/>-->
+
+<!--    &lt;!&ndash; Action &ndash;&gt;-->
+<!--    <record id="action_part_approval_notifications" model="ir.actions.act_window">-->
+<!--        <field name="name">Parts Approval</field>-->
+<!--        <field name="res_model">part.approval.notification</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p>-->
+<!--                Manage part approval notifications.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; Tree View &ndash;&gt;-->
+<!--    <record id="view_part_approval_tree" model="ir.ui.view">-->
+<!--        <field name="name">part.approval.notification.tree</field>-->
+<!--        <field name="model">part.approval.notification</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <tree create="False">-->
+<!--                <field name="sequence_fsm"/>-->
+<!--                <field name="task_id"/>-->
+<!--                <field name="user_ids" widget="many2many_avatar_user"/>-->
+<!--                <field name="partner_id" widget="many2one_avatar_user"/>-->
+<!--                <field name="product_id"/>-->
+<!--                <field name="part_name"/>-->
+<!--                <field name="coverage"  decoration-success="coverage == 'foc'" decoration-danger="coverage == 'chargeable'"/>-->
+<!--                <field name="supervisor_id"/>-->
+<!--                <field name="stage"/>-->
+<!--                <button name="action_approve" string="Approve" type="object" class="btn-success"/>-->
+<!--                <button name="action_reject" string="Reject" type="object" class="btn-danger"/>-->
+<!--            </tree>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--    <record id="view_part_approval_form" model="ir.ui.view">-->
+<!--        <field name="name">part.approval.notification.form</field>-->
+<!--        <field name="model">part.approval.notification</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form create="False">-->
+<!--                <header>-->
+<!--                    <button name="action_approve" string="Approve" type="object" class="btn-success"/>-->
+<!--                    <button name="action_reject" string="Reject" type="object" class="btn-danger"/>-->
+<!--                    <field name="status"-->
+<!--                           widget="statusbar"-->
+<!--                           statusbar_visible="draft,waiting_supervisor,approved,ready,received,rejected"-->
+<!--                           options="{'clickable': '1'}"/>-->
+<!--                </header>-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <field name="sequence_fsm"/>-->
+<!--                        <field name="task_id"/>-->
+<!--                        <field name="user_ids" widget="many2many_avatar_user"/>-->
+<!--                        <field name="partner_id" widget="many2one_avatar_user"/>-->
+<!--                        <field name="product_id"/>-->
+<!--                        <field name="part_name"/>-->
+<!--                        <field name="coverage" decoration-success="coverage == 'foc'" decoration-danger="coverage == 'chargeable'"/>-->
+<!--                        <field name="supervisor_id"/>-->
+<!--                        <field name="stage"/>-->
+<!--                    </group>-->
+<!--                </sheet>-->
+<!--                <div class="oe_chatter">-->
+<!--                    <field name="message_follower_ids" options="{'post_refresh':True}"-->
+<!--                           groups="base.group_user"/>-->
+<!--                    <field name="activity_ids"/>-->
+<!--                    <field name="message_ids"/>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--  &lt;!&ndash; Search View &ndash;&gt;-->
+<!--    <record id="view_part_approval_search" model="ir.ui.view">-->
+<!--        <field name="name">view.part.approval.search</field>-->
+<!--        <field name="model">part.approval.notification</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Part Approval Notifications">-->
+<!--                <field name="sequence_fsm" string="Ticket Number"/>-->
+<!--                <field name="task_id" string="Call Name"/>-->
+<!--                <field name="product_id" string="Product"/>-->
+<!--                <field name="part_name" string="Part Name"/>-->
+<!--                <field name="supervisor_id" string="Supervisor"/>-->
+<!--                <field name="coverage"/>-->
+<!--                <field name="status"/>-->
+<!--                <field name="stage"/>-->
+<!--                &lt;!&ndash; Filters &ndash;&gt;-->
+<!--                <filter name="pending_filter" string="Pending" domain="[('stage', '=', 'pending')]"/>-->
+<!--                <filter name="approved_filter" string="Approved" domain="[('stage', '=', 'approved')]"/>-->
+<!--                <filter name="rejected_filter" string="Rejected" domain="[('stage', '=', 'rejected')]"/>-->
+<!--                <filter name="waiting_supervisor_filter" string="Waiting Supervisor" domain="[('status', '=', 'waiting_supervisor')]"/>-->
+<!--                <filter name="waiting_customer_filter" string="Waiting Customer Approval" domain="[('status', '=', 'waiting_for_customer_approval')]"/>-->
+<!--                <separator/>-->
+<!--                &lt;!&ndash; Group By Section &ndash;&gt;-->
+<!--                <group expand="0" string="Group By...">-->
+<!--                    <filter name="group_by_supervisor" string="Supervisor" context="{'group_by': 'supervisor_id'}"/>-->
+<!--                    <filter name="group_by_task" string="Calls" context="{'group_by': 'task_id'}"/>-->
+<!--                    <filter name="group_by_product" string="Product" context="{'group_by': 'product_id'}"/>-->
+<!--                    <filter name="group_by_coverage" string="Coverage" context="{'group_by': 'coverage'}"/>-->
+<!--                    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="fsm_management_parts"-->
+<!--              name="Parts"-->
+<!--              parent="fsm_management"-->
+<!--              action="action_part_approval_notifications"-->
+<!--              sequence="1"-->
+<!--              groups="industry_fsm.group_fsm_supervisor"/>-->
+
+</odoo>

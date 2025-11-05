@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payroll_structure_form_inherit_new" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.form.inherit.new</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="inherit_id" ref="om_hr_payroll.view_hr_employee_grade_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr='//group[1]' position='replace'>
+                <group col="4">
+                    <group style="width:50%;">
+                        <field name="name"/>
+                        <field name="parent_id"/>
+                    </group>
+                    <group style="width:50%;">
+                        <field name="code"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

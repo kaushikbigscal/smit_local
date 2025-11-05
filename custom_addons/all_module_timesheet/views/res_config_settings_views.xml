@@ -1,0 +1,29 @@
+<odoo>
+    <record id="res_config_settings_view_form_inherit_timesheet" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.timesheet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="project.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='project_time']" position="inside">
+                <setting id="auto_timesheet_entry_setting"
+                         help="Automatically create timesheet entries when tasks state are updated.">
+                    <field name="auto_timesheet_entry"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.timesheet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_timesheet.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block//setting[@id='reminder_allow']" position="after">
+                <setting id="duration" help="Set the default minimum duration for timesheet entries">
+                    <field name="minimum_timesheet_duration"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

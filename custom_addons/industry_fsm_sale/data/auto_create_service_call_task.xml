@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <record id="ir_cron_create_field_service_tasks" model="ir.cron">
+            <field name="name">Create Service call Tasks</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="state">code</field>
+            <field name="code">model._create_field_service_tasks()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

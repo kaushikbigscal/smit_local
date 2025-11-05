@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="calendar.CalendarRuleButtons">
+        <div class="o_calendar_rule_options">
+            <t t-if="state.loading">
+                <span class="text-muted">Loading…</span>
+            </t>
+            <t t-else="">
+                <t t-if="state.rules.length > 0">
+                    <t t-foreach="state.rules" t-as="rule" t-key="rule.id">
+                        <div class="o_calendar_rule_card"
+                             t-att-class="state.selectedRule === rule.id ? 'selected' : ''"
+                             t-on-click="() => this.onClick(rule)">
+
+                            <t t-if="rule.logo_url">
+                                <img t-att-src="rule.logo_url" class="o_calendar_rule_logo" alt="logo"/>
+                            </t>
+                            <t t-else="">
+                                <i class="fa fa-wrench" />
+                            </t>
+                            <div class="o_text_wrapper">
+                                <div class="o_title">
+                                    <t t-esc="rule.name"/>
+                                </div>
+                                <div class="o_subtitle">
+                                    <t t-esc="rule.description or 'Create record'"/>
+                                </div>
+                            </div>
+                            <div class="o_check_icon" t-if="state.selectedRule === rule.id">
+                                <i class="fa fa-check-circle"/>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+                <t t-else="">
+                    <div class="o_calendar_no_rules">
+                        <div class="o_no_rules_icon">
+                            <i class="fa fa-cog"/>
+                        </div>
+                        <div class="o_no_rules_content">
+                            <h5 class="o_no_rules_title">No Rules Available</h5>
+                            <p class="o_no_rules_message">Record creation rules haven't been configured yet. Contact your administrator to set up rules for creating records</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+</templates>

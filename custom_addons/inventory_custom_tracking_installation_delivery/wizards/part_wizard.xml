@@ -1,0 +1,41 @@
+<!-- part_service_wizard_view.xml -->
+<odoo>
+    <record id="view_part_service_wizard_form" model="ir.ui.view">
+        <field name="name">part.service.wizard.form</field>
+        <field name="model">part.service.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Set Part Service Details" version="7.0">
+                <group>
+                    <field name="part_id" invisible="1"/>
+                    <field name="actual_product_id" />
+                    <field name="part_service_type" required="1"/>
+                    <field name="is_replace" invisible="1"/>
+                    <field name="original_product_id" invisible="1"/>
+                    <field name="serial_number_id"
+                           context="{'default_product_id': actual_product_id}"
+                           options="{'no_open': True, 'no_create_edit': True}"
+                           required="is_replace"
+                    />
+
+                    <field name="previous_serial_number_ids" domain="[('product_id','=',original_product_id)]"
+                           invisible="not is_replace"/>
+                    <field name="description"/>
+                </group>
+                <footer>
+                    <button string="Apply" type="object" name="apply_service_update" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- part_service_action.xml -->
+    <record id="action_open_part_service_wizard" model="ir.actions.act_window">
+        <field name="name">Update Part Service</field>
+        <field name="res_model">part.service.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_part_service_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_part_id': active_id,'default_serial_number_ids':serial_number_ids}</field>
+    </record>
+
+</odoo>

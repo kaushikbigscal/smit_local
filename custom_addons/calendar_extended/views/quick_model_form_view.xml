@@ -1,0 +1,214 @@
+<odoo>
+
+    <record id="view_task_calendar_form" model="ir.ui.view">
+        <field name="name">task.calendar.form</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <form string="Task">
+                <sheet>
+                    <field name="can_start_timer" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="allow_billable" invisible="1"/>
+                    <field name="can_stop_timer" invisible="1"/>
+                    <div class="fsm-sticky-buttons d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-3">
+                        <button name="action_start_task_timer" type="object" string="Start Work"
+                                icon="fa-play-circle text-success" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_start_timer"/>
+                        <button name="action_stop_task_timer" type="object" string="Stop Work"
+                                icon="fa-stop-circle text-warning" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_stop_timer"/>
+                    </div>
+                    <sheet>
+                        <div class="o_row mb-3">
+                            <field name="priority" widget="priority_switch"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" required="false" readonly="1"/>
+                                <field name="date_deadline" widget="daterange" string="Deadline" readonly="1"/>
+                                <field name="partner_id" options="{'no_open': True}" widget="res_partner_many2one"
+                                       context="{'show_address_if_fsm': 1, 'res_partner_search_mode': 'customer'}"
+                                       readonly="1" invisible="not allow_billable" />
+                            </group>
+                            <group>
+                                <field name="user_ids" widget="many2many_avatar_user" readonly="1"/>
+                                <field name="project_id" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </sheet>
+                <footer>
+                    <div class="d-flex gap-2 w-100 justify-content-center justify-content-md-start">
+                        <button name="project.action_view_my_task" type="action" string="Edit"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-edit" title="Edit Task"/>
+
+                        <button special="cancel" string="Cancel"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-times" title="Cancel"/>
+
+                        <button name="delete" type="object"
+                                class="btn btn-danger text-truncate"
+                                confirm="Are you sure you want to delete this calendar event?"
+                                icon="fa-trash" title="Delete Event"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Pipeline Calendar Form -->
+    `<record id="view_pipeline_calendar_form" model="ir.ui.view">
+        <field name="name">crm.lead.pipeline.calendar.form</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <form string="Pipeline Opportunity">
+                <sheet>
+                    <field name="can_start_timer" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="can_stop_timer" invisible="1"/>
+                    <div class="fsm-sticky-buttons d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-3">
+                        <button name="action_start_lead_timer" type="object" string="Start Work"
+                                icon="fa-play-circle text-success" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_start_timer"/>
+                        <button name="action_stop_lead_timer" type="object" string="Stop Work"
+                                icon="fa-stop-circle text-warning" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_stop_timer"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="expected_revenue" readonly="1"/>
+                            <field name="date_deadline" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="stage_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="team_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <div class="d-flex gap-2 w-100 justify-content-center justify-content-md-start">
+                        <button type="object" name="open_full_lead_form_view" string="Edit"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-edit" title="Edit Opportunity"/>
+
+                        <button special="cancel" string="Cancel"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-times" title="Cancel"/>
+
+                        <button name="delete" type="object"
+                                class="btn btn-danger text-truncate"
+                                confirm="Are you sure you want to delete this calendar event?"
+                                icon="fa-trash" title="Delete Event"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Lead Calendar Form -->
+    <record id="view_lead_calendar_form" model="ir.ui.view">
+        <field name="name">crm.lead.lead.calendar.form</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <form string="Lead">
+                <sheet>
+                    <field name="can_start_timer" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="can_stop_timer" invisible="1"/>
+                    <div class="fsm-sticky-buttons d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-3">
+                        <button name="action_start_lead_timer" type="object" string="Start Work"
+                                icon="fa-play-circle text-success" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_start_timer"/>
+                        <button name="action_stop_lead_timer" type="object" string="Stop Work"
+                                icon="fa-stop-circle text-warning" class="btn btn-secondary w-45 text-truncate"
+                                invisible="not can_stop_timer"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="date_deadline" readonly="1"/>
+                            <field name="partner_id"
+                                   options="{'no_open': True}"
+                                   widget="res_partner_many2one" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="team_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <div class="d-flex gap-2 w-100 justify-content-center justify-content-md-start">
+                        <button type="object" name="open_full_lead_form_view" string="Edit"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-edit" title="Edit Lead"/>
+
+                        <button special="cancel" string="Cancel"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-times" title="Cancel"/>
+
+                        <button name="delete" type="object"
+                                class="btn btn-danger text-truncate"
+                                confirm="Are you sure you want to delete this calendar event?"
+                                icon="fa-trash" title="Delete Event"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--     For Field Visit Form -->
+    <record id="view_field_visit_calendar_form" model="ir.ui.view">
+        <field name="name">field.visit.quick.calendar.form</field>
+        <field name="model">field.visit</field>
+        <field name="arch" type="xml">
+            <form string="Field Visit">
+                <sheet>
+<!--                    <field name="show_time_control" invisible="1"/>-->
+                    <field name="company_id" invisible="1"/>
+                    <div class="fsm-sticky-buttons d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-3">
+                        <button name="button_start_work" type="object" string="Start Work"
+                                icon="fa-play-circle text-success" class="btn btn-secondary w-45 text-truncate"
+                                />
+                        <button name="button_end_work" type="object" string="Stop Work"
+                                icon="fa-stop-circle text-warning" class="btn btn-secondary w-45 text-truncate"
+                                />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="visit_objective" widget="many2many_tags" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="joint_visit_user_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="date_start" string="Planned Date" widget="daterange"
+                                   options='{"end_date_field": "date", "always_range": "1"}'/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <div class="d-flex gap-2 w-100 justify-content-center justify-content-md-start">
+                        <button type="object" name="open_visit_full_form_view" string="Edit"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-edit" title="Edit Visit"/>
+
+                        <button special="cancel" string="Cancel"
+                                class="btn btn-secondary text-truncate"
+                                icon="fa-times" title="Cancel"/>
+
+                        <button name="delete" type="object"
+                                class="btn btn-danger text-truncate"
+                                confirm="Are you sure you want to delete this calendar event?"
+                                icon="fa-trash" title="Delete Event"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

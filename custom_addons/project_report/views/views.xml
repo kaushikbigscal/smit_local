@@ -1,0 +1,55 @@
+<odoo>
+    <record id="view_project_report_line_tree" model="ir.ui.view">
+        <field name="name">project.report.line.tree</field>
+        <field name="model">project.report.line</field>
+        <field name="arch" type="xml">
+            <tree string="Project Task Timesheet Report" create="false" delete="false">
+                <field name="project_id"/>
+                <field name="task_id"/>
+                <field name="employee_id"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="hours_taken"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_project_report_line_search" model="ir.ui.view">
+        <field name="name">project.report.line.search</field>
+        <field name="model">project.report.line</field>
+        <field name="arch" type="xml">
+        <search string="Project Report Search">
+            <separator/>
+                <filter string="Start Date" name="start_date" date="date_start"/>
+                <filter string="End Date" name="end_date" date="date"/>
+            <separator/>
+            <field name="user_id"/>
+            <field name="stage_id"/>
+            <field name="employee_id"/>
+            <field name="customer_id"/>
+            <field name="template"/>
+            <field name="department_id"/>
+
+            <group expand="1" string="Group By">
+                <filter name="group_project_manager" string="Project Manager" context="{'group_by': 'user_id'}"/>
+                <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                <filter name="group_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
+                <filter name="group_template" string="Template" context="{'group_by': 'template'}"/>
+                <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+            </group>
+        </search>
+
+        </field>
+    </record>
+
+    <record id="action_project_report_result" model="ir.actions.act_window">
+        <field name="name">Project Timesheet Report</field>
+        <field name="res_model">project.report.line</field>
+        <field name="view_mode">tree,search</field>
+        <field name="view_id" ref="view_project_report_line_tree"/>
+        <field name="search_view_id" ref="view_project_report_line_search"/>
+        <field name="context">{"group_by": ["project_id", "task_id"]}</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

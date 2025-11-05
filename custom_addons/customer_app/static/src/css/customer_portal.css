@@ -1,0 +1,495 @@
+/* Card */
+.container-fluid .card {
+    background-color: #2962FF;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Welcome Banner */
+.welcome-banner {
+    padding: 12px 20px;
+    /* background: linear-gradient(90deg, #0a3d91, #186aef); */
+    background: linear-gradient(90deg, #1657ba, #2962FF); /* Dark to light blue */
+    box-shadow: 0 4px 12px rgba(10, 61, 145, 0.6); /* Shadow based on dark blue */
+    border-radius: 8px;
+}
+
+.welcome-message h5 {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.welcome-message p {
+    font-size: 14px;
+    color: #fff;
+    margin: 0;
+    text-align: center;
+}
+
+.welcome-message a {
+    color: #fff !important;
+    text-decoration: underline;
+}
+
+.slide-text {
+    color: #fff;
+    font-weight: bold;
+}
+
+/* View All Link */
+.view-all-link {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: black;
+}
+/*.btn o_datetime_button {
+    background-color: white !important;
+    color: black !important;
+}*/
+.view-all-link:hover {
+    text-decoration: underline;
+    color: #2962FF;
+}
+
+/* Style all default buttons */
+
+.btn {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: #2962FF!important;
+    color: #fff !important;
+    border-color: #3b82f6 !important;
+    font-size: 15px;
+}
+
+/* Hover effect for buttons */
+
+.btn:hover {
+    background-color: #09367a !important;
+    border-color: #2962FF !important;
+}
+
+/* If you have outline buttons */
+.btn-outline-primary {
+    color: #2962FF !important;
+    border-color: #2962FF !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2962FF !important;
+    color: #fff !important;
+}
+
+/* Reset styles for date picker header button group */
+
+.btn.o_out_of_range {
+    background-color: transparent !important;
+    color: #000 !important;
+    border-color: transparent !important;
+}
+
+.btn.o_date_item_cell,
+.btn.o_datetime_button {
+    background-color: transparent !important;
+    color: #000 !important;
+    border-color: transparent !important;
+}
+
+.btn.o_date_item_cell:hover,
+.btn.o_datetime_button:hover {
+    background-color: transparent !important;
+    color: #000 !important;
+    border-color: transparent !important;
+    cursor: default; /* optional */
+}
+
+/* General badge style */
+.badge {
+    background-color: #3271a8 !important;
+    color: white !important;
+    border-radius: 0.5rem;
+    padding: 0.3em 0.6em;
+    font-size: 0.75rem;
+}
+
+/* Home Icon */
+.breadcrumb-item .fa-home {
+  font-size: 18px;
+}
+
+
+/* ================= Cards ==================*/
+.card {
+    border: 1px solid #e5e7eb;  /* Light gray border */
+    border-radius: 8px;
+    shadow: none;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    font-size: 0.875rem; /* Small */
+    color: #212529;
+    font-family: inherit;
+    /*color: white !important; */
+
+}
+
+.section-title {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+body, .card, .card-title, .card-subtitle,
+.dropdown-menu, .dropdown-item,
+select, option {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    color: #212529;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: #6c757d;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 600;
+}
+
+.fw-semibold {
+  font-weight: 600;
+}
+
+/* wrap the Text */
+.table td.wrap-text {
+    white-space: normal !important;  /* Allow text to wrap */
+    word-break: break-word;          /* Break long words if needed */
+    min-width: 200px;               /* Ensure it's wider than default */
+    max-width: 100%;
+}
+
+
+/* Allow wrapping for dropdown menu items only in my portal searchbar */
+.my-portal-searchbar .dropdown-menu .dropdown-item {
+    white-space: normal !important;
+    word-break: break-word;
+    min-width: 200px;
+    max-width: 100%;
+}
+
+/* Align under menu name without overriding */
+.my-portal-searchbar .dropdown-menu {
+    left: 0 !important;
+    top: 100% !important; /* Align to left of trigger */
+    right: auto !important;      /* Reset right alignment */
+    transform: none !important;  /* Remove centering shift */
+    min-width: 200px;
+    max-width: 90vw;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.card-bg {
+   /*background-color: #e6f2ff; /* Light blue */
+    background-color: #f8f9fa; /* Light white */
+    border-radius: 8px;
+    /*background: linear-gradient(90deg, #0a3d91, #186aef); */
+    transition: background-color 0.2s;
+    left-padding: 0.5 rem;
+}
+
+.card-bg:hover {
+    /*background: linear-gradient(90deg, #0a3d91, #186aef); */
+    background: linear-gradient(90deg, #1657ba, #2962FF); /* Dark to light blue */
+    color: white;
+}
+
+.card-bg:hover .card-title,
+.card-bg:hover .card-subtitle {
+    color: white !important;
+}
+
+
+.form-control,
+.form-control::placeholder {
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 14px !important;
+}
+.customer_form select,
+.customer_form option,
+.form-select {
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 14px !important;
+    color: #212529 !important;
+}
+
+
+/* Placeholder text inside Select2
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder,
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    font-size: 14px !important;
+    color: #6c757d !important;
+}
+
+*//* Typed/selected text inside Select2 *//*
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li,
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 14px !important;
+    color: #212529 !important;
+}*/
+
+/*
+.section-title-with-icon .info-icon-left {
+    font-size: 16px;
+    color: #1255c3;
+    margin-right: 6px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 1px #1255c3;
+}
+*/
+
+/* ================= Badge ================= */
+.badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    border-radius: 1rem;
+    background-color: #186aef;
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* ================== Ancher Tag ==================*/
+a {
+    color: #2962FF;
+}
+
+a:hover {
+    color: #2962FF;
+}
+
+/* ================ Info Dashboard ==================== */
+
+.info-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 20px 0;
+}
+
+.info-card {
+    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 1.2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    transform: scale(1);
+    position: relative;
+}
+
+.info-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    /* background: linear-gradient(90deg, #0a3d91, #186aef); */
+    transform: scale(1.03);
+}
+.info-card:hover .info-card-title,
+.info-card:hover .info-card-value {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.info-card-title {
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.info-card-value {
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 20px;
+    font-weight: bold;
+    color: #111827;
+}
+
+.info-card-value a {
+    color: #000 !important; /* Force black */
+}
+
+.info-card-status {
+    font-size: 12px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.info-green,
+.info-green a {
+    color: #10b981; /* Tailwind's green-500 */
+}
+.info-red,
+.info-red a {
+    color: #ef4444; /* Tailwind's red-500 */
+}
+
+.info-blue {
+    color: #3b82f6; /* Tailwind's blue-500 */
+}
+.info-card,
+.info-card:hover,
+.info-card a,
+.info-card a:hover {
+    text-decoration: none !important;
+}
+
+.info-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f4ff;
+    border-radius: 8px;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.info-icon i {
+    font-size: 17px;
+    color: #2962FF;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 1px #2962FF;
+}
+
+.featured-products-scroll {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.featured-products-scroll > div {
+    scroll-snap-align: start;
+}
+
+
+@media (max-width: 740px) {
+    .info-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem; 
+    }
+    
+    .info-card-grid .full-width-mobile {
+        grid-column: 1 / -1; 
+    }
+    
+    .info-icon {
+        width: 32px;
+        height: 32px;
+        right: 12px; /* optional: closer on small screens */
+    }
+
+    .info-icon i {
+        font-size: 16px;
+   }
+   .my-portal-searchbar .dropdown-menu {
+        min-width: auto;
+        width: auto;
+        max-width: 95vw;
+   }
+
+   .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30'
+            xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,1%29'
+            stroke-width='2' stroke-linecap='round' stroke-miterlimit='10'
+            d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+   }
+
+   .company-logo {
+        height: 26px;
+   }
+
+   .company-name {
+        font-size: 1rem;
+   }
+
+   #scan_btn {
+        font-size: 12px;   /* smaller text */
+        padding: 6px 10px; /* smaller padding */
+        border-radius: 6px;
+   }
+
+   #scan_btn i {
+        font-size: 14px; /* keep icon visible */
+   }
+
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30'
+        xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,1%29'
+        stroke-width='2' stroke-linecap='round' stroke-miterlimit='10'
+        d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+}
+
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: #2962FF !important;
+    color: #fff !important;
+}
+
+.accordion-button {
+    background-color: white !important;
+    color: #000;
+    border: 1px solid #dee2e6;
+}
+
+/* When accordion is expanded (clicked) */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff !important;  /* Light blue background */
+    border: 1px solid #3a8dde !important;  /* Blue border */
+    color: #000;
+    box-shadow: none;  /* optional: remove default shadow */
+}
+
+.accordion-button {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Mobile devices */
+@media (max-width: 767px) {
+    #carouselExampleControls .carousel-inner img {
+        aspect-ratio: auto;  /* Remove the 3:1 ratio */
+        height: 250px;       /* Set a larger height */
+        object-fit: cover;   /* Cover the container nicely */
+    }
+}
+
+#readAllBtn {
+    width: 100px;
+}

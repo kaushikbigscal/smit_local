@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_attendance_check_wizard_form_range" model="ir.ui.view">
+        <field name="name">attendance.check.wizard.form.range</field>
+        <field name="model">attendance.check.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Manual Attendance Check">
+                <group>
+                    <field name="check_date_from"/>
+                    <field name="check_date_to"/>
+                    <field name="employee_ids" widget="many2many_tags" options="{'create': false, 'edit': false}"
+                           placeholder="Select employees to check. Leave empty to check all employees."/>
+                </group>
+                <footer>
+                    <button string="Run Check" type="object" name="action_run_manual_check" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_attendance_check_wizard" model="ir.actions.act_window">
+        <field name="name">Manual Attendance Check</field>
+        <field name="res_model">attendance.check.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <record id="view_attendance_correction_tree" model="ir.ui.view">
+        <field name="name">attendance.correction.tree</field>
+        <field name="model">temp.attendance.correction</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance Corrections" create="false">
+                <header>
+                    <button name="action_bulk_no_show_create"
+                            type="object"
+                            class="btn btn-primary"
+                            groups="hr_attendance.group_hr_attendance_manager"
+                            string="Bulk Add" display="always"
+                            confirm="Once the data is added, it cannot be reverted back. Are you sure you want to continue?"/>
+
+                    <button name="%(action_attendance_check_wizard)d"
+                            type="action"
+                            groups="hr_attendance.group_hr_attendance_manager"
+                            string="Re-Sync" display="always"
+                            class="btn-primary"/>
+                </header>
+                <button name="action_add_attendance" type="object" string="Add"
+                        icon="fa-plus" class="btn btn-outline-success"
+                        groups="hr_attendance.group_hr_attendance_manager"
+                        invisible="reason_code == 'SHORT_HOURS'"/>
+                <button name="action_edit_attendance" type="object" string="Edit"
+                        icon="fa-edit" class="btn btn-outline-info"
+                        groups="hr_attendance.group_hr_attendance_manager"
+                        invisible="reason_code == 'NO_SHOW'"/>
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="reason_code"/>
+                <field name="worked_hours" widget="float_time"/>
+                <field name="expected_hours" widget="float_time"/>
+                <field name="shortfall" widget="float_time"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="schedule_hours"/>
+                <field name="department_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_attendance_correction_search" model="ir.ui.view">
+        <field name="name">attendance.correction.search</field>
+        <field name="model">temp.attendance.correction</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Corrections">
+                <!-- Default Search -->
+                <field name="employee_id"/>
+
+                <!-- Filters -->
+                <filter string="Month" name="filter_current_month" date="date" default_period="this_month"/>
+                <separator/>
+
+                <filter string="No Show" name="filter_no_show" domain="[('reason_code', '=', 'NO_SHOW')]"/>
+                <filter string="Short Hours" name="filter_short_hours" domain="[('reason_code', '=', 'SHORT_HOURS')]"/>
+                <separator/>
+
+                <filter string="Date" name="filter_custom_date" domain="[('date', 'in',[] )]"/>
+
+                <!-- Group By Options -->
+                <group expand="1" string="Group By">
+                    <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Reason Code" name="group_reason_code" context="{'group_by': 'reason_code'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_attendance_correction" model="ir.actions.act_window">
+        <field name="name">Attendance Correction</field>
+        <field name="res_model">temp.attendance.correction</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="view_attendance_correction_search"/>
+        <field name="context">{
+            'search_default_filter_current_month': 1,
+            'search_default_group_employee': 1,
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No attendance shortfalls found.</p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_attendance_correction"
+              name="Attendance Correction"
+              parent="hr_attendance.menu_hr_attendance_reporting_root"
+              action="action_attendance_correction"
+              sequence="15"/>
+
+    <record id="view_attendance_inherit" model="ir.ui.view">
+        <field name="name">attendance.note.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='overtime_hours']" position="after">
+                <field name="attendance_note"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

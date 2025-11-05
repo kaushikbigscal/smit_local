@@ -1,0 +1,65 @@
+<odoo>
+    <record id="create_task_stock_form" model="ir.ui.view">
+        <field name="name">create.task.stock.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position='after'>
+                <button class="btn-primary" name="button_create_task" type="object" string="Create Task"
+                        invisible="state != 'done'" groups="base.group_user"
+                />
+            </xpath>
+            <!-- Target the field Delivery Address -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="installation_date"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']" position="after">
+                <page string="Parts List" name="parts_list">
+                    <field name="picking_parts_ids" readonly="state in 'done'">
+                        <tree editable="bottom">
+                            <field name="product_id" column_invisible="1"/>
+                            <field name="original_product_id" column_invisible="1"/>
+                            <field name="main_product_name" readonly="1"/>
+                            <field name="part_name" readonly="1"/>
+                            <field name="quantity" readonly="1"/>
+                            <field name="lot_ids" widget="many2many_tags"
+                                   context="{'default_product_id':original_product_id }"
+                                   required="tracking == 'serial'"
+                                   invisible="tracking == 'none'"
+                            />
+                            <field name="tracking" column_invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="group_technical_user" model="res.groups">
+        <field name="name">Inventory Delivery Responsible</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="view_inventory_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.delivery.responsible</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='extra']/group/group[@name='other_infos']" position="inside">
+                <field name="delivery_responsible" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="delivery_responsible_tree_view" model="ir.ui.view">
+        <field name="name">delivery.responsible.tree.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="delivery_responsible" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

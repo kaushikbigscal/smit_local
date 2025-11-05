@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View with JS class -->
+    <record id="view_item_receipt_field_tree_refresh_js" model="ir.ui.view">
+        <field name="name">item.receipt.field.tree.js</field>
+        <field name="model">item.receipt.field</field>
+        <field name="arch" type="xml">
+            <tree js_class="item_receipt_refresh_list" create="false" editable="top">
+                <header>
+                    <button name="action_refresh_fields"
+                            type="object"
+                            string="Refresh Field List"
+                            class="oe_highlight"/>
+                </header>
+                <field name="field_label"/>
+                <field name="name"/>
+                <field name="show_in_report"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_item_receipt_field_form" model="ir.ui.view">
+        <field name="name">item.receipt.field.form</field>
+        <field name="model">item.receipt.field</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_refresh_fields"
+                            string="Refresh Field List"
+                            type="object"
+                            class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="field_label"/>
+                        <field name="name"/>
+                        <field name="show_in_report"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_item_receipt_field_search" model="ir.ui.view">
+        <field name="name">item.receipt.field.search</field>
+        <field name="model">item.receipt.field</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Technical Name"/>
+                <field name="field_label" string="Label"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_item_receipt_field" model="ir.actions.act_window">
+        <field name="name">Item Receipt Fields</field>
+        <field name="res_model">item.receipt.field</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="view_item_receipt_field_search"/>
+        <field name="view_id" ref="view_item_receipt_field_tree_refresh_js"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No fields configured yet
+            </p>
+            <p>
+                Fields from the service call form will be displayed here.
+                You can select which fields to show in the receipt report.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_item_receipt_field"
+              name="Item Receipt"
+              parent="industry_fsm.fsm_menu_settings"
+              action="action_item_receipt_field"
+              groups="industry_fsm.group_fsm_user"
+              sequence="80"/>
+</odoo>
+
+
+
+
+

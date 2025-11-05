@@ -1,0 +1,162 @@
+<odoo>
+    <template id="portal_user_dropdown_edit_link" inherit_id="portal.user_dropdown">
+        <!-- Remove the divider after My Account -->
+<!--            <xpath expr="//a[@id='my_account_link']/following-sibling::div[@class='dropdown-divider'][1]" position="replace"/>-->
+            <xpath expr="//a[@id='o_logout']" position="before">
+<!--            <t t-if="show_shop_menu">-->
+                <a href="/shop" role="menuitem" class="dropdown-item ps-3">
+                    <i class="fa fa-fw fa-shopping-bag me-1 small" style="color: #186aef; width: 20px; height: 20px;"/>
+                    Shop
+                </a>
+<!--            </t>-->
+                <div class="dropdown-divider"></div>
+            <a href="/my/orders" role="menuitem" class="dropdown-item ps-3">
+                <img src="/sale/static/src/img/bag.svg" style="color: #186aef; width: 20px; height: 20px;"/>
+                Your Orders
+            </a>
+            <a href="/my/invoices?filterby=invoices" role="menuitem" class="dropdown-item ps-3">
+                <img src="/account/static/src/img/Bill.svg" style="color: #186aef; width: 20px; height: 20px;"/>
+                Your Invoices
+            </a>
+            <div class="dropdown-divider"></div>
+            <a role="button" href="/my/account" class="dropdown-item ps-3">
+                <i class="fa fa-pencil me-1 small" style="color: #186aef; width: 20px; height: 20px;"/> Edit Profile
+            </a>
+            <a href="/my/payment_method" role="menuitem" class="dropdown-item ps-3">
+                <img src="/payment/static/img/payment-methods.svg" style="color: #186aef; width: 20px; height: 20px;"/>
+                Payment Methods
+            </a>
+            <a href="/my/security" role="menuitem" class="dropdown-item ps-3">
+                <img src="/portal/static/src/img/portal-connection.svg" style="color: #186aef; width: 20px; height: 20px;"/>
+                Connection &amp; Security
+            </a>
+            <div class="dropdown-divider"></div>
+            </xpath>
+    </template>
+
+    <template id="portal_searchbar" inherit_id="portal.portal_searchbar">
+        <xpath expr="." position="replace">
+            <nav t-attf-class="navbar navbar-expand-lg flex-wrap mb-4 p-0 o_portal_navbar my-portal-searchbar {{classes if classes else ''}}">
+                <t t-if="breadcrumbs_searchbar">
+                    <t t-call="portal.portal_breadcrumbs"/>
+                </t>
+                <span t-else="" class="navbar-brand mb-0 h1 me-auto" t-esc="title or 'No title'"/>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#o_portal_navbar_content" aria-controls="o_portal_navbar_content"
+                        aria-expanded="false" aria-label="Toggle filters">
+                    <span class="fa fa-fw fa-bars"/>
+                </button>
+
+                <div class="collapse navbar-collapse flex-wrap-reverse justify-content-end gap-3"
+                     id="o_portal_navbar_content">
+
+                    <!-- Combined Filter + Group By -->
+                    <div t-if="searchbar_combined" class="d-flex align-items-center gap-2 ms-lg-2">
+                        <span class="small navbar-text">Filter &amp; Group:</span>
+                        <div class="btn-group">
+                            <button id="portal_searchbar_combined" data-bs-toggle="dropdown"
+                                    class="btn btn-secondary dropdown-toggle"
+                                    style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <t t-esc="searchbar_combined.get('f_' + filterby, {}).get('label', 'All')"/>
+                                <t t-if="groupby">
+                                    /
+                                    <t t-esc="searchbar_combined.get('g_' + groupby, {}).get('label')"/>
+                                </t>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="portal_searchbar_combined">
+                                <h6 class="dropdown-header">Filters</h6>
+                                <t t-foreach="searchbar_combined.items()" t-as="option">
+                                    <t t-if="option[0].startswith('f_')">
+                                        <a t-att-href="default_url + '?' + keep_query('*', filterby=option[1]['filterby'], groupby='')"
+                                           t-attf-class="dropdown-item#{filterby == option[1]['filterby'] and ' active' or ''}">
+                                            <span t-esc="option[1]['label']"/>
+                                        </a>
+                                    </t>
+                                </t>
+
+                                <div class="dropdown-divider"/>
+                                <h6 class="dropdown-header">Group By</h6>
+                                <t t-foreach="searchbar_combined.items()" t-as="option">
+                                    <t t-if="option[0].startswith('g_')">
+                                        <a t-att-href="default_url + '?' + keep_query('*', groupby=option[1]['groupby'], filterby='')"
+                                           t-attf-class="dropdown-item#{groupby == option[1]['groupby'] and ' active' or ''}">
+                                            <span t-esc="option[1]['label']"/>
+                                        </a>
+                                    </t>
+                                </t>
+
+                                <div class="dropdown-divider"/>
+                                <a t-att-href="default_url" class="dropdown-item">
+                                    <span>Clear Filter &amp; Group</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div t-if="searchbar_sortings" class="d-flex align-items-center gap-2 ms-lg-2">
+                        <span class="small navbar-text">Sort By:</span>
+                        <div class="btn-group">
+                            <button id="portal_searchbar_sortby" data-bs-toggle="dropdown"
+                                    class="btn btn-secondary dropdown-toggle"
+                                    style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="portal_searchbar_sortby">
+                                <t t-foreach="searchbar_sortings" t-as="option">
+                                    <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                       t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                        <span t-esc="searchbar_sortings[option].get('label')"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Input -->
+                    <form t-if="searchbar_inputs"
+                          class="o_portal_search_panel d-flex align-items-center ms-lg-2 mt-2 mt-md-0"
+                          style="height: 32px;">
+                        <div class="input-group input-group-sm">
+                            <button type="button"
+                                    class="btn btn-secondary border-end dropdown-toggle btn-sm"
+                                    data-bs-toggle="dropdown"
+                                    style="height: 32px;">
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-end" role="menu">
+                                <t t-foreach='searchbar_inputs' t-as='input_value'>
+                                    <a t-att-href="'#' + input_value['input']"
+                                       t-attf-class="dropdown-item#{search_in == input_value['input'] and ' active' or ''}">
+                                        <span t-out="input_value['label']"/>
+                                    </a>
+                                </t>
+<!--                                <t t-foreach="searchbar_inputs" t-as="input_value">-->
+<!--                                    <a t-att-href="'#' + input_value"-->
+<!--                                       t-attf-class="dropdown-item#{search_in == input_value and ' active' or ''}">-->
+<!--                                        <span t-out="input_value"/>-->
+<!--                                    </a>-->
+<!--                                </t>-->
+                            </div>
+
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   placeholder="Search"
+                                   t-att-value="search"
+                                   name="search"
+                                   style="height: 32px;"/>
+
+                            <button class="btn btn-secondary btn-sm o_wait_lazy_js"
+                                    type="submit"
+                                    style="height: 32px;">
+                                <span class="oi oi-search"/>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+        </xpath>
+    </template>
+
+</odoo>

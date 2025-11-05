@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="account_analytic_line_tree" model="ir.ui.view">
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="date" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+
+            </field>
+            <field name="name" position="after">
+                <field name="end_time_name" required="1"/>
+
+            </field>
+
+
+            <field name="date" position="after">
+                <field name="date_time" required="1" column_invisible="1"/>
+                <field name="date_time_end" optional="hide" column_invisible="1"/>
+                <field name="date_time" string="Start Date-Time"/>
+                <field name="end_date_time"/>
+
+                <!--                Added New-->
+                <!--                <field name="minimum_duration" invisible="1"/>-->
+            </field>
+            <field name="unit_amount" position="after">
+                <!--          ....................................................              -->
+                <field name="actual_problem" readonly="1"/>
+                <field name="problem_solution" readonly="1"/>
+                <!--                <field name="latitude" readonly="1"/>-->
+                <!--                        <field name="longitude" readonly="1"/>-->
+                <field name="location_name" readonly="1"/>
+                <!--          ....................................................              -->
+                <field name="show_time_control" invisible="1"/>
+                <!--                Added New-->
+                <field name="can_stop_work" invisible="1"/>
+                <button
+                        name="action_start_work"
+                        tabindex="-1"
+                        type="object"
+                        icon="fa-play-circle text-success"
+                        invisible="show_time_control != 'resume'"
+                        class="oe_stat_button"
+                        title="Resume work"
+                />
+                <button
+                        name="action_stop_work"
+                        tabindex="-1"
+                        type="object"
+                        icon="fa-stop-circle text-warning"
+                        invisible="show_time_control != 'stop'"
+                        class="oe_stat_button"
+                        title="Stop work"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="hr_timesheet_line_form" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.inherit</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <field name="show_time_control" invisible="1"/>
+                    <!--                    Added New-->
+                    <field name="can_stop_work" invisible="1"/>
+<!--                        <button-->
+<!--                            name="button_resume_work"-->
+<!--                            type="object"-->
+<!--                            icon="fa-play-circle text-success"-->
+<!--                            invisible="show_time_control != 'resume'"-->
+<!--                            class="oe_stat_button"-->
+<!--                            context="{'show_created_timer': True}"-->
+<!--                            title="Resume work"-->
+<!--                        />-->
+<!--                        <button-->
+<!--                            name="button_end_work"-->
+<!--                            type="object"-->
+<!--                            icon="fa-stop-circle text-warning"-->
+<!--                            invisible="show_time_control != 'stop'"-->
+<!--                            class="oe_stat_button"-->
+<!--                            title="Stop work"-->
+<!--                        />-->
+                </div>
+            </xpath>
+            <field name="date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="date" position="after">
+                <field name="date_time" required="1"/>
+                <field name="date_time_end"/>
+                <!--                Added New-->
+
+                <field name="actual_problem" invisible="1"/>
+                <field name="problem_solution" invisible="1"/>
+<!--                <field name="longitude" readonly="1"/>-->
+<!--                <field name="latitude" readonly="1"/>-->
+
+                <field name="longitude" />
+                <field name="latitude" />
+                <field name="location_name" readonly="1"/>
+
+                <!--                <field name="minimum_duration" invisible="1"/>-->
+            </field>
+
+        </field>
+    </record>
+    <record id="view_kanban_account_analytic_line" model="ir.ui.view">
+        <field name="name">account.analytic.line.kanban</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.view_kanban_account_analytic_line"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates//field[@name='unit_amount']" position="after">
+                <field name="show_time_control" invisible="1"/>
+                <!--                Added New-->
+                <field name="can_stop_work" invisible="1"/>
+                <!--                <a-->
+                <!--                    name="button_resume_work"-->
+                <!--                    string="Resume work"-->
+                <!--                    tabindex="-1"-->
+                <!--                    type="object"-->
+                <!--                    invisible="show_time_control != 'resume'"-->
+                <!--                    class="o_kanban_inline_block fa fa-lg fa-play-circle text-success"-->
+                <!--                    title="Start work"-->
+                <!--                />-->
+                <!--                <a-->
+                <!--                    name="button_end_work"-->
+                <!--                    string="Stop work"-->
+                <!--                    tabindex="-1"-->
+                <!--                    type="object"-->
+                <!--                    invisible="show_time_control != 'stop'"-->
+                <!--                    class="o_kanban_inline_block fa fa-lg fa-stop-circle text-warning"-->
+                <!--                    title="End work"-->
+                <!--                />-->
+            </xpath>
+            <field name="date" position="after">
+                <field name="date_time"/>
+                <field name="date_time_end"/>
+                <!--                Added New-->
+                <!--                <field name="minimum_duration" invisible="1" />-->
+            </field>
+            <xpath expr="//templates//t[@t-esc='record.date.value']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//templates//t[@t-esc='record.date.value']" position="after">
+                <t t-esc="record.date_time.value"/>
+                <t t-if="record.date_time_end.value">
+                    <br/>
+                    <span>to</span>
+                    <t t-esc="record.date_time_end.value"/>
+                </t>
+                <br/>
+                <!--                Added New-->
+                <!--                <span>Min. Duration: </span>-->
+                <!--                <t t-esc="record.minimum_duration.value" /> minutes-->
+            </xpath>
+        </field>
+    </record>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.timesheet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div class="app_settings_block">
+                    <h2>Timesheet Minimum Duration</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Default Minimum Duration</span>
+                                <div class="text-muted">
+                                    Set the default minimum duration for timesheet entries
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="minimum_timesheet_duration" class="o_light_label"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

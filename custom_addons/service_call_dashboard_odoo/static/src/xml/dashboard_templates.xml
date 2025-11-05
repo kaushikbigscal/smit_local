@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Template for the service call dashboard -->
+<templates id="service_call_dashboard_templates" xml:space="preserve">
+    <t t-name="service_call_dashboard_odoo.ProjectDashboard">
+        <div class="oh_dashboards">
+            <div class="container-fluid">
+                <t t-call="service_call_dashboard_odoo.DashboardServiceCall"/>
+                <t t-call="service_call_dashboard_odoo.DashboardCallChart"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="service_call_dashboard_odoo.DashboardServiceCall">
+        <!-- Filter Section (no longer sticky) -->
+<!--        <div class="inner_select"-->
+<!--             style="padding: 20px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">-->
+             <div class="dashboard-title">
+                <h2 class="section-header mb-0" style="color: #71639e; font-weight: bold; margin: 0;">
+                    <i class="fa fa-tachometer text-primary me-2"/>
+                    Service Dashboard
+                </h2>
+             </div>
+<!--        </div>-->
+
+            <!--                            <button class="btn load-form-button"-->
+            <!--                                style="padding: 8px 20px; background-color: #5e72e4; border: none;-->
+            <!--                                       border-radius: 4px; color: white; font-weight: 500; cursor: pointer;-->
+            <!--                                       transition: background-color 0.15s ease-in-out;">-->
+            <!--                                <i class="fa fa-plus me-2"/>-->
+            <!--                                Create New Task-->
+            <!--                            </button>-->
+            <!--                           -->
+            <!--                            <button class="btn load-charts-button"-->
+            <!--                                style="padding: 8px 20px; background-color: #5e72e4; border: none; border-radius: 4px; color: white;-->
+            <!--                                font-weight: 500; cursor: pointer; transition: background-color 0.15s ease-in-out;">-->
+            <!--                                Load Charts-->
+            <!--                            </button>-->
+            <!--                -->
+            <!--                            <button class="btn refresh-form-button" t-on-click="refreshDashboard"-->
+            <!--                                style="padding: 8px 20px; background-color: #5e72e4; border: none;-->
+            <!--                                       border-radius: 4px; color: white; font-weight: 500; cursor: pointer;-->
+            <!--                                       transition: background-color 0.15s ease-in-out;">-->
+            <!--                                Refresh Form-->
+            <!--                            </button>-->
+            <!--                        </div>-->
+
+
+            <div class="oe_right" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
+                    <button class="btn load-form-button"
+                        style="padding: 8px 20px; background-color: #71639e; border: none;
+                               border-radius: 4px; color: white; font-weight: 500; cursor: pointer;
+                               transition: background-color 0.15s ease-in-out;">
+                        <i class="fa fa-plus me-2"/>
+                        Create New Task
+                    </button>
+
+                    <button class="btn load-charts-button"
+                        style="padding: 8px 20px; background-color:  #71639e; border: none;
+                               border-radius: 4px; color: white; font-weight: 500; cursor: pointer;
+                               transition: background-color 0.15s ease-in-out;">
+                        Load Charts
+                    </button>
+
+                    <!--                    <button class="btn refresh-form-button"-->
+                    <!--                            t-on-click="refreshDashboard"-->
+                    <!--                            style="padding: 8px 20px; background-color: #5e72e4; border: none;-->
+                    <!--                                   border-radius: 4px; color: white; font-weight: 500; cursor: pointer;-->
+                    <!--                                   transition: background-color 0.15s ease-in-out;">-->
+                    <!--                        <i class="fa fa-refresh me-2"/>-->
+                    <!--                        Refresh Form-->
+                    <!--                    </button>-->
+
+                <button class="btn refresh-form-button"
+                            t-on-click="refreshPage"
+                            style="padding: 8px 20px; background-color:  #71639e; border: none;
+                                   border-radius: 4px; color: white; font-weight: 500; cursor: pointer;
+                                   transition: background-color 0.15s ease-in-out;">
+                        <i class="fa fa-refresh me-2"/>
+                        Refresh Form
+                    </button>
+
+            </div>
+
+
+
+
+        <!--Service Team Today header section-->
+        <div class="section-title-container" style="margin: 20px 0; text-align: center; padding-bottom: 10px;">
+            <h2 class="heading-dashboard" style="color:  #71639e; font-weight: bold; margin: 0;">
+                <i class="fa fa-list-alt me-2"/>
+                Service Team
+            </h2>
+        </div>
+        <div class="main-section_data">
+            <div class="start-card">
+                <div class="oh-card">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon"><i class="fa fa-users" /></div>
+                            <div class="stat-content">
+                                <div class="stat-head">Team</div>
+                                <div class="stat_count" id="active_projects">
+                                     <!--<t t-esc="active_projects"/>-->
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon"><i class="fa fa-tasks" /></div>
+                            <div class="stat-content">
+                                <div class="stat-head">Free</div>
+                                <div class="stat_count" id="total_tasks">
+<!--                                    <t t-esc="total_tasks"/>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-window-close-o" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">Running Overdue</div>
+                             <div class="stat_count" id="total_closed_task">
+<!--                                 <t t-esc="total_closed_task"/>-->
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                    <div class="oh-card">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-exclamation-circle" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">Occupied</div>
+                             <div class="stat_count" id="un_assigned_task">
+<!--                                 <t t-esc="un_assigned_task"/>-->
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="start-card">
+                    <div class="oh-card">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-user-o" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">On leave</div>
+                             <div class="stat_count" id="un_assigned_task">
+<!--                                 <t t-esc="un_assigned_task"/>-->
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Calls Today header section-->
+        <div class="section-title-container" style="margin: 20px 0; text-align: center; padding-bottom: 10px;">
+            <h2 class="heading-dashboard" style="color:  #71639e; font-weight: bold; margin: 0;">
+                <i class="fa fa-tty me-2"/>
+                Calls Today
+            </h2>
+        </div>
+        <div class="main-section_data">
+            <div class="start-card">
+                <div class="oh-card">
+                        <div class="stat-widget-one" t-on-click="new_stage_tasks_today_click">
+                            <div class="stat-icon"><i class="fa fa-share" /></div>
+                            <div class="stat-content">
+                                <div class="stat-head">New</div>
+                                <div class="stat_count">
+                                    <t t-out="new_stage_tasks_today || '0'"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card">
+                        <div class="stat-widget-one" t-on-click="show_assigned_calls_today">
+                            <div class="stat-icon"><i class="fa fa-cloud-upload" /></div>
+                            <div class="stat-content">
+                                <div class="stat-head">Assigned</div>
+                                <div class="stat_count">
+                                    <t t-out="calls_assigned_today || '0'"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card" t-on-click="show_unassigned_calls_today">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-times-circle" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">Unassigned</div>
+                             <div class="stat_count">
+                                <t t-out="calls_unassigned_today || '0'"/>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                     <div class="oh-card" t-on-click="calls_on_hold_today_click">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-pause-circle" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">On Hold</div>
+                             <div class="stat_count" id="calls_on_hold_today">
+                                 <t t-esc="calls_on_hold_today"/>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="start-card">
+                    <div class="oh-card" t-on-click="show_closed_calls_today">
+                     <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-check-circle" /></div>
+                         <div class="stat-content">
+                            <div class="stat-head">Closed</div>
+                             <div class="stat_count">
+                                <t t-out="calls_closed_today || '0'"/>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--        header section-->
+        <!--        <div class="section-title-container" style="margin: 20px 0; text-align: center; padding-bottom: 10px;">-->
+        <!--            <h2 class="heading-dashboard" style="color: #4CAF50; font-weight: bold; margin: 0;">-->
+        <!--                <i class="fa fa-list-alt me-2"/>-->
+        <!--                Task Overview-->
+        <!--            </h2>-->
+        <!--        </div>-->
+        <!--        <div class="main-section">-->
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="show_active_projects">-->
+        <!--                        <div class="stat-widget-one">-->
+        <!--                            <div class="stat-icon"><i class="fa fa-briefcase" /></div>-->
+        <!--                            <div class="stat-content">-->
+        <!--                                <div class="stat-head">Active Calls</div>-->
+        <!--                                <div class="stat_count" id="active_projects">-->
+        <!--                                    <t t-esc="active_projects"/>-->
+        <!--                                </div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="tot_tasks">-->
+        <!--                        <div class="stat-widget-one">-->
+        <!--                            <div class="stat-icon"><i class="fa fa-tasks" /></div>-->
+        <!--                            <div class="stat-content">-->
+        <!--                                <div class="stat-head">Total Calls</div>-->
+        <!--                                <div class="stat_count" id="total_tasks">-->
+        <!--                                    <t t-esc="total_tasks"/>-->
+        <!--                                </div>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="click_total_closed_task">-->
+        <!--                     <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-times-circle" /></div>-->
+        <!--                         <div class="stat-content">-->
+        <!--                            <div class="stat-head">Closed Calls</div>-->
+        <!--                             <div class="stat_count" id="total_closed_task">-->
+        <!--                                 <t t-esc="total_closed_task"/>-->
+        <!--                             </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="start-card">-->
+        <!--                    <div class="oh-card" t-on-click="total_unassigned_task">-->
+        <!--                     <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-exclamation-circle" /></div>-->
+        <!--                         <div class="stat-content">-->
+        <!--                            <div class="stat-head">Unassigned Calls</div>-->
+        <!--                             <div class="stat_count" id="un_assigned_task">-->
+        <!--                                 <t t-esc="un_assigned_task"/>-->
+        <!--                             </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+
+        <!--test 2nd header card-->
+        <!--        <div class="section-title-container" style="margin: 30px 0 20px; text-align: center; padding-bottom: 10px;">-->
+        <!--            <h2 class="heading-dashboard" style="color: #4CAF50; font-weight: bold; margin: 0;">-->
+        <!--                <i class="fa fa-clock-o me-2"/>-->
+        <!--                Timeline Status-->
+        <!--            </h2>-->
+        <!--        </div>-->
+
+        <!--        <div class="main-section">-->
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="show_running_tasks">-->
+        <!--                    <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-tasks" /></div>-->
+        <!--                        <div class="stat-content">-->
+        <!--                            <div class="stat-head">Running Calls</div>-->
+        <!--                            <div class="stat_count" id="running_tasks">-->
+        <!--                                <t t-esc="running_tasks"/>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="show_done_task">-->
+        <!--                    <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-check-circle" /></div>-->
+        <!--                        <div class="stat-content">-->
+        <!--                            <div class="stat-head">Done Calls</div>-->
+        <!--                            <div class="stat_count" id="done_tasks">-->
+        <!--                                <t t-esc="done_tasks"/>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="show_expired_yesterday">-->
+        <!--                    <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-calendar-times-o" /></div>-->
+        <!--                        <div class="stat-content">-->
+        <!--                            <div class="stat-head">Expired Yesterday</div>-->
+        <!--                            <div class="stat_count" id="expired_yesterday">-->
+        <!--                                <t t-esc="expired_yesterday"/>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+
+        <!--            <div class="start-card">-->
+        <!--                <div class="oh-card" t-on-click="show_will_expire_tomorrow">-->
+        <!--                    <div class="stat-widget-one">-->
+        <!--                        <div class="stat-icon"><i class="fa fa-clock-o" /></div>-->
+        <!--                        <div class="stat-content">-->
+        <!--                            <div class="stat-head">Will Expire Tomorrow</div>-->
+        <!--                            <div class="stat_count" id="will_expire_tomorrow">-->
+        <!--                                <t t-esc="will_expire_tomorrow"/>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+        <!-- Third Section Header -->
+        <div class="section-title-container" style="margin: 30px 0 20px; text-align: center; padding-bottom: 10px;">
+            <h2 class="heading-dashboard" style="color:  #71639e; font-weight: bold; margin: 0;">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                Previous Total
+            </h2>
+        </div>
+        <div class="filter-section" style="max-width: 800px; margin: 0 auto;">
+                <div class="date-filters"
+                     style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; justify-content: flex-end;">
+                    <div class="filter-item" style="flex: 0 0 auto; min-width: 180px;">
+                        <label class="form-label"
+                               style="display: block; margin-bottom: 8px; font-weight: 600; color: #344767;">From Date</label>
+                        <input type="date"
+                               class="form-control from-date"
+                               placeholder="Select start date"
+                               style="width: 100%; padding: 8px 12px; border: 1px solid #dee2e6; border-radius: 4px; font-size: 14px; transition: border-color 0.15s ease-in-out; outline: none;"/>
+                    </div>
+                    <div class="filter-item" style="flex: 0 0 auto; min-width: 180px;">
+                        <label class="form-label"
+                               style="display: block; margin-bottom: 8px; font-weight: 600; color: #344767;">To Date</label>
+                        <input type="date"
+                               class="form-control to-date"
+                               placeholder="Select end date"
+                               style="width: 100%; padding: 8px 12px; border: 1px solid #dee2e6; border-radius: 4px; font-size: 14px; transition: border-color 0.15s ease-in-out; outline: none;"/>
+                    </div>
+                    <div class="filter-item" style="flex: 0 0 auto;">
+                        <button class="btn btn-primary reset-button apply-date-filter"
+                                style="padding: 8px 20px; background-color:  #71639e; border: none; border-radius: 4px; color: white; font-weight: 500; cursor: pointer; transition: background-color 0.15s ease-in-out;">
+                            Apply Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <div class="main-section">
+            <!-- <div class="start-card">-->
+            <!--                <div class="oh-card" t-on-click="show_expired_today">-->
+            <!--                    <div class="stat-widget-one">-->
+            <!--                        <div class="stat-icon"><i class="fa fa-hourglass-half" /></div>-->
+            <!--                        <div class="stat-content">-->
+            <!--                            <div class="stat-head">Expired Today</div>-->
+            <!--                            <div class="stat_count" id="expired_today">-->
+            <!--                                <t t-esc="expired_today"/>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div class="start-card">
+                <div class="oh-card" t-on-click="all_assigned_tasks_total_click">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-caret-square-o-up" /></div>
+                        <div class="stat-content">
+                            <div class="stat-head">Total assigned</div>
+                            <div class="stat_count">
+                                <t t-esc="all_assigned_tasks_total"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card" t-on-click="all_unassigned_tasks_total_click">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-user-times" /></div>
+                        <div class="stat-content">
+                            <div class="stat-head">Total unassigned</div>
+                            <div class="stat_count">
+                                <t t-esc="all_unassigned_tasks_total"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                <div class="oh-card" t-on-click="all_on_hold_tasks_total_click">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-pause-circle" /></div>
+                        <div class="stat-content">
+                            <div class="stat-head">Total on hold</div>
+                            <div class="stat_count">
+                                <t t-esc="all_on_hold_tasks_total"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="start-card">
+                 <div class="oh-card" t-on-click="all_closed_tasks_total_click">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon"><i class="fa fa-check-circle" /></div>
+                        <div class="stat-content">
+                            <div class="stat-head">Total closed</div>
+                            <div class="stat_count">
+                                <t t-esc="all_closed_tasks_total"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+
+    <t t-name="service_call_dashboard_odoo.DashboardCallChart">
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px;">
+<!--            <div class="section-title-container" style="display: flex; align-items: center;">-->
+<!--                <h2 class="heading-dashboard"-->
+<!--                    style="color: #4CAF50; font-weight: bold; margin: 0; display: flex; align-items: center;">-->
+<!--                    <i class="fa fa-bar-chart me-2" style="margin-right: 8px;"/>-->
+<!--                    Charts Data-->
+<!--                </h2>-->
+<!--            </div>-->
+
+            <!--            <button class="btn load-charts-button"-->
+            <!--                    style="padding: 8px 20px; background-color: #5e72e4; border: none; border-radius: 4px; color: white;-->
+            <!--                    font-weight: 500; cursor: pointer; transition: background-color 0.15s ease-in-out;">-->
+            <!--                 Load Charts-->
+            <!--            </button>-->
+        </div>
+
+        <!--        <div class="main-section_data charts-section_data">-->
+        <!--            <div class="row mt-4">-->
+        <!--                &lt;!&ndash; Tag Wise Call Count Chart &ndash;&gt;-->
+        <!--                <div class="col-md-6 d-flex justify-content-center">-->
+        <!--                    <div class="chart-container" style="width: 100%; max-width: 600px; height: 400px; background: white;-->
+        <!--                    padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 10px;">-->
+        <!--                        <h2 class="section-header"-->
+        <!--                            style="text-align: center; margin-bottom: 20px;">Tag Wise Call Count</h2>-->
+        <!--                        <div class="graph_canvas" style="position: relative; height: 300px;">-->
+        <!--                            <canvas id="task_tags_chart"/>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+
+        <!--                &lt;!&ndash; Employee Call Distribution Chart &ndash;&gt;-->
+        <!--                <div class="col-md-6 d-flex justify-content-center">-->
+        <!--                    <div class="chart-container" style="width: 100%; max-width: 600px; height: 400px; background: white;-->
+        <!--                    padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 10px;">-->
+        <!--                        <h2 class="section-header" style="text-align: center; margin-bottom: 20px;">Employee Call Distribution</h2>-->
+        <!--                        <div class="graph_canvas" style="position: relative; height: 300px;">-->
+        <!--                            <canvas id="employee_task_chart"/>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+
+        <div class="main-section_data charts-section_data" style="display: none;">
+            <div class="row mt-4">
+                <!-- Tag Wise Call Count Chart -->
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div class="chart-container" style="width: 100%; max-width: 600px; height: 400px; background: white;
+                    padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 10px;">
+                        <h2 class="section-header" style="text-align: center; margin-bottom: 20px;">Tag Wise Call Count</h2>
+                        <div class="graph_canvas" style="position: relative; height: 300px;">
+                            <canvas id="task_tags_chart"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Call Distribution Chart -->
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div class="chart-container" style="width: 100%; max-width: 600px; height: 400px; background: white;
+                    padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 10px;">
+                        <h2 class="section-header" style="text-align: center; margin-bottom: 20px;">Employee Call Distribution</h2>
+                        <div class="graph_canvas" style="position: relative; height: 300px;">
+                            <canvas id="employee_task_chart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </t>
+</templates>

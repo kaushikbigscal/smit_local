@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_service_call_pivot" model="ir.ui.view">
+        <field name="name">service.call.pivot</field>
+        <field name="model">service.call.count</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Report" display_quantity="1" sample="1" disable_linking="0">
+                <field name="department_id" type="row"/>
+
+                    <field name="user_ids" type="row"/>
+
+                <field name="stage_id" type="col"/>
+
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_service_call_tree" model="ir.ui.view">
+    <field name="name">service.call.count.tree</field>
+    <field name="model">service.call.count</field>
+    <field name="arch" type="xml">
+        <tree string="Service Call Details">
+<!--             <field name="timesheet_group_id" string="Timesheet Group" group="1"/>-->
+
+
+            <field name="name" optional="show"/>
+            <field name="partner_id" optional="show"/>
+
+
+
+<!--            <field name="call_subtype" optional="hide"/>-->
+             <field name="ticket_id" optional="show"/>
+
+            <field name="planned_date" optional="hide"/>
+<!--            <field name="product_categ_id"/>-->
+            <field name="product_id" optional="show"/>
+            <field name="machine_no" optional="hide"/>
+            <field name="user_ids" optional="show" widget="many2many_avatar_user"/>
+            <field name="call_type" optional="hide"/>
+            <field name="call_sub_type" optional="hide"/>
+            <field name="service_type" optional="hide"/>
+            <field name="call_coordinator" optional="hide"/>
+            <field name="coordinator_number" optional="hide"/>
+<!--            <field name="actual_problem"/>-->
+            <field name="problem_solution" optional="hide"/>
+            <field name="stage_id" optional="show"/>
+            <field name="create_uid" optional="hide"/>
+            <field name="create_date" optional="hide"/>
+<!--            <field name="assign_date"/>-->
+<!--            <field name="complete_date"/>-->
+            <field name="reopen_count" optional="hide"/>
+            <field name="reopen_reason" optional="hide"/>
+<!--            <field name="response_gap"/>-->
+            <field name="plan_on_time" optional="hide"/>
+            <field name="start_on_time" optional="hide"/>
+            <field name="response_gap" optional="hide"/>
+            <field name="custom_timesheet_ids" column_invisible="True" optional="hide"/>
+            <field name="assign_date" optional="hide"/>
+            <field name="checkin_time" optional="show"/>
+            <field name="checkout_time" optional="show"/>
+            <field name="total_duration_hours" optional="show"/>
+<!--            <field name="active" optional="hide"/>-->
+
+
+            <field name="product_categ_id" optional="hide"/>
+
+
+            <field name="done_stage_change_date" optional="hide"/>
+            <field name="time_to_resolve" optional="hide"/>
+
+
+        </tree>
+    </field>
+    </record>
+
+
+
+
+
+    <record id="action_service_report" model="ir.actions.act_window">
+        <field name="name">Service Report</field>
+        <field name="res_model">service.call.count</field>
+        <field name="view_mode">pivot,tree</field>
+
+        <field name="context">{
+            'group_by_no_leaf': 1,
+            'group_by': [],
+            'pivot_measures': ['__count__'],
+
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No data yet!
+            </p>
+            <p>
+                Analyze the progress of your tasks and the performance of your workers.
+            </p>
+        </field>
+    </record>
+
+
+
+
+
+
+    <menuitem id="fsm_menu_reporting_count_report"
+              name="Service Call Count Report"
+              sequence="11"
+              parent="industry_fsm.fsm_menu_reporting"
+              action="action_service_report"/>
+
+ <record id="action_service_call_export" model="ir.actions.server">
+    <field name="name">Export Service Call</field>
+    <field name="model_id" ref="model_service_call_count"/>
+    <field name="binding_model_id" ref="model_service_call_count"/>
+    <field name="state">code</field>
+    <field name="code">
+        action = env['service.call.count'].export_service_call_report()
+    </field>
+</record>
+
+
+
+</odoo>
+

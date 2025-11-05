@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="calendar.CalendarDashboard" owl="1">
+        <style>
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                justify-content: center;
+                gap: 0.5rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            @media (max-width: 768px) {
+                .calendar-grid {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    overflow-x: auto;
+                    gap: 0.5rem;
+                    justify-content: flex-start;
+                    padding: 0 0.5rem;
+                    margin: 0;
+                    box-sizing: border-box;
+                    scroll-snap-type: x mandatory;
+                    scroll-behavior: smooth;
+                    overscroll-behavior: contain;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .calendar-grid::-webkit-scrollbar {
+                    display: none;
+                }
+                .dashboard-card {
+                    flex: 0 0 auto;
+                    width: 110px;
+                    height: 80px;
+                    margin: 0;
+                    scroll-snap-align: start;
+                }
+            }
+            .dashboard-card .card-title {
+                padding: 0.3rem 0;
+                font-size: 0.85rem;
+            }
+            .dashboard-card .card-value {
+                padding: 0.3rem 0;
+                font-size: 1rem;
+            }
+
+            .dashboard-content {
+                transition: all 0.3s ease-in-out;
+                overflow: hidden;
+            }
+
+            .dashboard-content.d-none {
+                max-height: 0;
+                padding: 0;
+                margin: 0;
+                opacity: 0;
+            }
+
+            .o_calendar_dashboard:has(.dashboard-content.d-none) {
+                min-height: 50px;
+            }
+
+            .dashboard-content:not(.d-none) {
+                max-height: 200px;
+                opacity: 1;
+            }
+
+            .floating-toggle {
+                position: absolute;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+                z-index: 10;
+            }
+
+            .floating-toggle.hidden-mode {
+                top: 10px;
+                right: 20px;
+                transform: none;
+            }
+
+            .toggle-btn {
+                min-width: auto;
+                width: auto;
+                padding: 0.375rem 0.75rem;
+                background: white;
+            }
+
+            @media (max-width: 576px) {
+                .floating-toggle {
+                    right: 10px;
+                }
+
+                .floating-toggle.hidden-mode {
+                    top: 5px;
+                    right: 10px;
+                }
+
+                .toggle-btn {
+                    padding: 0.5rem;
+                    min-width: 35px;
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .toggle-btn i {
+                    margin: 0;
+                }
+            }
+        </style>
+        <t t-if="showDashboard">
+            <div class="o_calendar_dashboard container-fluid py-2 border-bottom bg-white"
+                 style="position: relative; z-index: 1;">
+                <!-- Floating Toggle Button - Always Visible -->
+                <div t-att-class="isDashboardVisible ? 'floating-toggle' : 'floating-toggle hidden-mode'">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary toggle-btn"
+                            t-on-click="toggleDashboard"
+                            t-att-title="isDashboardVisible ? 'Hide Dashboard' : 'Show Dashboard'">
+                        <i t-att-class="isDashboardVisible ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                        <span class="ms-1 d-none d-sm-inline" t-out="isDashboardVisible ? 'Hide' : 'Show'"/>
+                    </button>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div t-att-class="isDashboardVisible ? 'dashboard-content' : 'dashboard-content d-none'">
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="calendar-grid">
+
+                             <div title="Today's Events" class="dashboard-card" t-on-click="onCardClick" data-type="meeting">
+                                 <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                     <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Meetings</div>
+                                     <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                          t-out="calendarData['meeting_count'] || 0"/>
+                                 </div>
+                             </div>
+                            <t t-if="moduleInfo.crm and menuAccess.lead">
+                                <div title="Leads" class="dashboard-card" t-on-click="onCardClick" data-type="lead">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Leads</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['lead_count'] || 0"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <t t-if="moduleInfo.visit and menuAccess.visit">
+                                <div title="My Visits" class="dashboard-card" t-on-click="onCardClick" data-type="visits">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Visits</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['visit_count'] || 0"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <t t-if="menuAccess.call">
+                                <div title="Calls" class="dashboard-card" t-on-click="onCardClick" data-type="call">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Calls</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['call_count'] || 0"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <!-- Projects -->
+                            <t t-if="moduleInfo.project and menuAccess.project">
+                                <div title="Projects" class="dashboard-card cursor-pointer" t-on-click="onCardClick" data-type="project">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Projects</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['project_count'] || 0"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Tasks -->
+                            <t t-if="moduleInfo.project and menuAccess.task">
+                                <div title="Tasks" class="dashboard-card cursor-pointer" t-on-click="onCardClick" data-type="task">
+                                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-2 border rounded shadow-sm">
+                                        <div class="w-100 text-white text-center bg-primary card-title fw-bold rounded-top">Tasks</div>
+                                        <div class="w-100 text-center bg-light card-value fw-bold rounded-bottom"
+                                             t-out="calendarData['task_count'] || 0"/>
+                                    </div>
+                                </div>
+                            </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+</templates>

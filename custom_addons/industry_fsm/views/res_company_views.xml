@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_company_form_fsm" model="ir.ui.view">
+        <field name="name">res.company.form.fsm</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='branches']" position="after">
+                <page name="field_service" string="Service Call">
+                    <group>
+                        <field name="resolved_required_fields" widget="many2many_tags"/>
+                        <field name="attachment_required"/>
+                        <field name="signed_required"/>
+                    </group>
+                     <group string="Geofence Settings">
+                        <field name="enable_geofencing_on_checkin"/>
+                        <field name="enable_geofencing_on_checkout"/>
+                        <field name="allowed_distance_service"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

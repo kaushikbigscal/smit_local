@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record model="ir.ui.view" id="tour_plan_visit_objective_search_view">
+            <field name="name">tour_plan_visit_objective_search_view</field>
+            <field name="model">visit.objective</field>
+            <field name="arch" type="xml">
+                <search string="Issue Version">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tour_plan_visit_objective_form_view">
+            <field name="name">tour_plan_visit_objective_form_view</field>
+            <field name="model">visit.objective</field>
+            <field name="arch" type="xml">
+                <form string="Visit Objective">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tour_plan_visit_objective_tree_view">
+            <field name="name">tour_plan_visit_objective_tree_view</field>
+            <field name="model">visit.objective</field>
+            <field name="arch" type="xml">
+                <tree string="Visit Objective" editable="top" sample="1" multi_edit="1" default_order="name">
+                    <field name="name"/>
+                    <field name="color" widget="color_picker" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tour_plan_visit_objective_action" model="ir.actions.act_window">
+            <field name="name">Visit Objective</field>
+            <field name="res_model">visit.objective</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No tags found. Let's create one!
+              </p>
+              <p>
+                  Use tags to categorize your tasks.
+              </p>
+            </field>
+
+        </record>
+          <menuitem
+                name="Visit Objective"
+                parent="menu_crm_config_salesperson_planner"
+                id="visit_objective_menu_view"
+                action="tour_plan_visit_objective_action"
+                groups="sales_team.group_sale_manager"
+                 sequence="2"
+            />
+</odoo>

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<templates id="template" xml:space="preserve">
+    <t t-name="ItStatementMain">
+        <div class="oh_dashboards">
+            <div class="container-fluid o_hr_dashboard">
+                <h1>hello world</h1>
+            </div>
+        </div>
+    </t>
+    <t t-name="ItStatement">
+        <link rel="stylesheet" href="/aspl_indian_payroll/static/src/css/it_statement.css"/>
+
+        <div class="main_section_it_statement">
+
+            <!-- ************************** YTD SUMMARY IT STATEMENT TABLE  ************************* -->
+            <div class="first_section_it_statement">
+                <t t-set="current_financial_year" t-value="this.state.login_employee['current_financial_year']"/>
+                <t t-set="ytd_summary_it_statement_data"
+                   t-value="this.state.login_employee['ytd_summary_it_statement_data']"/>
+                <t t-set="pf_deduction_for_new_regime"
+                   t-value="ytd_summary_it_statement_data['Deduction']['Provident Fund (Employer Contribution)']['Total']"/>
+                <t t-set="ytd_summary_it_income_components"
+                   t-value="this.state.login_employee['ytd_summary_it_income_components']"/>
+                <t t-set="ytd_summary_it_income_components_new"
+                   t-value="this.state.login_employee['ytd_summary_it_income_components_new']"/>
+                <t t-set="ytd_summary_it_deduction_component_last_employer"
+                   t-value="this.state.login_employee['ytd_summary_it_deduction_component_last_employer']"/>
+                <t t-set="ytd_summary_it_deduction_components"
+                   t-value="this.state.login_employee['ytd_summary_it_deduction_components']"/>
+                <t t-set="salary_component"
+                   t-value="this.state.login_employee['salary_component']"/>
+                <t t-set="ytd_summary_it_deduction_components_new"
+                   t-value="this.state.login_employee['ytd_summary_it_deduction_components_new']"/>
+                <t t-set="tax_amount_old_regime_dict"
+                   t-value="this.state.login_employee['tax_amount_old_regime_dict']"/>
+                <t t-set="tax_amount_new_regime_dict"
+                   t-value="this.state.login_employee['tax_amount_new_regime_dict']"/>
+                <t t-set="it_statement_heading_data" t-value="['Total',4,5,6,7,8,9,10,11,12,1,2,3]"/>
+                <t t-set="section_via" t-value="['80C','80CCD','80D','80 Other','80CCD(2) Employer Contribution']"/>
+                <t t-set="section_16" t-value="['Professional Tax','Standard Deduction']"/>
+                <t t-set="section_16_new" t-value="['Standard Deduction']"/>
+                <t t-set="it_statement_income_components_total"
+                   t-value="ytd_summary_it_statement_data['Income']['Total']['Total']"/>
+
+                <div class="heading_table_statement">
+                    <t t-esc="this.state.login_employee['employee_name']"/>
+                    - IT Statement [
+                    <t t-esc="current_financial_year"/>
+                    ]</div>
+                <div class="heading_table_statement">( Amount in ? )</div>
+
+                <table class="table table-borderless">
+                    <thead style="background: #bee5e6;">
+                        <tr>
+                            <th class="table_head_statement" scope="col">Item</th>
+                            <th class="table_head_statement" scope="col">Total</th>
+                            <th class="table_head_statement" scope="col">Apr</th>
+                            <th class="table_head_statement" scope="col">May</th>
+                            <th class="table_head_statement" scope="col">Jun</th>
+                            <th class="table_head_statement" scope="col">Jul</th>
+                            <th class="table_head_statement" scope="col">Aug</th>
+                            <th class="table_head_statement" scope="col">Sep</th>
+                            <th class="table_head_statement" scope="col">Oct</th>
+                            <th class="table_head_statement" scope="col">Nov</th>
+                            <th class="table_head_statement" scope="col">Dec</th>
+                            <th class="table_head_statement" scope="col">Jan</th>
+                            <th class="table_head_statement" scope="col">Feb</th>
+                            <th class="table_head_statement" scope="col">Mar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="ytd_summary_it_statement_data" t-as="i" t-key="i.id">
+                           <tr>
+                                <td class="bold1" colspan="14">
+                                    <t t-if="i=='Income'">
+                                       A. <t t-esc="i"/>
+                                    </t>
+                                    <t t-else="">
+                                        B. <t t-esc="i"/>
+                                    </t>
+                                </td>
+                           </tr>
+                            <t t-foreach="ytd_summary_it_statement_data[i]" t-as="j" t-key="j.id">
+                                <tr>
+                                    <td class="bold1"
+                                        style="width:250px;padding-left:60px;">
+                                        <t t-esc="j"/>
+                                    </td>
+                                    <t t-foreach="it_statement_heading_data" t-as="k" t-key="k.id">
+                                        <t t-if="j == 'Total'">
+                                            <td class="bold1" scope="col">
+                                                <t t-esc="ytd_summary_it_statement_data[i][j][k]"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td scope="col">
+                                                <t t-esc="ytd_summary_it_statement_data[i][j][k]"/>
+                                            </td>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="second_section_it_statement">
+                <div class="second_section_first_div_it_statement">
+                    <div class="heading_regime1">Old Regime</div>
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="bold1 border_m1">
+                                <td style="text-align:left;border-top:2px">
+                                    C. Salary
+                                </td>
+                            </tr>
+                            <t t-foreach="salary_component" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <t t-if="i =='Salary Component'">
+                                        <td style="padding-left:48px;" class="bold1">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;" class="bold1">
+                                            <t t-esc="salary_component[i]"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+
+                                        <td style="text-align:right;">
+                                            <t t-esc="salary_component[i]"/>
+                                        </td>
+                                    </t>
+                                    <t t-set="it_statement_income_components_total"
+                                       t-value="ytd_summary_it_statement_data['Income']['Total']['Total'] - salary_component['HRA Exempted Amount']"/>
+                                </tr>
+                            </t>
+                            <tr class="bold1 border_m1">
+                                <td style="text-align:left;border-top:2px">
+                                    D. Income From Previous Employer
+                                </td>
+                            </tr>
+                            <t t-foreach="ytd_summary_it_deduction_component_last_employer" t-as="i" t-key="i.id">
+                                <t t-if="i == 'Total Income After Exemptions'">
+                                    <tr class="table_data_it_components">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t t-esc="ytd_summary_it_deduction_component_last_employer[i]"/>
+                                        </td>
+                                        <t t-set="it_statement_income_components_total"
+                                           t-value="it_statement_income_components_total + ytd_summary_it_deduction_component_last_employer[i]"/>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr class="table_data_it_components">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t t-esc="ytd_summary_it_deduction_component_last_employer[i]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                     E. Less Deduction Under Section 16
+                                </td>
+                            </tr>
+                            <t t-foreach="section_16" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        <t t-esc="i"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="ytd_summary_it_deduction_components[i]"/>
+                                        <t t-set="it_statement_income_components_total"
+                                           t-value="it_statement_income_components_total - ytd_summary_it_deduction_components[i]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                    
+                                    F. Income From Other Sources (Including House Properties)
+                                </td>
+                            </tr>
+                            <t t-foreach="ytd_summary_it_income_components" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        <t t-esc="i"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="ytd_summary_it_income_components[i]"/>
+                                    </td>
+                                    <t t-set="it_statement_income_components_total"
+                                       t-value="it_statement_income_components_total + ytd_summary_it_income_components[i]"/>
+                                </tr>
+                            </t>
+                            <tr class="border_m1">
+                                <td class="bold1 table_data_it_components">
+                                    
+G. Gross Total Income ( C + D - E + F )</td>
+
+                                <td style="text-align:right;">
+                                    <t t-esc="it_statement_income_components_total"/>
+                                </td>
+                            </tr>
+                            <t t-set="it_statement_deduction_components_total" t-value="0"/>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                    
+H. Deduction Under Chapter VI A
+                                </td>
+                            </tr>
+                            <t t-foreach="section_via" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        <t t-esc="i"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="ytd_summary_it_deduction_components[i]"/>
+                                        <t t-set="it_statement_deduction_components_total"
+                                           t-value="it_statement_deduction_components_total+ytd_summary_it_deduction_components[i]"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <tr class="border_m1">
+                                <td class="bold1 table_data_it_components">
+                                    
+I. Total Deduction (H)</td>
+
+                                <td style="text-align:right;">
+                                    <t t-esc="it_statement_deduction_components_total"/>
+                                </td>
+                            </tr>
+                            <tr class="border_m1">
+                                <td class="bold1 table_data_it_components">
+                                    
+J. Total Taxable Amount ( G - I )</td>
+                                <td style="text-align:right;">
+                                    <t t-set="it_statement_income_components_total"
+                                       t-esc="it_statement_income_components_total - it_statement_deduction_components_total"/>
+                                </td>
+                            </tr>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                    
+K. Annual Tax
+                                </td>
+                            </tr>
+                            <t t-foreach="tax_amount_old_regime_dict" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <t t-if="i =='Total Tax Amount'">
+                                        <td style="padding-left:48px;" class="bold1">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;" class="bold1">
+                                            <t t-esc="tax_amount_old_regime_dict[i]"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+
+                                        <td style="text-align:right;">
+                                            <t t-esc="tax_amount_old_regime_dict[i]"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="second_section_second_div_it_statement">
+                    <div class="heading_regime1">New Regime</div>
+                    <table class="table table-borderless">
+                        <tbody>
+                            <t t-set="new_regine_total"
+                               t-value="ytd_summary_it_statement_data['Income']['Total']['Total']"/>
+                            <tr class="bold1 border_m1">
+                                <td style="text-align:left;">
+                                    C. Gross Salary
+                                </td>
+                                <td style="text-align:right;">
+                                    <t t-esc="ytd_summary_it_statement_data['Income']['Total']['Total']"/>
+                                </td>
+                            </tr>
+                            <tr class="bold1 border_m1">
+                                <td style="text-align:left;border-top:2px">
+                                    D. Salary From Previous Employer
+                                </td>
+                            </tr>
+                            <t t-foreach="ytd_summary_it_deduction_component_last_employer" t-as="i" t-key="i.id">
+                                <t t-if="i == 'Total Income After Exemptions'">
+                                    <tr class="table_data_it_components">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t t-esc="ytd_summary_it_deduction_component_last_employer[i]"/>
+                                        </td>
+                                        <t t-set="new_regine_total"
+                                           t-value="new_regine_total + ytd_summary_it_deduction_component_last_employer[i]"/>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr class="table_data_it_components">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t t-esc="ytd_summary_it_deduction_component_last_employer[i]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                     E. Less Deduction Under Section 16
+                                </td>
+                            </tr>
+                            <t t-foreach="section_16_new" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        <t t-esc="i"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="ytd_summary_it_deduction_components_new[i]"/>
+                                        <t t-set="new_regine_total"
+                                           t-value="new_regine_total - ytd_summary_it_deduction_components_new[i]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                    F. Income From Other Sources (Including House Properties)
+                                </td>
+                            </tr>
+                            <t t-foreach="ytd_summary_it_income_components_new" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        <t t-esc="i"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="ytd_summary_it_income_components_new[i]"/>
+                                    </td>
+                                    <t t-set="new_regine_total"
+                                       t-value="new_regine_total + ytd_summary_it_income_components_new[i]"/>
+                                </tr>
+                            </t>
+                            <tr class="border_m1">
+                                <td class="bold1 table_data_it_components">
+                                    
+G. Gross Total Income (C + D - E + F )</td>
+
+                                <td style="text-align:right;">
+                                    <t t-esc="new_regine_total - ytd_summary_it_deduction_component_last_employer['Provident Fund']"/>
+                                </td>
+                            </tr>
+                            <tr class="bold1 border_m1">
+                                <td>
+                                     H. Provident Fund
+                                </td>
+                            </tr>
+                            
+                                <tr class="table_data_it_components">
+                                    <td style="padding-left:48px;">
+                                        80CCD(2) Employer Contribution
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <t t-esc="pf_deduction_for_new_regime"/>
+                                        <t t-set="new_regine_total"
+                                           t-value="new_regine_total"/>
+                                    </td>
+                                </tr>
+                            
+                            <tr class="border_m1">
+                                <td class="bold1 table_data_it_components">
+                                    
+I. Total Taxable Amount ( G - H )</td>
+                                <td style="text-align:right;">
+                                    <t t-esc="new_regine_total - pf_deduction_for_new_regime - ytd_summary_it_deduction_component_last_employer['Provident Fund']"/>
+                                </td>
+                            </tr>
+                            <tr class="bold1 border_m1">
+                                <td>
+J. Annual Tax
+                                </td>
+                            </tr>
+                            <t t-foreach="tax_amount_new_regime_dict" t-as="i" t-key="i.id">
+                                <tr class="table_data_it_components">
+                                    <t t-if="i =='Total Tax Amount'">
+                                        <td style="padding-left:48px;" class="bold1">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;" class="bold1">
+                                            <t t-esc="tax_amount_new_regime_dict[i]"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="padding-left:48px;">
+                                            <t t-esc="i"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t t-esc="tax_amount_new_regime_dict[i]"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="EmployeeWarningPayroll">
+        <div>
+            <p>Error : Could not find employee linked to user</p>
+            <p>Please contact system admin for the setup</p>
+        </div>
+    </t>
+
+    <t t-name="PayslipWarningPayroll">
+        <div>
+            <p>Error : Could not find employee payslip or it declaration</p>
+            <p>Please contact system admin for the setup</p>
+        </div>
+    </t>
+
+</templates>

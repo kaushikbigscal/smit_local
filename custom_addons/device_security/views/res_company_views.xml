@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Company Form View - Add Device Lock Settings -->
+    <record id="view_company_form_device_lock" model="ir.ui.view">
+        <field name="name">res.company.form.device.lock</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="after">
+                <separator string="Device Security Settings"/>
+                <div class="mb-2">
+                    <group name="device_security_settings">
+                        <group>
+                            <field name="device_lock_enabled" widget="boolean_toggle"/>
+                        </group>
+                        <div class="text-muted" colspan="2">
+                            <p>When enabled, users will be restricted to login from registered devices only.
+                                <br/>
+                                This
+                                feature
+                                works in conjunction with user-level login restrictions.
+                            </p>
+                        </div>
+                    </group>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

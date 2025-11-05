@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_user_device_lock_system,user.device.lock.system,model_user_device_lock,base.group_system,1,1,1,1
+access_user_device_lock_user,user.device.lock.user,model_user_device_lock,base.group_user,1,0,0,0
+
+access_user_device_info_system,user.device.info.system,model_user_device_info,base.group_system,1,1,1,1
+access_user_device_info_user,user.device.info.user,model_user_device_info,base.group_user,1,0,0,0

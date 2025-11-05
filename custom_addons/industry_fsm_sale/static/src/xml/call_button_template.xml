@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="industry_fsm_sale.call_partner_action_template">
+        <!-- Empty or minimal layout to allow rendering -->
+        <div class="o_call_partner_action"/>
+    </t>
+</templates>

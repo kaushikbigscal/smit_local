@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <field name="ssnid" position="attributes">
+                <attribute name="required">mandatory_identity_details_config</attribute>
+            </field>
+
+            <xpath expr="//field[@name='identification_id']" position="before">
+                <field name="passport_photo" required="mandatory_identity_details_config"/>
+            </xpath>
+
+            <xpath expr="//field[@name='identification_id']" position="attributes">
+                <attribute name="required">mandatory_identity_details_config</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='hr_settings']" position="inside">
+                <group>
+                    <field name="grey_gratuity"/>
+                    <field name="emp_gratuity"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//group[@name='active_group']//field[@name='employee_type']" position="after">
+
+                <field name="tds_percentage_amt"/>
+
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='personal_information']/group"
+                   position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='personal_information']" position="inside">
+                <notebook>
+                    <page name="personal_detail" string="General">
+                        <div style="position:relative;">
+                            <group col="2">
+                                <group>
+                                    <field name="physically_challenged"/>
+                                </group>
+                            </group>
+                        </div>
+                    </page>
+                </notebook>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='personal_information']" position="before">
+                <page name="joining" string="Joining">
+                    <group>
+                        <group>
+                            <field name="join_date"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="separation" string="Separation"
+                      groups="hr.group_hr_user">
+                    <group>
+                        <group>
+                            <field name="separation_mode" widget="selection"/>
+                        </group>
+                    </group>
+                    <form>
+                        <sheet>
+                            <group invisible="separation_mode != 'resigned'">
+                                <group string="Resignation Details">
+                                    <field name="resignation_date"
+                                           required="separation_mode == 'resigned'"/>
+                                    <field name="leaving_rason"
+                                           required="separation_mode == 'resigned'"/>
+                                    <label for="resigned_notice_period" string="Notice Period"/>
+                                    <div>
+                                        <field name="resigned_notice_period"
+                                               placeholder="Enter months"
+                                               class="oe_inline"/>
+                                        Months
+                                    </div>
+                                    <field name="tentative_leaving_date" readonly="1" force_save="1"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </page>
+            </xpath>
+
+            <xpath expr="//page[@name='hr_settings']" position="before">
+                <page name="bank_detail1" string="BANK/PF/ESI">
+                    <group>
+                        <group string="Bank Information">
+                            <field name="mandatory_bank_details_config" invisible="1"/>
+                            <field name="mandatory_identity_details_config" invisible="1"/>
+                            <field name="bank_id"
+                                   options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                   required="mandatory_bank_details_config"/>
+                            <field name="account_type_id" required="mandatory_bank_details_config"/>
+                            <field name="bank_record_name" required="mandatory_bank_details_config"/>
+                            <field name="bank_account_no" required="mandatory_bank_details_config"/>
+                            <field name="x_ifsc_code" required="mandatory_bank_details_config"/>
+                        </group>
+                        <group string="PF Account">
+                            <field name="pf_employee"/>
+                            <field name="uan" invisible="pf_employee != True"/>
+                            <field name="pf_number"
+                                   invisible="pf_employee != True"/>
+                            <field name="pf_date"
+                                   invisible="pf_employee != True"/>
+                            <field name="family_pf_no"
+                                   invisible="pf_employee != True"/>
+                        </group>
+                        <group string="ESI Account">
+                            <field name="esi_employee"/>
+                            <field name="esi_no"
+                                   invisible="esi_employee != True"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

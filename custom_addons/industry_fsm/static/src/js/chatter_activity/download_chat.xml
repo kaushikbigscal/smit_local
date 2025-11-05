@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="industry_fsm.chatter_download_button" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'o-mail-Chatter-top')]//button[contains(@class, 'o-mail-Chatter-activity')]" position="after">
+            <button t-if="showDownloadButton" class="o-mail-Chatter-download btn btn-secondary text-nowrap ms-1"
+                    t-att-class="{ 'my-2': !props.compactHeight }" data-hotkey="shift+a" t-on-click="downloadChat">
+                    <span>Download</span>
+            </button>
+        </xpath>
+    </t>
+</templates>

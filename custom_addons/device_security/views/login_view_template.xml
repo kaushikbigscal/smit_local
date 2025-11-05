@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="custom_debug_token_login_inherit" inherit_id="web.login">
+        <xpath expr="//input[@name='password']" position="after">
+            <t t-if="request.params.get('device_lock_debug') == '1'">
+                <div class="mt-3">
+                    <label for="debug_token" class="form-label">Debug Token</label>
+                    <input type="text" name="debug_token" class="form-control"
+                           required="request.params.get('device_lock_debug') == '1'" placeholder="Enter debug token"/>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- JavaScript to handle form submission -->
+        <xpath expr="//form[@class='oe_login_form']" position="inside">
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Only activate in debug mode
+                if (!window.location.search.includes('device_lock_debug=1')) return;
+
+                var form = document.querySelector('form.oe_login_form');
+                if (!form) return;
+
+                // Debug log to confirm script is loaded
+                console.log("Debug token script loaded");
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    console.log("Form submit intercepted");
+
+                    // Create new form for submission
+                    var newForm = document.createElement('form');
+                    newForm.method = 'POST';
+                    newForm.action = '/web/debug_auth';
+
+                    // Copy all inputs from original form
+                    var inputs = form.querySelectorAll('input');
+                    inputs.forEach(function(input) {
+                        if (input.type !== 'submit') {
+                            var newInput = document.createElement('input');
+                            newInput.type = input.type;
+                            newInput.name = input.name;
+                            newInput.value = input.value;
+                            newForm.appendChild(newInput);
+                        }
+                    });
+
+                    // Add debug token if not already included
+                    if (!form.querySelector('input[name="debug_token"]')) {
+                        var tokenInput = document.createElement('input');
+                        tokenInput.type = 'text';
+                        tokenInput.name = 'debug_token';
+                        tokenInput.value = '';
+                        newForm.appendChild(tokenInput);
+                    }
+
+                    // Submit the new form
+                    document.body.appendChild(newForm);
+                    console.log("Submitting to /web/debug_auth");
+                    newForm.submit();
+                });
+            });
+            </script>
+        </xpath>
+
+        <!-- Error messages -->
+        <xpath expr="//form[@class='oe_login_form']" position="before">
+            <t t-if="request.params.get('device_lock_debug') == '1'">
+                <div class="alert alert-warning mb-3">
+                    <i class="fa fa-exclamation-triangle me-2"></i>
+                    <strong>Debug Mode Active</strong>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

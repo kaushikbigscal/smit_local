@@ -1,0 +1,31 @@
+.o_qr_scanner_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_qr_scanner_content {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: black;
+}
+
+.o_qr_scanner_content video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.o_qr_scanner_overlay {
+    position: absolute;
+    inset: 0;
+    border: 3px solid limegreen;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    pointer-events: none;
+}

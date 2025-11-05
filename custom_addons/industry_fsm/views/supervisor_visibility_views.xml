@@ -1,0 +1,94 @@
+<odoo>
+    <record id="view_call_supervisor_visibility_tree" model="ir.ui.view">
+        <field name="name">view.call.supervisor.visibility.tree</field>
+        <field name="model">call.visibility</field>
+        <field name="arch" type="xml">
+            <tree string="Supervisor Department Permissions">
+                <field name="department_id" string="Department"/>
+                <field name="employee_id" widget="many2many_avatar_user"/>
+                <field name="perm_read"/>
+                <field name="perm_write"/>
+                <field name="perm_create"/>
+                <field name="perm_unlink"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_call_supervisor_visibility_form" model="ir.ui.view">
+        <field name="name">view.call.supervisor.visibility.form</field>
+        <field name="model">call.visibility</field>
+        <field name="arch" type="xml">
+            <form string="Supervisor Department Permissions">
+                <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="department_id" options="{'no_create': True}"/>
+                            <field name="employee_id" options="{'no_create': True}"
+                                   widget="many2many_avatar_user"/>
+                            <field name="supervisor_group" invisible="1"/>
+                            <field name="admin_group" invisible="1"/>
+                        </group>
+                        <group string="Access Rights">
+                            <group>
+                                <field name="perm_read"/>
+                                <field name="perm_create"/>
+                            </group>
+                            <group>
+                                <field name="perm_write"/>
+                                <field name="perm_unlink"/>
+                            </group>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_call_visibility_search" model="ir.ui.view">
+        <field name="name">call.visibility.search</field>
+        <field name="model">call.visibility</field>
+        <field name="arch" type="xml">
+            <search string="Supervisor Department Permissions">
+                <field name="department_id"/>
+                <field name="employee_id"/>
+                <filter string="Read Access" name="read_access" domain="[('perm_read', '=', True)]"/>
+                <filter string="Write Access" name="write_access" domain="[('perm_write', '=', True)]"/>
+                <filter string="Create Access" name="create_access" domain="[('perm_create', '=', True)]"/>
+                <filter string="Delete Access" name="delete_access" domain="[('perm_unlink', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Employee" name="employee" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_service_call_supervisor_visibility" model="ir.actions.act_window">
+        <field name="name">Supervisor Call Visibility</field>
+        <field name="res_model">call.visibility</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_call_supervisor_visibility_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first department permission
+            </p>
+            <p>
+                Define which supervisor has access to which department's calls and
+                what operations they can perform.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_config_call_supervisor_visibility"
+              name="Service Center Access Rights"
+              parent="menu_service_center_root"
+              sequence="20"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_service_call_supervisor_visibility"/>
+
+</odoo>

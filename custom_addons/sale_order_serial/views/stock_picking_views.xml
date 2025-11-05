@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_picking_form_inherit_sale_project" model="ir.ui.view">
+            <field name="name">stock.picking.form.sale.project</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='extra']" position="after">
+                    <page string="Product Serial Numbers" name="product_serial">
+                        <field name="product_ids" invisible="1"/>
+                        <field name="serial_line_ids" context="{'default_picking_id': id}">
+                            <tree editable="bottom">
+                                <field name="product_id" domain="[('id', 'in', parent.product_ids)]"
+                                       options="{'no_create': True}"/>
+                                <field name="serial_number" required="1"/>
+<!--                                <field name="order_id" invisible="1"/>-->
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

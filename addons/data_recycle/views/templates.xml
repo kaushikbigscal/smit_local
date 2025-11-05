@@ -1,0 +1,60 @@
+<odoo>
+    <template id="report_template_xml_upload">
+          <t t-call="web.external_layout">
+                <main>
+
+                </main>
+          </t>
+    </template>
+
+    <record id="action_xml_upload_custom_report_format_for_all" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload</field>
+            <field name="report_file">data_recycle.report_template_xml_upload</field>
+
+    </record>
+
+
+
+    <template id="report_template_service_call_xml_upload">
+        <t t-call="web.external_layout">
+            <main>
+
+            </main>
+        </t>
+    </template>
+
+    <record id="action_xml_upload_custom_report_format_for_all_service_call" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">project.task</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_service_call_xml_upload</field>
+            <field name="report_file">data_recycle.report_template_service_call_xml_upload</field>
+
+    </record>
+
+
+
+    <template id="report_template_xml_upload_account_move_invoice">
+        <t t-call="web.external_layout">
+            <main>
+
+            </main>
+        </t>
+    </template>
+
+    <record id="action_xml_upload_custom_report_format_for_all_account_move_invoice" model="ir.actions.report">
+            <field name="name">Custom Report</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">data_recycle.report_template_xml_upload_account_move_invoice</field>
+            <field name="report_file">data_recycle.report_template_xml_upload_account_move_invoice</field>
+
+    </record>
+
+
+
+
+</odoo>

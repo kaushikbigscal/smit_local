@@ -1,0 +1,29 @@
+<odoo>
+    <data noupdate="1">
+        <record id="lead_type_med_order" model="lead.type">
+            <field name="name">New Order</field>
+            <field name="code">med_order</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="lead_type_fofo" model="lead.type">
+            <field name="name">FOFO Inquiry</field>
+            <field name="code">fofo</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="lead_type_recruitment" model="lead.type">
+            <field name="name">Job Looker</field>
+            <field name="code">recruitment</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="lead_type_support" model="lead.type">
+            <field name="name">Software Support</field>
+                <field name="code">support</field>
+            <field name="is_system_defined">1</field>
+        </record>
+        <record id="lead_type_customerorder" model="lead.type">
+            <field name="name">Order Related</field>
+            <field name="code">customerorder</field>
+            <field name="is_system_defined">1</field>
+        </record>
+    </data>
+</odoo>

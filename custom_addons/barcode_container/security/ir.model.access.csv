@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_barcode_container,access_barcode_container,model_barcode_container,base.group_user,1,1,1,1
+access_barcode_container_line,access_barcode_container_line,model_barcode_container_line,base.group_user,1,1,1,1
+
+access_barcode_container_portal,access_barcode_container_portal,model_barcode_container,base.group_portal,1,0,0,0
+access_barcode_container_line_portal,access_barcode_container_line_portal,model_barcode_container_line,base.group_portal,1,0,0,0

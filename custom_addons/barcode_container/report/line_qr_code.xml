@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_6x4_label" model="report.paperformat">
+        <field name="name">6x4 Inch Label</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">152</field> <!-- 4 inch -->
+        <field name="page_width">102</field>  <!-- 6 inch -->
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Report action for individual line PDFs -->
+    <record id="action_report_qr_container_line" model="ir.actions.report">
+        <field name="name">QR Label per Line</field>
+        <field name="model">barcode.container.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">barcode_container.report_single_line_qr</field>
+        <field name="report_file">barcode_container.report_single_line_qr</field>
+        <field name="binding_model_id" ref="model_barcode_container_line"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="barcode_container.paperformat_6x4_label"/>
+        <field name="print_report_name">'QR Label - %s - %s' % (object.container_id.name, object.label)</field>
+    </record>
+
+    <!-- QWeb template for single line PDF -->
+    <template id="report_single_line_qr">
+        <t t-foreach="docs" t-as="line">
+            <main style="margin:0; padding:0;">
+                <div class="page"
+                     style="margin:0; padding:0; width:100%; height:100%; box-sizing:border-box; text-align: center; border:2mm solid black;">
+
+                    <!-- Inner box (fits inside 2mm border) -->
+                    <table style="
+                            width:100%;
+                            height:100%;
+                            border-collapse: collapse;
+                            font-family: sans-serif;
+                        ">
+                        <tr>
+                            <!-- LEFT: QR -->
+                            <td style="
+                                    width: 98mm;
+                                    border-right: 1px solid black;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                ">
+                                <img t-if="line.qr_code_6_4"
+                                     t-att-src="'data:image/png;base64,' + line.qr_code_6_4.decode('utf-8')"
+                                     style="width:100%;
+                                             height:100%;
+                                             display:block;
+                                             object-fit:cover;
+                                             margin:0;
+                                             padding:0;"/>
+                                <span t-if="not line.qr_code_6_4" style="font-size:12px; color:#999;">QR Code</span>
+                            </td>
+
+                            <!-- RIGHT: Text -->
+                            <td style="width:50mm; padding:0; font-size:11px; vertical-align:top;">
+                                <div style="height:100%;">
+
+                                    <!-- TOP HALF: Company Name and Packaging No. -->
+                                    <div style="height:50%; padding:4mm; box-sizing:border-box;
+                                                transform: translate(-50%, -50%) rotate(90deg);
+                                                position: relative;
+                                                top: 27%;
+                                                left: 52%;
+                                                -webkit-transform: translate(-50%, -50%) rotate(90deg);
+                                                transform-origin: center center;
+                                                -webkit-transform-origin: center center;
+                                                text-align: left;">
+
+                                        <div style="margin-bottom: 4mm;">
+                                            <strong style="font-size: 22px;">Company Name</strong>
+                                            <br/>
+                                            <span t-if="line.container_id.company_id"
+                                                  t-field="line.container_id.company_id.name"
+                                                  style="font-size: 22px;"/>
+                                            <span t-if="not line.container_id.company_id">-</span>
+                                        </div>
+
+                                        <div style="font-size: 22px;">
+                                            <strong style="font-size: 22px;">Recipient Name</strong>
+                                            <br/>
+                                            <span t-if="line.container_id.consignee_id"
+                                                  t-field="line.container_id.consignee_id.name"/>
+                                            <span t-if="not line.container_id.consignee_id">-</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- BOTTOM HALF: Recipient Name and Reference No. -->
+                                    <div style="height:50%; padding:4mm; box-sizing:border-box;
+                                                transform: translate(-50%, -50%) rotate(90deg);
+                                                position: relative;
+                                                top: 27%;
+                                                left: 52%;
+                                                -webkit-transform: translate(-50%, -50%) rotate(90deg);
+                                                transform-origin: center center;
+                                                -webkit-transform-origin: center center;
+                                                text-align: left;">
+
+                                        <div style="margin-bottom: 4mm;">
+                                            <strong style="font-size: 22px;">Packaging No.</strong>
+                                            <br/>
+                                            <span t-field="line.container_id.name" style="font-size: 22px;"/>
+                                        </div>
+
+                                        <div style="font-size: 22px;">
+                                            <strong style="font-size: 22px;">Reference No.</strong>
+                                            <br/>
+                                            <span t-if="line.container_id.reference_nr"
+                                                  t-field="line.container_id.reference_nr"/>
+                                            <span t-if="not line.container_id.reference_nr">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </main>
+        </t>
+    </template>
+</odoo>

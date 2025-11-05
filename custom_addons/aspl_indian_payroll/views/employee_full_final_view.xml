@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_full_final_tree" model="ir.ui.view">
+        <field name="name">employee.full.final.tree</field>
+        <field name="model">employee.full.final</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="resign_date"/>
+                <field name="last_date"/>
+                <field name="separation_mode"/>
+                <field name="notice_period"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_employee_full_final_form" model="ir.ui.view">
+        <field name="name">employee.full.final.form</field>
+        <field name="model">employee.full.final</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Done" type="object" name="action_done" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" required="True"/>
+                            <field name="resign_date" readonly="True"/>
+                            <field name="last_date" readonly="True"/>
+                        </group>
+                        <group>
+                            <field name="separation_mode" readonly="True"/>
+                            <field name="notice_period" readonly="True"/>
+                            <field name="company_id" readonly="True"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="full_final_emp_payslip_id" string="Employee Payslip">
+                            <field name="payslip_line_ids" nolable="1">
+                                <tree create="false" edit="false" delete="false">
+                                    <field name="number"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="state"/>
+                                    <field name="company_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_employee_full_final" model="ir.actions.act_window">
+        <field name="name">Employee Full Final</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">employee.full.final</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Employee Full&amp;Final"
+              parent="om_hr_payroll.menu_hr_payroll_root"
+              id="employee_full_final_menu"
+              sequence="44"
+              action="action_employee_full_final"/>
+
+    <record id="report_employee_full_and_final" model="ir.actions.report">
+        <field name="name">Full and Final</field>
+        <field name="model">employee.full.final</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aspl_indian_payroll.report_full_and_final</field>
+        <field name="report_file">aspl_indian_payroll.report_full_and_final</field>
+        <field name="binding_model_id" ref="model_employee_full_final"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

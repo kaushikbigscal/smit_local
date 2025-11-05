@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_notification_log,notification_log,model_notification_log,base.group_user,1,1,1,1
+access_fcm_test_notification_wizard,fcm.test.notification.wizard,model_fcm_test_notification_wizard,base.group_user,1,1,1,1

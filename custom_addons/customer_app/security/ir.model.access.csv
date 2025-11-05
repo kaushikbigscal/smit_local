@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_company_banner_image,customer_app.res_company_banner_image,model_res_company_banner_image,base.group_user,1,1,1,1
+access_res_company_banner_image_portal,customer_app.res_company_banner_image.portal,model_res_company_banner_image,base.group_portal,1,0,0,0

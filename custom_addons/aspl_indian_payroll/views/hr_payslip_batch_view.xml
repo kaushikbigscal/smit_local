@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_payslip_run_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form.inherit</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="om_hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/header/button[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form/header/button[@name='done_payslip_run']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form/sheet/group[1]" position="replace">
+                <group col="4">
+                    <group style="width:50%;">
+                        <label for="date_start" string="Period"/>
+                        <div>
+                            <div class="o_row o_row_readonly">
+                                <field name="date_start" class="oe_inline"/>
+                                <span class="oe_inline" style="margin-left: -26px;">
+                                    -
+                                </span>
+                                <field name="date_end" class="oe_inline"/>
+                            </div>
+                        </div>
+                        <field name="company_id" required="1"/>
+                        <field name="select_all_employee"/>
+                    </group>
+                    <group style="width:50%;">
+                        <field name="credit_note"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <xpath expr="//form/header/button[1]" position="after">
+                <button string="Compute Sheets" name="compute_all" type="object" invisible="state != 'draft'"/>
+                <button string="Bank Sheet" name="bank_sheet" type="object" class="btn-primary"/>
+                <button string="Salary Statement" name="generate_excel_salary_statement"
+                        type="object"
+                        class="btn-primary" invisible="1"/>
+<!--                <button string="Generate Payslips" name="auto_genarate_payslip1" type="object"-->
+<!--                        invisible="1"-->
+<!--                        class="btn-primary"/>-->
+                <button string="Generate Payslips" name="auto_genarate_payslip1" type="object"
+                        invisible="state != 'draft'"
+                        class="btn-primary"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

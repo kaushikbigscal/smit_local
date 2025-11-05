@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="calendar.CalendarSystray" owl="1">
+        <div class="o_systray_item o_calendar_systray" role="button" t-on-click="onClick">
+            <div class="o_calendar_systray_icon">
+                <i class="fa fa-lg fa-home" title="Calendar"/>
+                <span t-if="state.meetingCount > 0" class="o_calendar_systray_badge badge rounded-pill">
+                    <t t-esc="state.meetingCount"/>
+                </span>
+            </div>
+        </div>
+    </t>
+</templates>

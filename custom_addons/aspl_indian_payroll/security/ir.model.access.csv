@@ -1,0 +1,19 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_homerent_allowance,access_homerent.allowance,model_homerent_allowance,base.group_user,1,1,1,1
+access_income_loss,access_income.loss,model_income_loss,base.group_user,1,1,1,1
+access_income_loss,access_income.loss,model_income_loss,base.group_user,1,1,1,1
+access_other_income,access_other.income,model_other_income,base.group_user,1,1,1,1
+access_salary_components,access_salary.components,model_salary_components,base.group_user,1,1,1,1
+access_emp_bonus,access_emp.bonus,model_emp_bonus,base.group_user,1,1,1,1
+access_emp_compensation,access_emp.compensation,model_emp_compensation,base.group_user,1,1,1,1
+access_financial_year,access_financial.year,model_financial_year,,1,1,1,1
+access_it_declaration_payslip,access_it.declaration.payslip,model_it_declaration_payslip,,1,1,1,1
+access_payslip_file_wizard,access_payslip.file.wizard,model_payslip_file_wizard,,1,1,1,1
+
+access_employee_full_final,access.employee.full.final,model_employee_full_final,,1,1,1,1
+access_check_attendance_shortfall,access.check.attendance.shortfall,model_check_attendance_shortfall,,1,1,1,1
+access_hr_attendance_shortfall,access.hr.attendance.shortfall,model_hr_attendance_shortfall,,1,1,1,1
+
+access_group_user,Access User,model_payslip_confirm,om_hr_payroll.group_hr_payroll_user,1,1,1,1
+
+access_hr_employee_user,hr.employee.user,hr.model_hr_employee,aspl_indian_payroll.group_employee_category,1,0,0,0

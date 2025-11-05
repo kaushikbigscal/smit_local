@@ -1,0 +1,68 @@
+<odoo>
+    <!-- Tree view for approved leaves -->
+    <record id="view_hr_leave_approved_tree" model="ir.ui.view">
+        <field name="name">hr.leave.approved.tree</field>
+        <field name="model">hr.leave</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+
+<!--                <field name="state"/>-->
+            </tree>
+        </field>
+    </record>
+
+    <!-- Minimal search view with NO searchpanel -->
+    <record id="view_hr_leave_approved_search" model="ir.ui.view">
+        <field name="name">hr.leave.approved.search</field>
+        <field name="model">hr.leave</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Optional fields in the search bar -->
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <filter string="Today" name="today"
+                        domain="[('date_from', '&lt;=', context_today()), ('date_to', '&gt;=', context_today())]"
+                        help="Leaves for today"/>
+
+
+                <!-- Set default filter -->
+                <group expand="0" string="Group By">
+                    <filter name="group_by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_by_start_date" string="Start Date" context="{'group_by': 'date_from'}"/>
+                    <filter name="group_by_end_date" string="End Date" context="{'group_by': 'date_to'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action using the custom search view -->
+    <record id="action_approved_leaves" model="ir.actions.act_window">
+        <field name="name">Approved Leaves</field>
+        <field name="res_model">hr.leave</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hr_leave_approved_tree"/>
+        <field name="search_view_id" ref="employee_overview.view_hr_leave_approved_search"/>
+        <field name="domain">[('state', '=', 'validate')]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Keep track of your PTOs.
+            </p>
+            <p>
+                A great way to keep track on employee leaves.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu item -->
+    <menuitem id="menu_approved_leaves"
+              name="Approved Leaves"
+              parent="hr.menu_hr_root"
+              action="action_approved_leaves"
+              sequence="50"/>
+</odoo>

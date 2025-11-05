@@ -1,0 +1,13 @@
+<odoo>
+    <template id="certification_templates">
+
+        <t t-foreach="certifications" t-as="certification">
+            <div>
+                <h3 t-esc="certification.name" />
+                <p>Certification Date: <t t-esc="certification.certification_date" /></p>
+                <p>Expiry Date: <t t-esc="certification.expiry_date_time" /></p>
+                <p>Status: <t t-esc="certification.state" /></p>
+            </div>
+        </t>
+    </template>
+</odoo>

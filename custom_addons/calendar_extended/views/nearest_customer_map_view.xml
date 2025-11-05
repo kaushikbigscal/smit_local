@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Enhanced Map View -->
+        <record id="view_partner_map" model="ir.ui.view">
+            <field name="name">res.partner.map.enhanced</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <map res_partner="id" routing="true" hide_name="false" panel_title="Partner Details">
+                    <field name="name" string="Partner Name"/>
+                    <field name="street" string="Street"/>
+                    <field name="street2" string="Street 2"/>
+                    <field name="city" string="City"/>
+                    <field name="zip" string="ZIP"/>
+                    <field name="state_id" string="State"/>
+                    <field name="country_id" string="Country"/>
+                    <field name="phone" string="Phone"/>
+                    <field name="mobile" string="Mobile"/>
+                    <field name="email" string="Email"/>
+                    <field name="website" string="Website"/>
+                    <field name="is_company" string="Is Company"/>
+                    <field name="location_source" string="Location Source"/>
+                </map>
+            </field>
+        </record>
+
+        <!-- Enhanced Form View with Location Fields -->
+        <record id="view_partner_form_location" model="ir.ui.view">
+            <field name="name">res.partner.form.location</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <group string="Geographic Information" name="location_group">
+                        <field name="partner_latitude"/>
+                        <field name="partner_longitude"/>
+                        <field name="location_source"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Employee Form View Enhancement -->
+        <record id="view_employee_form_location" model="ir.ui.view">
+            <field name="name">hr.employee.form.location</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='job_id']" position="after">
+                    <group string="Live Location" name="live_location_group">
+                        <field name="live_latitude"/>
+                        <field name="live_longitude"/>
+                        <field name="location_updated" readonly="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree View with Location Info -->
+        <record id="view_partner_tree_location" model="ir.ui.view">
+            <field name="name">res.partner.tree.location</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="city" optional="show"/>
+                    <field name="country_id" optional="show"/>
+                    <field name="partner_latitude" optional="hide" string="Lat"/>
+                    <field name="partner_longitude" optional="hide" string="Lng"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search View Enhancement -->
+        <record id="view_partner_search_location" model="ir.ui.view">
+            <field name="name">res.partner.search.location</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='inactive']" position="after">
+                    <separator/>
+                    <filter string="Has Location" name="has_location"
+                            domain="[('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]"/>
+                    <filter string="Missing Location" name="missing_location"
+                            domain="['|', ('partner_latitude', '=', False), ('partner_longitude', '=', False)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Main Map Action -->
+        <record id="action_res_partner_map" model="ir.actions.act_window">
+            <field name="name">Partners Map</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">map,tree,form</field>
+            <field name="context">{
+                'default_is_company': True,
+                'nearby_map_filter': True,
+                'nearby_radius': 3000
+            }</field>
+            <field name="domain">[('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No partners with location data found!
+                </p>
+                <p>
+                    Add latitude and longitude coordinates to partners to see them on the map.
+                    The map will show partners within 3km of your current location.
+                </p>
+            </field>
+        </record>
+
+        <!-- All Partners Map (no nearby filter) -->
+        <record id="action_res_partner_map_all" model="ir.actions.act_window">
+            <field name="name">All Partners Map</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">map,tree,form</field>
+            <field name="domain">[('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No partners with location data found!
+                </p>
+                <p>
+                    Add latitude and longitude coordinates to partners to see them on the map.
+                </p>
+            </field>
+        </record>
+
+        <!-- Nearby Partners with Custom Radius -->
+        <record id="action_res_partner_map_nearby_1km" model="ir.actions.act_window">
+            <field name="name">Nearby Partners (1km)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">map,tree,form</field>
+            <field name="context">{
+                'nearby_map_filter': True,
+                'nearby_radius': 1000
+            }</field>
+            <field name="domain">[('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]</field>
+        </record>
+
+        <record id="action_res_partner_map_nearby_5km" model="ir.actions.act_window">
+            <field name="name">Nearby Partners (5km)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">map,tree,form</field>
+            <field name="context">{
+                'nearby_map_filter': True,
+                'nearby_radius': 5000
+            }</field>
+            <field name="domain">[('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]</field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_partner_map_root"
+                  name="Partner Maps"
+                  parent="contacts.menu_contacts"
+                  sequence="10"/>
+
+        <menuitem id="menu_partner_map_nearby"
+                  name="Nearby Partners"
+                  parent="menu_partner_map_root"
+                  action="action_res_partner_map"
+                  sequence="10"/>
+
+        <menuitem id="menu_partner_map_all"
+                  name="All Partners"
+                  parent="menu_partner_map_root"
+                  action="action_res_partner_map_all"
+                  sequence="20"/>
+
+        <menuitem id="menu_partner_map_1km"
+                  name="Within 1km"
+                  parent="menu_partner_map_root"
+                  action="action_res_partner_map_nearby_1km"
+                  sequence="30"/>
+
+        <menuitem id="menu_partner_map_5km"
+                  name="Within 5km"
+                  parent="menu_partner_map_root"
+                  action="action_res_partner_map_nearby_5km"
+                  sequence="40"/>
+
+    </data>
+</odoo>
+
+<!--<odoo>-->
+
+<!--    <data>-->
+
+<!--        <record id="view_partner_map" model="ir.ui.view">-->
+<!--            <field name="name">res.partner.map</field>-->
+<!--            <field name="model">res.partner</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <map res_partner="id" routing="true" hide_name="false" panel_title="Partner Details">-->
+<!--                    <field name="name" string="Partner Name"/>-->
+<!--                    <field name="street" string="Street"/>-->
+<!--                    <field name="city" string="City"/>-->
+<!--                    <field name="state_id" string="State"/>-->
+<!--                    <field name="country_id" string="Country"/>-->
+<!--                    <field name="phone" string="Phone"/>-->
+<!--                    <field name="email" string="Email"/>-->
+<!--                </map>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        &lt;!&ndash; Window Action &ndash;&gt;-->
+<!--        <record id="action_res_partner_map" model="ir.actions.act_window">-->
+<!--            <field name="name">Partners Map</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">res.partner</field>-->
+<!--            <field name="view_mode">tree,form,map</field>-->
+<!--            <field name="context">{'default_is_company': True, 'nearby_map_filter': True}</field>-->
+<!--        </record>-->
+
+<!--    </data>-->
+<!--</odoo>-->

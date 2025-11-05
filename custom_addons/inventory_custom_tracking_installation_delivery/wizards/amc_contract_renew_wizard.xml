@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_amc_contract_renew_wizard_form" model="ir.ui.view">
+        <field name="name">amc.contract.renew.wizard.form</field>
+        <field name="model">amc.contract.renew.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Replicate &amp; Renew Contract">
+                <group>
+                    <field name="contract_id"/>
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="technician_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_renew_contract" string="Save &amp; Open" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

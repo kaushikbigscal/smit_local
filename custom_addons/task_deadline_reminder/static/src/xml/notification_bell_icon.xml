@@ -1,0 +1,275 @@
+<templates xml:space="preserve">
+  <t t-name="systray_notification_icon" owl="1">
+      <div class="o_notification_systray position-relative" role="button">
+      <div class="o_systray_item d-flex align-items-center h-100"
+           title="Reminders"
+           t-on-click="toggleDropdown"
+           aria-expanded="state.isOpen">
+        <i class="fa fa-bell"
+           style="color: white; display: flex; justify-content: center; align-items: center; height: 100%; padding: 5px;"
+           aria-label="Reminders"/>
+          <span t-if="state.unreadCount"
+                class="o_notification_counter badge rounded-pill bg-success text-white"
+                t-esc="state.unreadCount"/>
+      </div>
+
+          <!-- Desktop dropdown (hidden on mobile) -->
+          <div t-if="state.isOpen"
+               class="o_notification_dropdown dropdown-menu dropdown-menu-end d-block d-md-block d-none"
+               t-ref="dropdown"
+               role="dialog"
+               aria-modal="true"
+               aria-labelledby="reminder-header"
+               tabindex="-1"
+               style="width: 450px; max-height: 450px; overflow-y: auto; right: 0; left: auto;">
+         <div class="dropdown-header border-bottom px-3 pt-2 pb-1 d-flex justify-content-between align-items-center">
+          <strong id="reminder-header" style="font-size: 1.25rem;">Reminders</strong>
+
+             <div class="d-flex align-items-center">
+            <!-- Small Mark All Read button (icon only) -->
+                 <button t-if="state.activeTab === 'unread' &amp;&amp;state.reminders.some(r => !r.is_read)"
+                         class="btn btn-sm btn-link text-primary p-0 me-2"
+                         t-on-click.stop="(ev) => this.markAllAsRead(ev)"
+                         style="font-size: 0.875rem; font-weight: normal;">
+                        Mark all read
+                </button>
+
+                 <!-- Close button -->
+                 <button class="btn btn-sm btn-link text-muted p-0"
+                         t-on-click.stop="closeDropdown"
+                         aria-label="Close reminders"
+                         title="Close (ESC)"
+                         style="font-size: 16px;">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+              <!-- Tabs for Unread / Read / All -->
+              <div class="btn-group notification-btn-group w-100 px-2 pt-2 pb-2 border-bottom" role="group">
+                  <button t-on-click="(ev) => this.switchTab('unread', ev)"
+                          t-att-class="state.activeTab === 'unread' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">Unread</button>
+                  <button t-on-click="(ev) => this.switchTab('read', ev)"
+                          t-att-class="state.activeTab === 'read' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">Read</button>
+                  <button t-on-click="(ev) => this.switchTab('all', ev)"
+                          t-att-class="state.activeTab === 'all' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">All</button>
+        </div>
+
+              <t t-set="filteredReminders"
+                 t-value="state.reminders.filter(r => state.activeTab === 'all' || (state.activeTab === 'unread' ? !r.is_read : r.is_read))"/>
+
+              <div t-if="!filteredReminders.length" class="dropdown-item py-3 text-center">
+          <span class="text-muted">No reminders</span>
+        </div>
+
+              <t t-foreach="filteredReminders" t-as="reminder" t-key="reminder.id">
+          <!-- MODIFIED: Add conditional styling and click handler -->
+                  <div class="dropdown-item d-flex align-items-center border-bottom py-1 px-2"
+                       t-on-click="() => this.openReminder(reminder.id, reminder.is_clickable)"
+                       t-att-class="{
+                                     'o-unread': !reminder.is_read,
+                                     'hovered': state.hoveredReminderId === reminder.id,
+                                     'disabled-reminder': reminder.is_day_in_out
+                                   }"
+                       t-att-style="reminder.is_day_in_out ? 'cursor: not-allowed; opacity: 0.7;' : 'cursor: pointer;'"
+                       t-on-mouseenter="() => state.hoveredReminderId = reminder.id"
+                       t-on-mouseleave="() => state.hoveredReminderId = null"
+                       role="button"
+                       tabindex="0">
+            <div class="me-2 flex-shrink-0">
+              <t t-if="reminder.icon_class === 'project.task'">
+                <img src="/task_deadline_reminder/static/src/img/mail.jpg"
+                     alt="Task Icon"
+                     style="width: 35px; height: 35px;"/>
+              </t>
+                <t t-else="">
+                <!-- Day In-Out reminder icon with reduced opacity -->
+                    <img src="/task_deadline_reminder/static/src/img/Day_in_Out_icon.jpeg"
+                         alt="Day In-Out Icon"
+                         t-att-style="reminder.is_day_in_out ? 'width: 35px; height: 35px; opacity: 0.6;' : 'width: 35px; height: 35px;'"/>
+              </t>
+            </div>
+                      <div class="flex-grow-1 min-width-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted small text-truncate" style="max-width: 180px;" t-esc="reminder.project_name"/>
+              </div>
+                          <div class="d-flex justify-content-between align-items-center">
+                <strong class="d-inline-block text-truncate"
+                        t-att-style="reminder.is_day_in_out ? 'color: #888;' : ''"
+                        style="max-width: 240px;">
+                  <t t-esc="reminder.name"/>
+                </strong>
+              </div>
+                          <p class="mb-0 text-muted">
+                <span class="d-inline-flex justify-content-between align-items-center">
+                  <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                    <t t-esc="reminder.message"/>
+                  </span>
+                    <span t-if="reminder.date_display" style="font-size: 0.875rem; color: #6c757d; margin-left: 5px;">
+                    <small class="text-muted"> - <t t-esc="reminder.date_display"/></small>
+                  </span>
+                </span>
+                              <span t-if="reminder.relative_time"
+                                    style="display:block; margin-left: 0px; font-size: 0.875rem; color: #6c757d;">
+                    <small class="text-muted fst-italic" t-esc="reminder.relative_time"/>
+                </span>
+              </p>
+            </div>
+                      <div class="ms-2 d-flex align-items-center">
+       <!-- MODIFIED: Only show mark as read for non-Day-In-Out reminders -->
+                          <button t-if="!reminder.is_read &amp;&amp; state.hoveredReminderId === reminder.id &amp;&amp; !reminder.is_day_in_out"
+                                  class="btn btn-sm btn-link p-0"
+                                  t-on-click="(ev) => this.markAsRead(reminder.id, ev)"
+                                  title="Mark as read">
+                    <i class="fa fa-check" role="img" aria-label="Mark as read"/>
+               </button>
+             </div>
+          </div>
+        </t>
+      </div>
+
+          <!-- Mobile full-screen overlay (hidden on desktop) -->
+          <div t-if="state.isOpen" class="o_notification_mobile_overlay d-md-none"
+               style="position: fixed; top: 46px !important; left: 0; width: 100%; height: 100%; background-color: #f8f9fa; z-index: 1060;">
+        <div class="h-100 d-flex flex-column">
+          <!-- Mobile Header -->
+            <div class="o_notification_header bg-white border-bottom px-3 py-2 d-flex justify-content-between align-items-center">
+            <strong id="reminder-header" style="font-size: 1.25rem;">Reminders</strong>
+                <div class="d-flex align-items-center">
+              <!-- Mark All Read button -->
+                    <button t-if="state.activeTab === 'unread' &amp;&amp;state.reminders.some(r => !r.is_read)"
+                            class="btn btn-sm btn-link text-primary p-0 me-2"
+                            t-on-click.stop="(ev) => this.markAllAsRead(ev)"
+                            style="font-size: 0.875rem; font-weight: normal;">
+                Mark all read
+              </button>
+                    <!-- Close button -->
+                    <button class="btn btn-sm btn-link text-muted p-0"
+                            t-on-click.stop="closeDropdown"
+                            aria-label="Close reminders"
+                            title="Close">
+                <i class="fa fa-times" style="font-size: 18px;"></i>
+              </button>
+            </div>
+          </div>
+
+            <!-- Mobile Tabs -->
+            <div class="btn-group notification-btn-group w-100 px-2 pt-2 pb-2 border-bottom">
+            <div class="btn-group w-100" role="group">
+              <button t-on-click="(ev) => this.switchTab('unread', ev)"
+                      t-att-class="state.activeTab === 'unread' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">Unread</button>
+                <button t-on-click="(ev) => this.switchTab('read', ev)"
+                        t-att-class="state.activeTab === 'read' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">Read</button>
+                <button t-on-click="(ev) => this.switchTab('all', ev)"
+                        t-att-class="state.activeTab === 'all' ? 'btn btn-sm notification-tab-active' : 'btn btn-sm notification-tab-inactive'">All</button>
+            </div>
+          </div>
+
+            <!-- Mobile Content Area -->
+            <div class="flex-grow-1 overflow-auto bg-white">
+            <t t-set="filteredRemindersMobile"
+               t-value="state.reminders.filter(r => state.activeTab === 'all' || (state.activeTab === 'unread' ? !r.is_read : r.is_read))"/>
+
+                <div t-if="!filteredRemindersMobile.length" class="p-4 text-center">
+              <div class="text-muted">
+                <i class="fa fa-bell-slash fa-2x mb-2"></i>
+                  <p class="mb-0">No reminders</p>
+              </div>
+            </div>
+
+                <div t-if="filteredRemindersMobile.length" class="reminder-list">
+              <t t-foreach="filteredRemindersMobile" t-as="reminder" t-key="reminder.id">
+                <div class="reminder-item border-bottom p-3 d-flex"
+                     t-on-click="() => this.openReminder(reminder.id, reminder.is_clickable)"
+                     t-att-class="{
+                                     'o-unread': !reminder.is_read,
+                                     'hovered': state.hoveredReminderId === reminder.id,
+                                     'disabled-reminder': reminder.is_day_in_out
+                                   }"
+                     t-att-style="reminder.is_day_in_out ? 'cursor: not-allowed; opacity: 0.7;' : 'cursor: pointer;'"
+                     t-on-mouseenter="() => state.hoveredReminderId = reminder.id"
+                     t-on-mouseleave="() => state.hoveredReminderId = null"
+                     role="button"
+                     tabindex="0">
+
+                  <!-- Mobile Icon -->
+                    <div class="reminder-icon me-2 flex-shrink-0">
+                    <t t-if="reminder.icon_class === 'project.task'">
+                      <img src="/task_deadline_reminder/static/src/img/mail.jpg"
+                           alt="Task Icon"
+                           style="width: 35px; height: 35px;"/>
+                    </t>
+                        <t t-else="">
+                      <img src="/task_deadline_reminder/static/src/img/Day_in_Out_icon.jpeg"
+                           alt="Day In-Out Icon"
+                           t-att-style="reminder.is_day_in_out ? 'width: 35px; height: 35px; opacity: 0.6;' : 'width: 35px; height: 35px;'"/>
+                    </t>
+                  </div>
+
+                    <div class="flex-grow-1 min-width-0">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted small text-truncate" style="max-width: 180px;"
+                             t-esc="reminder.project_name"/>
+                      </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                        <strong class="d-inline-block text-truncate"
+                                t-att-style="reminder.is_day_in_out ? 'color: #888;' : ''"
+                                style="max-width: 240px;">
+                          <t t-esc="reminder.name"/>
+                        </strong>
+                      </div>
+                        <p class="mb-0 text-muted">
+                              <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                <t t-esc="reminder.message"/>
+                              </span>
+
+                            <t t-if="reminder.date_display">
+                                <br/>
+                                <small class="text-muted" style="font-size: 0.875rem; color: #6c757d;">
+                                  <t t-esc="reminder.date_display"/>
+                                </small>
+                              </t>
+
+                            <t t-if="reminder.relative_time">
+                                <br/>
+                                <small class="text-muted fst-italic" style="font-size: 0.875rem; color: #6c757d;">
+                                  <t t-esc="reminder.relative_time"/>
+                                </small>
+                              </t>
+                            </p>
+                        <!--                        <p class="mb-0 text-muted">-->
+                        <!--                        <span class="d-inline-flex justify-content-between align-items-center">-->
+                        <!--                          <span class="d-inline-block text-truncate" style="max-width: 200px;">-->
+                        <!--                            <t t-esc="reminder.message"/>-->
+                        <!--                          </span>-->
+                        <!--                            <span t-if="reminder.date_display"-->
+                        <!--                                  style="font-size: 0.875rem; color: #6c757d; margin-left: 5px;">-->
+                        <!--                            <small class="text-muted"> - <t t-esc="reminder.date_display"/></small>-->
+                        <!--                          </span>-->
+                        <!--                        </span>-->
+                        <!--                            <span t-if="reminder.relative_time"-->
+                        <!--                                  style="display:block; margin-left: 0px; font-size: 0.875rem; color: #6c757d;">-->
+                        <!--                            <small class="text-muted fst-italic" t-esc="reminder.relative_time"/>-->
+                        <!--                        </span>-->
+                        <!--                      </p>-->
+                    </div>
+
+                    <!-- Mobile Action button -->
+                    <div class="reminder-action ms-2  flex-shrink-0 d-flex align-items-center">
+                    <button t-if="!reminder.is_read &amp;&amp; !reminder.is_day_in_out"
+                            class="btn btn-sm btn-link p-0"
+                            t-on-click="(ev) => this.markAsRead(reminder.id, ev)"
+                            title="Mark as read"
+                            style="width: 32px; height: 32px; padding: 0;">
+                      <i class="fa fa-check" style="font-size: 12px;"></i>
+                    </button>
+                  </div>
+                </div>
+              </t>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+</templates>

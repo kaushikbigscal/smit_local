@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="check_attendance_shortfall_wizard" model="ir.ui.view">
+        <field name="name">check.attendance.shortfall.form</field>
+        <field name="model">check.attendance.shortfall</field>
+        <field name="arch" type="xml">
+            <form string="Check Attendance Shortfall">
+                <header invisible="state == False">
+                    <field name="state" widget="statusbar"/>
+                </header>
+
+                <sheet>
+                    <group invisible="state != False">
+                        <field name="select_all" nolabel="1"/>
+                        <label for="select_all">Select All</label>
+                    </group>
+
+                    <group col="3" invisible="state != False">
+                        <group>
+                            <field name="lock_previous_payroll" nolabel="1"/>
+                            <label for="lock_previous_payroll" style="width:250px;">Lock Pervious Payroll</label>
+                        </group>
+                        <group>
+                            <field name="employee_addition" nolabel="1"/>
+                            <label for="employee_addition" style="width:250px;">Employee Additions</label>
+                        </group>
+                        <group>
+                            <field name="employee_separtion" nolabel="1"/>
+                            <label for="employee_separtion" style="width:250px;">Employee Separations</label>
+                        </group>
+                        <group>
+                            <field name="employee_confirmation" nolabel="1"/>
+                            <label for="employee_confirmation" style="width:250px;">Employee Confirmations</label>
+                        </group>
+                        <group>
+                            <field name="employee_data_update" nolabel="1"/>
+                            <label for="employee_data_update" style="width:250px;">Employee Data Updates</label>
+                        </group>
+                        <group>
+                            <field name="update_payment_details" nolabel="1"/>
+                            <label for="update_payment_details" style="width:250px;">Update Payment Details</label>
+                        </group>
+                    </group>
+                    <group col="3" invisible="state != False">
+                        <group>
+                            <field name="salary_revisions" nolabel="1"/>
+                            <label for="salary_revisions" style="width:250px;">Salary Revisions</label>
+                        </group>
+                        <group>
+                            <field name="update_one_time_payment" nolabel="1"/>
+                            <label for="update_one_time_payment" style="width:250px;">Update One Time Payment
+                            </label>
+                        </group>
+                        <group>
+                            <field name="update_one_time_deductions" nolabel="1"/>
+                            <label for="update_one_time_deductions" style="width:250px;">Update One Time
+                                Deductions
+                            </label>
+                        </group>
+                        <group>
+                            <field name="update_any_other_salary_changes" nolabel="1"/>
+                            <label for="update_any_other_salary_changes" style="width:250px;">Update Any Other
+                                Salary Changes
+                            </label>
+                        </group>
+                        <group>
+                            <field name="loans_update" nolabel="1"/>
+                            <label for="loans_update" style="width:250px;">Loans Update</label>
+                        </group>
+                        <group>
+                            <field name="stop_payment" nolabel="1"/>
+                            <label for="stop_payment" style="width:250px;">Stop Payment</label>
+                        </group>
+                    </group>
+                    <group col="3" invisible="state != False">
+                        <group>
+                            <field name="update_lop_lwp" nolabel="1"/>
+                            <label for="update_lop_lwp" style="width:250px;">Update LOP/LWP</label>
+                        </group>
+                        <group>
+                            <field name="update_arrears" nolabel="1"/>
+                            <label for="update_arrears" style="width:250px;">Update Arrears</label>
+                        </group>
+                        <group>
+                            <field name="full_final_settlements" nolabel="1"/>
+                            <label for="full_final_settlements" style="width:250px;">Full &amp; Final Settlements
+                            </label>
+                        </group>
+                        <group>
+                            <field name="reimbursement_claims" nolabel="1"/>
+                            <label for="reimbursement_claims" style="width:250px;">Reimbursement Claims</label>
+                        </group>
+                        <group>
+                            <field name="lock_it_declaration" nolabel="1"/>
+                            <label for="lock_it_declaration" style="width:250px;">Lock IT Declaration</label>
+                        </group>
+                        <group>
+                            <field name="download_it_declaration" nolabel="1"/>
+                            <label for="download_it_declaration" style="width:250px;">Download IT Declaration
+                            </label>
+                        </group>
+                    </group>
+
+                    <group invisible="state != '1'" string="Not Approved Leaves"/>
+                    <h5 invisible="state != '1'">To process payroll correctly, all leaves needs to
+                        be approved/rejected. Please make sure you
+                        have rejected the leaves. The payroll process will approve all pending leaves if All Leave
+                        Approve check box is checked. Click "Next"
+                        to proceed with approval.
+                    </h5>
+
+                    <group invisible="state != '1'" style="margin: 29px 0 -25px 0;">
+                        <field name="approve_all_leave"/>
+                    </group>
+
+                    <h5 invisible="state != '2'">Attendance Shortfall list</h5>
+                    <br/>
+
+                    <field name="attendance_shortfall_ids" nolabel="1" invisible="state != '2'">
+                        <tree editable="bottom" edit="1">
+                            <field name="employee_id" readonly="1"/>
+                            <field name="working_hours" readonly="1"/>
+                            <field name="actual_hours" readonly="1"/>
+                            <field name="shortfall" readonly="1"/>
+                            <field name="checkbox"/>
+                            <field name="shortfall_days"/>
+                        </tree>
+                    </field>
+
+                    <group invisible="state != '3'" string="Contract Renewal"/>
+                    <h5 invisible="state != '3'">Contracts for following employees/consultants have
+                        been created which is applicable to the
+                        selected salary period. Make sure contract is updated.
+                    </h5>
+
+                    <field invisible="state != '3'" name="contract_ids" nolabel="1" readonly="1"
+                           widget="many2many_tags" style="margin: 10px 0 -25px 0;"/>
+
+                    <group invisible="state != '4'" string="Salary Hold"/>
+                    <h5 invisible="state != '4'">Following employees/consultants are in notice
+                        period. No salary has been hold so far. You
+                        can remove employees from the list below if you don't want to hold salary. It will hold it
+                        for the selected period otherwise.
+                    </h5>
+
+                    <group invisible="state != '4'" style="margin: 22px 0 22px 0;">
+                        <field name="remove_all_salary_hold_emp"/>
+                    </group>
+
+                    <field invisible="state != '4'" name="employee_ids" nolabel="1"/>
+
+                    <group invisible="state != '5'" string="Full &amp; Final"/>
+                    <h5 invisible="state != '5'">Following employees/consultants are eligible for
+                        the full and final processing. Make sure
+                        you want to proceed with them. You can remove employee if you don't want to perform full and
+                        final settlement.
+                    </h5>
+
+
+                    <field invisible="state != '5'" name="full_final_ids" nolabel="1"
+                           style="margin: 22px 0 11px 0;"/>
+
+                </sheet>
+
+                <footer>
+                    <button name="go_to_previous_wizard" string="&lt;&lt; Back" type="object" class="btn-primary"
+                            invisible="state == False"/>
+                    <button name="next_step" string="Next &gt;&gt;" type="object" class="btn-primary"
+                            invisible="state == '5'"/>
+                    <button name="auto_genarate_payslip" string="Generate Payslip" type="object" class="btn-primary"
+                            invisible="state != '5'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_greeting_wizard" model="ir.actions.act_window">
+        <field name="name">Check Conditions</field>
+        <field name="res_model">check.attendance.shortfall</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="check_attendance_shortfall_wizard"/>
+        <field name="context" eval="{'default_state': '1'}"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_amc_contract_tree" model="ir.ui.view">
+        <field name="name">amc.contract.tree</field>
+        <field name="model">amc.contract</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="show_red_highlight">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="contract_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="call_coordinator_id" optional="show"/>
+                <field name="call_coordinator_phone" optional="show"/>
+                <field name="stage_id"/>
+                <field name="total_amount"/>
+                <field name="payment_state"
+                       widget="badge"
+                       decoration-danger="payment_state == 'not_paid'"
+                       decoration-warning="payment_state in ('partial', 'in_payment')"
+                       decoration-success="payment_state in ('paid', 'reversed')"
+                       invisible="stage_id == 'draft'"
+                       optional="show"/>
+                <field name="last_payment_date" optional="show"/>
+                <field name="user_ids" widget="many2many_avatar_user" optional="show"/>
+                <field name="service_address" optional="hide"/>
+                <field name="billing_address" optional="hide"/>
+                <field name="show_red_highlight" optional="hide" column_invisible="1" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_amc_contract_search" model="ir.ui.view">
+        <field name="name">amc.contract.search</field>
+        <field name="model">amc.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Default search fields -->
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="contract_type"/>
+                <field name="call_coordinator_id"/>
+                <field name="stage_id"/>
+                <filter name="filter_customer" string="Customer" domain="[('partner_id', '=', [])]"/>
+                <field name="last_payment_date" invisible="1"/>
+                <separator/>
+
+                <!-- Filter: Contracts expiring within 30 days -->
+                <filter string="Expiring in 30 Days" name="filter_expiring_30"
+                        domain="[('end_date', '!=', False), ('end_date', '&lt;=', (context_today() + relativedelta(days=30)))]"
+                        help="Contracts whose end date is within the next 30 days"/>
+
+                <separator/>
+
+                <filter string="Last Payment Date" name="last_payment" domain="[('last_payment_date', '!=', 'false')]"
+                        date="last_payment_date"/>
+
+                <!-- Group By options -->
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Contract Type" name="group_contract_type" context="{'group_by': 'contract_type'}"/>
+                    <filter string="Stage" name="group_stage_id"
+                            context="{'group_by': 'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_amc_contract_form" model="ir.ui.view">
+        <field name="name">amc.contract.form</field>
+        <field name="model">amc.contract</field>
+        <field name="arch" type="xml">
+
+            <form string="AMC Contract">
+
+                <header>
+                    <button name="action_open_sale_order"
+                            string="New Estimation"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not amc_new_estimation"/>
+                    <button name="download_customer_pdf"
+                            string="Download"
+                            type="object"
+                            class="btn-primary"
+                    />
+                    <button name="action_replicate_renew"
+                            type="object"
+                            string="Replicate &amp; Renew"
+                            invisible="not is_near_expiry"
+                            class="btn-primary"/>
+
+                    <field name="is_near_expiry" invisible="1"/>
+
+
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" groups="base.group_user">
+                        <button name="action_view_amc_sale_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-shopping-cart">
+                            <field name="sale_order_count" widget="statinfo" string="Quotation"/>
+                        </button>
+                        <button name="action_view_amc_invoices"
+                                type="object"
+                                string="Invoices"
+                                class="oe_stat_button"
+                                icon="fa-fw fa-pencil-square">
+                            <field name="invoice_count" widget="statinfo" string="Invoice"/>
+                        </button>
+                        <button name="action_view_amc_visits"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <field name="visit_count" widget="statinfo" string="Visits"/>
+                        </button>
+                    </div>
+
+                    <!-- Payment status for contracts based on its invoices -->
+                    <field name="payment_state" invisible="1"/>
+                    <widget name="web_ribbon" title="Paid"
+                            bg_color="text-bg-success"
+                            invisible="payment_state != 'paid'"/>
+                    <widget name="web_ribbon" title="In Payment"
+                            bg_color="text-bg-warning"
+                            invisible="payment_state != 'in_payment'"/>
+                    <widget name="web_ribbon" title="Partial Paid"
+                            bg_color="text-bg-warning"
+                            invisible="payment_state != 'partial'"/>
+                    <widget name="web_ribbon" title="Reversed"
+                            bg_color="text-bg-danger"
+                            invisible="payment_state != 'reversed'"/>
+                    <widget name="web_ribbon" title="Invoicing App Legacy"
+                            bg_color="text-bg-info"
+                            invisible="payment_state != 'invoicing_legacy'"/>
+                    <widget name="web_ribbon" title="Not Paid"
+                            bg_color="text-bg-danger"
+                            invisible="payment_state != 'not_paid' or stage_id == 'draft'"/>
+
+                    <!-- Title Field -->
+                    <div class="oe_title pe-0">
+                        <h1 class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex w-100">
+                                <field name="name"
+                                       options="{'line_breaks': False}"
+                                       widget="text"
+                                       class="o_task_name text-truncate w-md-75 w-100 pe-2"
+                                       placeholder="Contract Title..."/>
+                            </div>
+                        </h1>
+                    </div>
+
+                    <!-- Fields -->
+                    <group>
+                        <group string="Customer Details">
+
+                            <!-- Make sure both fields exist -->
+                            <field name="partner_id"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                            <field name="available_contacts" invisible="1"/>
+                            <field name="call_coordinator_id"/>
+                            <field name="call_coordinator_phone"/>
+                            <field name="service_address"/>
+                            <field name="billing_address"/>
+                        </group>
+                        <group string="Contract Details">
+
+                            <field name="start_date" invisible="1"/>
+                            <field name="end_date" invisible="1"/>
+                            <field name="amc_new_estimation" invisible="1"/>
+
+                            <!-- Show as combined daterange -->
+                            <field name="start_date"
+                                   widget="daterange"
+                                   options="{'start_date_field': 'start_date', 'end_date_field': 'end_date', 'always_range': 1}"
+                                   string="Contract Period"
+                            />
+                            <field name="user_ids" widget="many2many_avatar_user"/>
+                            <field name="contract_type"/>
+                            <field name="sla_terms"/>
+                            <field name="total_amount"/>
+                            <field name="last_payment_date"/>
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Assets">
+                            <header>
+                                <button name="inventory_custom_tracking_installation_delivery.action_open_amc_contract_asset_line_wizard"
+                                        string="Add Asset"
+                                        type="action"
+                                        class="btn-primary"/>
+
+                            </header>
+                            <field name="asset_line_ids">
+                                <tree editable="Bottom" create="False">
+                                    <field name="product_id"/>
+                                    <field name="track_by_serial_number" column_invisible="1"/>
+                                    <field name="user_ids"/>
+                                    <field name="quantity"/>
+                                    <field name="cost"/>
+                                    <field name="available_serial_numbers" column_invisible="1"/>
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="serial_number_ids"
+                                           context="{'default_product_id': product_id, 'default_company_id': company_id}"
+                                           options="{'no_create': False}"/>
+                                    <field name="remark"/>
+                                    <field name="visit" column_invisible="0"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="tax_ids" widget="many2many_tags"/>
+                                    <field name="tax_excluded" sum="1"/>
+                                    <field name="subtotal" readonly="1" sum="1"/>
+                                </tree>
+                            </field>
+
+
+                        </page>
+
+                        <page string="Attachments">
+                            <field name="attachment_line_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="upload_file" filename="upload_file_filename"/>
+                                    <field name="upload_file_filename" string="File Name"/>
+
+                                </tree>
+                            </field>
+                            <div class="oe_invoice_total" style="text-align: left; margin-top: 15px; padding: 20px;">
+                                <table class="o_group o_inner_group" style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <field name="comment" placeholder="add comment"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </page>
+
+                        <page string="Terms &amp; Conditions">
+                            <field name="note" nolabel="1"
+                                   placeholder="The Administrator can set default Terms &amp; Conditions in Contract Settings."/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_amc_contract" model="ir.actions.act_window">
+        <field name="name">AMC Contracts</field>
+        <field name="res_model">amc.contract</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="fsm_amc_contract"
+              name="Contract"
+              action="action_amc_contract"
+              sequence="30"
+              parent="industry_fsm.fsm_menu_root"
+              groups="industry_fsm.group_fsm_supervisor"/>
+
+</odoo>

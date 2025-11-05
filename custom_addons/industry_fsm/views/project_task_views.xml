@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+    	Task Views in Project and FSM app
+	-->
+
+    <record id="view_task_form2_inherit" model="ir.ui.view">
+        <field name="name">view.task.form2.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="sequence_fsm" readonly="1" invisible="not is_fsm"/>
+                <field name="readonly_fields" invisible="1"/>
+                <field name="user_ids_domain" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_ids']" position="before">
+                <field name="department_id" options="{'no_create': true, 'no_open': true}" invisible="not is_fsm"
+                       readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="department_id" options="{'no_create': true}" invisible="not is_fsm"
+                       readonly="readonly_fields" groups="industry_fsm.group_fsm_task_creator"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_ids']" position="after">
+                <div class="o_td_label"/>
+                <div>
+                    <field name="assignee_location" readonly="1" invisible="not user_ids or not is_fsm" nolabel="1"/>
+                </div>
+                <field name="call_allocation" widget="radio" options="{'horizontal': true}" invisible="not is_fsm"
+                       groups="industry_fsm.group_fsm_task_creator" readonly="readonly_fields"/>
+                <field name="call_allocation" widget="radio" options="{'horizontal': true}" invisible="not is_fsm"
+                       readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+
+                <field name="show_vendor" invisible="1"/>
+                <field name="vendor_id" invisible="not show_vendor or not is_fsm"
+                       context="{'default_supplier_rank': 1}" groups="industry_fsm.group_fsm_task_creator"
+                       readonly="readonly_fields"/>
+                <field name="vendor_id" invisible="not show_vendor or not is_fsm"
+                       context="{'default_supplier_rank': 1}" groups="!industry_fsm.group_fsm_task_creator"
+                       readonly="1"/>
+
+                <field name="call_type" invisible="not is_fsm" options="{'no_create': True, 'no_edit': True}"
+                       readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+                <field name="call_type" invisible="not is_fsm" readonly="1"
+                       options="{'no_create': True, 'no_open': True}"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="service_types" invisible="not is_fsm" options="{'no_create': True, 'no_edit': True}"
+                       groups="industry_fsm.group_fsm_task_creator" readonly="readonly_fields"/>
+                <field name="service_types" invisible="not is_fsm"
+                       options="{'no_create': True, 'no_edit': True, 'no_open':True}"
+                       readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="complaint_type_id" widget="many2many_tags" invisible="not is_fsm"
+                       groups="industry_fsm.group_fsm_task_creator" readonly="readonly_fields"
+                       options="{'color_field': 'color', 'no_create': True, 'no_edit': True}"
+                       placeholder="Select a Complaint Type"/>
+                <field name="complaint_type_id" widget="many2many_tags" invisible="not is_fsm"
+                       options="{'color_field': 'color', 'no_create': True, 'no_edit': True}"
+                       placeholder="Select a Complaint Type" readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="reason_code_id" widget="many2many_tags" invisible="not complaint_type_id or not is_fsm"
+                       options="{'no_create': True, 'no_edit': True}"
+                       placeholder="Select a Reason Code" readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+                <field name="reason_code_id" widget="many2many_tags" invisible="not complaint_type_id or not is_fsm"
+                       options="{'no_create': True, 'no_edit': True}"
+                       placeholder="Select a Reason Code" readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+
+                <field name="show_feedback_tab" invisible="1"/>
+                <field name="service_charge_ids" invisible="1"/>
+                <field name="payment_status" invisible="1"/>
+                <field name="is_chargeable" invisible="1"/>
+                <field name="is_join_call" invisible="1"/>
+                <field name="show_blocked_by" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='call_type']" position="after">
+                <field name="call_sub_types" widget="radio" options="{'horizontal': true}" invisible="not is_fsm"
+                       readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="call_sub_types" widget="radio" options="{'horizontal': true}" invisible="not is_fsm"
+                       readonly="readonly_fields" groups="industry_fsm.group_fsm_task_creator"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_task_phone_update" invisible="1"/>
+                <label for="partner_phone" invisible="not is_fsm"/>
+                <div class="o_row o_row_readonly" invisible="not is_fsm">
+                    <field name="partner_phone" widget="phone" readonly="1"
+                           groups="!industry_fsm.group_fsm_task_creator"/>
+                    <field name="partner_phone" widget="phone" readonly="readonly_fields"
+                           groups="industry_fsm.group_fsm_task_creator"/>
+                    <span class="fa fa-exclamation-triangle text-warning oe_edit_only"
+                          title="By saving this change, the customer phone number will also be updated."
+                          invisible="not partner_id or not is_task_phone_update"/>
+                </div>
+            </xpath>
+
+            <notebook position="inside">
+                <page string="Extra Info" invisible="not is_fsm">
+                    <field name="dynamic_info" readonly="1" widget="html" style="min-height:200px; width:100%;"/>
+                </page>
+            </notebook>
+
+            <!-- Partner Field -->
+            <xpath expr="//field[@name='partner_id']" position="replace">
+
+                <field name="partner_id" invisible="not project_id or not allow_billable or is_fsm"/>
+                <field name="partner_id"
+                       invisible="not is_fsm or not project_id"
+                       options="{'no_open': true}"
+                       readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+
+                <!-- For FSM task creators -->
+                <field name="partner_id"
+                       invisible="not is_fsm or not project_id"
+                       options="{'no_create': true}"
+                       readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+            </xpath>
+
+            <!-- Assignees Field -->
+            <xpath expr="//field[@name='user_ids']" position="replace">
+
+                <field name="user_ids" domain="[('id', 'in', user_ids_domain)]"
+                       invisible="is_fsm" widget="many2many_avatar_user"/>
+
+                <field name="user_ids"
+                       invisible="not is_fsm"
+                       options="{'no_create': true, 'no_open': true}"
+                       widget="many2many_avatar_user"
+                       readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"
+                       domain="[('id', 'in', user_ids_domain)]"/>
+
+                <!-- For FSM task creators -->
+                <field name="user_ids"
+                       invisible="not is_fsm"
+                       options="{'no_create': true}"
+                       widget="many2many_avatar_user"
+                       readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"
+                       domain="[('id', 'in', user_ids_domain)]"/>
+            </xpath>
+
+            <!--            <xpath expr="//field[@name='user_ids']" position="attributes">-->
+            <!--                <attribute name="domain">[('id', 'in', user_ids_domain)]</attribute>-->
+            <!--                <attribute name="readonly">readonly_fields</attribute>-->
+            <!--            </xpath>-->
+
+            <xpath expr="//page[@name='sub_tasks_page']" position="attributes">
+                <attribute name="invisible">is_fsm or not project_id</attribute>
+            </xpath>
+
+            <!-- Ensure the sub-tasks page exists for non-FSM tasks and does not interfere with FSM tasks -->
+            <notebook>
+                <page name="sub_call_page" string="Sub-Calls" invisible="not is_join_call or not is_fsm">
+                    <field name="child_ids">
+                        <tree editable="bottom">
+                            <field name="name" string="Title"/>
+                            <field name="department_id" column_invisible="not parent.is_fsm"/>
+                            <field name="user_ids_domain" column_invisible="1"/>
+                            <field name="user_ids" string="Assigned To" widget="many2many_avatar_user"
+                                   domain="[('id', 'in', user_ids_domain)]"/>
+                            <field name="available_subtasks" column_invisible="1"/>
+                            <field name="blocked_by" string="Call Blocked By"
+                                   column_invisible="not parent.is_fsm or not parent.show_blocked_by"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="project_id" column_invisible="1"/>
+                            <field name="stage_id"/>
+                            <field name="is_fsm" column_invisible="1"/>
+
+                            <button name="action_create_new_service_call" type="object"
+                                    string="View"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+
+            <xpath expr="//button[@name='action_open_parent_task']" position="replace">
+                <button name="action_open_parent_task" type="object" class="oe_stat_button" icon="fa-tasks"
+                        invisible="not parent_id or not is_fsm">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Parent-Calls</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//button[@class='oe_stat_button']" position="after">
+                <button name="action_open_sub_calls" type="object" class="oe_stat_button" icon="fa-tasks"
+                        invisible="not is_fsm or call_sub_types != 'join_call' or parent_id"
+                        context="{'default_user_ids': user_ids, 'subtask_action': True}">
+                    <div class="o_field_widget o_stat_info">
+                        <div class="d-flex align-items-baseline gap-1">
+                            <span class="o_stat_value order-1">
+                                <field name="subtask_count" widget="statinfo" nolabel="1"/>
+                            </span>
+                            <span class="o_stat_text order-2">Sub-Calls</span>
+                        </div>
+                        <div class="d-flex align-items-baseline gap-1">
+                            <span class="o_stat_value">
+                                <field name="closed_subtask_count" widget="statinfo" nolabel="1"/>
+                            </span>
+                            <span class="o_stat_text order-2">Closed</span>
+                        </div>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//h1//div//field[@name='state']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="placeholder">Title...</attribute>
+                <attribute name="readonly">readonly_fields</attribute>
+            </xpath>
+
+            <field name='active' position="after">
+                <field name="remark" invisible="not is_fsm"/>
+            </field>
+
+            <xpath expr="//field[@name='remark']" position="before">
+                <field name="actual_problem" invisible="not is_fsm"
+                       placeholder="Predefine actual problems you can select here." domain="[]"
+                       options='{"no_open": True,"no_create":True,"no_display":True, "no_quick_create": True}'
+                       widget="many2many_tags" readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="actual_problem" invisible="not is_fsm"
+                       placeholder="Predefine actual problems you can select here." domain="[]"
+                       options='{"no_open": True,"no_create":True,"no_display":True, "no_quick_create": True}'
+                       widget="many2many_tags" readonly="readonly_fields" groups="industry_fsm.group_fsm_task_creator"/>
+                <div class="o_td_label"/>
+                <div>
+                    <field name="problem_description" invisible="not is_fsm" widget="text" readonly="1"
+                           groups="!industry_fsm.group_fsm_task_creator"/>
+                    <field name="problem_description" invisible="not is_fsm" widget="text" readonly="readonly_fields"
+                           groups="industry_fsm.group_fsm_task_creator"/>
+                </div>
+
+                <field name="fix_description" invisible="not is_fsm" readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="fix_description" invisible="not is_fsm" readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+                <field name="is_pending_stage" invisible="1"/>
+                <field name="pending_reason" invisible="not is_fsm" options="{'no_create': True, 'no_open': True}"
+                       required="is_pending_stage" readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="pending_reason" invisible="not is_fsm" options="{'no_create': True, 'no_edit': True}"
+                       required="is_pending_stage" readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+                <field name="reopen_reason" invisible="not is_fsm" readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="reopen_reason" invisible="not is_fsm" readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" invisible="not is_fsm"
+                       readonly="1" groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" invisible="not is_fsm"
+                       readonly="readonly_fields" groups="industry_fsm.group_fsm_task_creator"/>
+            </xpath>
+
+            <xpath expr="//field[@name='personal_stage_type_id']" position="after">
+                <field name="allow_timesheets" invisible="1"/>
+                <field name="is_fsm" invisible="1"/>
+
+                <field name="display_enabled_conditions_count" invisible="1"/>
+                <field name="display_satisfied_conditions_count" invisible="1"/>
+                <button class="btn-primary" name="action_fsm_validate" type="object" string="Re-Open"
+                        data-hotkey="v" invisible="not is_fsm"/>
+                <button name="action_open_payment_wizard" type="object" string="Register Payment" class="btn-primary"
+                        invisible="is_chargeable == False"/>
+
+
+            </xpath>
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button name="action_view_reopen_logs"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-refresh" invisible="not is_fsm">
+                    <field name="reopen_count" widget="statinfo"/>
+                </button>
+                <button name="action_view_customer_complaint_log"
+                        type="object"
+                        class="oe_stat_button"
+                        string="Call History"
+                        icon="fa-list-alt" invisible="not partner_id or not is_fsm">
+                </button>
+            </xpath>
+
+            <xpath expr="//div[contains(@class, 'oe_title')]" position="before">
+                <widget name="web_ribbon" title="Partially Paid"
+                        invisible="not payment_status or payment_status != 'partial' or not is_fsm"/>
+                <widget name="web_ribbon" title="Paid"
+                        invisible="not service_charge_ids or payment_status != 'paid' or not is_fsm"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='date_deadline']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+
+
+            <!--            custom code  -->
+            <xpath expr="//field[@name='milestone_id']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+            <!--            hide allocated time field -->
+            <xpath expr="//label[@for='allocated_hours']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+            <xpath expr="//div[@class='text-nowrap']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+
+
+            <!-- Regular task view label -->
+            <xpath expr="//label[@for='date_deadline']" position="replace">
+                <label for="date_deadline" string="Deadline" invisible="is_fsm"/>
+            </xpath>
+
+            <xpath expr="//field[@name='sequence_fsm']" position="after">
+                <field name="date_deadline" widget="daterange"
+                       options="{'start_date_field': 'planned_date_begin', 'always_range': '1'}"
+                       string="Planned Date Time"
+                       invisible="not is_fsm"
+                       required="is_fsm and (date_deadline or planned_date_begin)" readonly="1"
+                       groups="!industry_fsm.group_fsm_task_creator"/>
+                <field name="date_deadline" widget="daterange"
+                       options="{'start_date_field': 'planned_date_begin', 'always_range': '1'}"
+                       string="Planned Date Time"
+                       invisible="not is_fsm"
+                       required="is_fsm and (date_deadline or planned_date_begin)" readonly="readonly_fields"
+                       groups="industry_fsm.group_fsm_task_creator"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='planned_date_begin']" position="attributes">
+                <attribute name="required">is_fsm and date_deadline</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='extra_info']" position="attributes">
+                <attribute name="groups">base.group_no_one</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="d-sm-flex d-md-none oe_stat_button" name="action_view_timesheets" type="object"
+                        icon="fa-clock-o" help="Time recorded on this task"
+                        invisible="not is_fsm or not allow_timesheets "> <!-- or not display_timesheet_timer-->
+                    <div class="o_stat_info">
+                        <div class="o_stat_text">Time</div>
+                        <span class="o_stat_value">
+                            <field name="total_hours_spent" widget="float_time" nolabel="1" class="me-1"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+            <field name="is_fsm" string="is FSM?" invisible="1"/>
+
+
+<!--            <field name="partner_id" position="attributes">-->
+<!--                <attribute name="context">{'show_address_if_fsm': 1, 'res_partner_search_mode': 'customer'}</attribute>-->
+<!--                <attribute name="invisible">not project_id</attribute>-->
+<!--            </field>-->
+
+            <xpath expr="//field[@name='depend_on_ids']/tree/field[@name='partner_id']" position="after">
+                <field name="is_fsm" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='depend_on_ids']/tree/field[@name='partner_id']" position="attributes">
+                <attribute name="required">is_fsm</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/tree/field[@name='partner_id']" position="after">
+                <field name="is_fsm" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/tree/field[@name='partner_id']" position="attributes">
+                <attribute name="column_invisible">parent.is_fsm and not parent.partner_id</attribute>
+                <attribute name="required">is_fsm and parent.partner_id</attribute>
+            </xpath>
+
+            <field name="project_id" position="attributes">
+                <attribute name="context">{
+                    'default_is_fsm': context.get('fsm_mode'),
+                    }
+                </attribute>
+                <attribute name="domain">[
+                    ('active', '=', True),
+                    '|',
+                    ('company_id', '=', False),
+                    ('company_id', '=?', company_id),
+                    ('is_fsm', '=?', context.get('fsm_mode')),
+                    ('is_internal_project', '=', False),
+                    ]
+                </attribute>
+
+            </field>
+            <xpath expr="//group/field[@name='project_id']" position="attributes">
+                <attribute name="context">{
+                    'default_is_fsm': context.get('fsm_mode'),
+                    }
+                </attribute>
+                <attribute name="domain">[
+                    ('active', '=', True),
+                    '|',
+                    ('company_id', '=', False),
+                    ('company_id', '=?', company_id),
+                    ('is_fsm', '=?', context.get('fsm_mode')),
+                    ('is_internal_project', '=', False),
+                    ]
+                </attribute>
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_task_search_add_filters_fsm" model="ir.ui.view">
+        <field name="name">view.task.search.add.filters</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project_task_view_search_fsm"/>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <xpath expr="group//filter[@name='stage']" position="after">
+                <filter string="Department" name="department" context="{'group_by': 'department_id'}"/>
+                <filter string="Complaint Type" name="complaint" context="{'group_by': 'complaint_type_id'}"/>
+                <filter string="Service Type" name="service" context="{'group_by': 'service_types'}"/>
+                <filter string="Allocation" name="allocation" context="{'group_by': 'call_allocation'}"/>
+                <filter string="Reason Code" name="reason" context="{'group_by': 'reason_code_id'}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_task_search_remove" model="ir.ui.view">
+        <field name="name">view.task.search.remove</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="industry_fsm.project_task_view_search_fsm_base"/>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='open_tasks']" position="attributes">
+                <attribute name="domain">['|',
+                    '&amp;', ('project_id.is_fsm', '=', True), ('stage_id.name', 'not in', ['Resolved', 'Done',
+                    'Cancelled']),
+                    '&amp;', ('project_id.is_fsm', '=', False), ('state', 'in', ['01_in_progress',
+                    '02_changes_requested', '03_approved', '04_waiting_normal'])]
+                </attribute>
+            </xpath>
+
+            <xpath expr="//filter[@name='closed_tasks']" position="attributes">
+                <attribute name="domain">['|',
+                    '&amp;', ('project_id.is_fsm', '=', True), ('stage_id.name', 'in', ['Resolved', 'Done',
+                    'Cancelled']),
+                    '&amp;', ('project_id.is_fsm', '=', False), ('state', 'in', ['1_done','1_canceled'])]
+                </attribute>
+            </xpath>
+
+            <xpath expr="group//filter[@name='milestone']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="group//filter[@name='company_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="group//filter[@name='project']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='my_tasks']" position="attributes">
+                <attribute name="string">My Calls</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_service_call_form_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.service.call</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="industry_fsm.view_task_form2_inherit"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Service Charges" invisible="not is_fsm or not is_chargeable">
+                    <field name="service_charge_ids">
+                        <tree editable="bottom">
+                            <field name="service_charge_type"/>
+                            <field name="amount"/>
+                        </tree>
+                    </field>
+
+                    <div class="oe_subtotal_footer_separator"/>
+                    <div class="oe_invoice_total" style="text-align: right; margin-top: 15px; padding: 20px;">
+                        <table class="o_group o_inner_group" style="width: 100%; float: right;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong style="font-size: 18px;">Total:</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <field name="total_charge" class="oe_currency_value" readonly="1"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+    	Project Views (in project app)
+	-->
+
+    <record id="quick_create_task_form_fsm" model="ir.ui.view">
+        <field name="name">project.task.form.quick_create</field>
+        <field name="model">project.task</field>
+        <field name="priority">1000</field>
+        <field name="inherit_id" ref="project.quick_create_task_form"/>
+        <field name="arch" type="xml">
+            <field name="user_ids" position="attributes">
+                <attribute name="widget">many2many_avatar_user</attribute>
+            </field>
+            <field name="user_ids" position="before">
+                <field name="is_fsm" invisible="1"/>
+                <field name="partner_id" invisible="not is_fsm" required="is_fsm" widget="res_partner_many2one"
+                       context="{'res_partner_search_mode': 'customer'}"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Quick create for the kanban view in Project when the user selects a project in the main view of project app -->
+    <!-- TODO: Remove me in master -->
+    <record id="quick_create_task_in_project" model="ir.ui.view">
+        <field name="name">project.task.quick_create_in_project.view.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="quick_create_task_form_fsm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside"/>
+        </field>
+    </record>
+
+    <!-- TODO: Remove me in master -->
+    <record id="project_task_in_project_view_kanban" model="ir.ui.view">
+        <field name="name">project.task.in.project.kanban</field>
+        <field name="model">project.task</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="quick_create_view">industry_fsm.quick_create_task_in_project</attribute>
+            </xpath>
+            <xpath expr="//div//div//div//field[@name='state']" position="attributes">
+                <attribute name="invisible">is_fsm</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_view_form_inherit" model="ir.ui.view">
+        <field name="name">project.view.form.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="hr_timesheet.project_invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_documents_analytics']" position="after">
+                <group name="group_field_service" string="Field Service" col="1"
+                       class="row mt16 o_settings_container col-lg-6">
+                    <div>
+                        <setting class="col-lg-12" help="Manage tasks in the Field Service module"
+                                 groups="base.group_no_one">
+                            <field name="is_fsm"/>
+                        </setting>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project.project_task_kanban_action_view" model="ir.actions.act_window.view">
+        <field name="view_id" ref="industry_fsm.project_task_in_project_view_kanban"/>
+    </record>
+
+    <record id="view_task_tree_inherit_fsm" model="ir.ui.view">
+        <field name="name">project.task.tree.inherit.fsm</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="industry_fsm.project_task_view_list_fsm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="sequence_fsm" string="Number"
+                       options="{'no_empty_column': True, 'always_visible': False}" invisible="not is_fsm"/>
+            </xpath>
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="total_charge" string="Charge" invisible="not is_fsm" optional="hide"/>
+                <field name="paid_amount" string="Paid Amount" invisible="not is_fsm" optional="hide"/>
+                <field name="remaining_amount" string="Remaining Amount" invisible="not is_fsm" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_kanban_inherit_fsm" model="ir.ui.view">
+        <field name="name">project.task.kanban.inherit.fsm</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Adding sequence_fsm after the title in Kanban View -->
+            <xpath expr="//div[contains(@class, 'o_kanban_record_body')]" position="inside">
+                <field name="sequence_fsm" invisible="not is_fsm"/>
+                <div>
+                    <field name="department_id" invisible="not is_fsm"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_task_reopen_log_tree" model="ir.ui.view">
+        <field name="name">project.task.reopen.log.tree</field>
+        <field name="model">project.task.reopen.log</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="task_id"/>
+                <field name="reopen_time"/>
+                <field name="reason"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_project_task_reopen_wizard_form" model="ir.ui.view">
+        <field name="name">project.task.reopen.wizard.form</field>
+        <field name="model">project.task.reopen.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Re-open Task">
+                <group>
+                    <field name="task_id" readonly="1"/>
+                    <field name="reopen_reason"/>
+                    <field name="department_id"/>
+                    <field name="user_ids" widget="many2many_avatar_user"/>
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm_reopen" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
+

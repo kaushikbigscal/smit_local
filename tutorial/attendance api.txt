@@ -1,0 +1,62 @@
+from odoo import models, fields, api
+from datetime import datetime
+
+class HrAttendance(models.Model):
+    _inherit = 'hr.attendance'
+
+    @api.model
+    def get_attendance_summary(self, date):
+        # Get the start and end of the day
+        start_of_day = f"{date} 00:00:00"
+        end_of_day = f"{date} 23:59:59"
+
+        # Get present employees (distinct by employee_id)
+        present_attendance = self.search_read([
+            ('check_out', '=', False),
+            ('check_in', '>=', start_of_day),
+            ('check_in', '<=', end_of_day)
+        ], ['employee_id'])
+
+        # Use a set to ensure unique employee IDs
+        present_employee_ids = {attendance['employee_id'][0] for attendance in present_attendance}
+
+        # Get all employees
+        all_employees = self.env['hr.employee'].search_read([], ['id', 'name'])
+
+        # Determine absent employees
+        absent_employees = [
+            emp for emp in all_employees
+            if emp['id'] not in present_employee_ids
+        ]
+
+        # Prepare output with unique employee details for present employees
+        unique_present_employees = []
+        for attendance in present_attendance:
+            employee_id = attendance['employee_id'][0]
+            if employee_id not in [emp['id'] for emp in unique_present_employees]:
+                unique_present_employees.append(attendance)
+
+        return {
+            'present_employees': unique_present_employees,
+            'absent_employees': absent_employees,
+        }
+
+
+
+
+
+
+
+body:
+
+{
+  "jsonrpc": "2.0",
+  "method": "call",
+  "params": {
+    "model": "hr.attendance",
+    "method": "get_attendance_summary",
+    "args": ["2024-10-28"],  // Replace with the desired date
+    "kwargs": {}
+  },
+  "id": 1
+}

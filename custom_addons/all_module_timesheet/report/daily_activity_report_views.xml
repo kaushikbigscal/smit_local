@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Pivot View: Customize unit_amount label -->
+        <record id="view_daily_activity_pivot" model="ir.ui.view">
+            <field name="name">account.analytic.line.pivot.daily.activity</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Daily Activity Report">
+                    <field name="employee_id" type="row"/>
+                    <field name="category_id" type="row"/>
+                    <field name="name"/>
+                    <field name="customer_name" string="Customer Name"/>
+                    <field name="customer_mobile" string="Mobile"/>
+                    <field name="customer_state" string="Customer State"/>
+                    <field name="customer_city" string="Customer City"/>
+                    <field name="id" type="measure" widget="count" string="Check-in Count"/>
+                    <field name="unit_amount" type="measure" string="Total Check-In/Out Difference"
+                           widget="float_time"/>
+                    <!--<field name="total_duration_done_resolved" type="measure" string="Total Duration Based on Done/Resolved" widget="float_time"/>-->
+                </pivot>
+            </field>
+        </record>
+
+        <!-- NEW: Dedicated Tree View for Daily Activity Report -->
+        <record id="view_daily_activity_tree" model="ir.ui.view">
+            <field name="name">account.analytic.line.tree.daily.activity</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Activity" create="false" edit="false" delete="false">
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <button name="action_open_map_view"
+                            type="object"
+                            icon="fa-map-marker"
+                            class="btn btn-primary"
+                            help="Open Map View"
+                            invisible="not start_latitude or not start_longitude"/>
+                    <field name="category_id" string="Module Type"/>
+                    <field name="name" string="Title Name"/>
+                    <field name="customer_name" string="Customer Name"/>
+                    <field name="customer_mobile" string="Mobile"/>
+                    <field name="customer_state" string="Customer State"/>
+                    <field name="customer_city" string="Customer City"/>
+                    <field name="date_time" string="CheckIn Datetime"/>
+                    <field name="end_date_time" string="CheckOut Datetime"/>
+                    <field name="unit_amount" string="Total Check-In/Out Difference" widget="float_time"/>
+                    <field name="start_address" string="CheckIn Location"/>
+                    <field name="end_address" string="CheckOut Location"/>
+
+                    <field name="checkin_coordinates" string="CheckIn Lat-long"/>
+                    <field name="checkout_coordinates" string="CheckOut Lat-long"/>
+<!--                    <field name="distance_km" string="Distance (KM)"/>-->
+
+                    <field name="start_latitude" column_invisible="1"/>
+                    <field name="start_longitude" column_invisible="1"/>
+                    <field name="total_duration_done_resolved" string="Total Duration(Creation-Last Checkout)"
+                           widget="float_time"/>
+
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Custom Search View for Daily Activity Report -->
+        <record id="view_daily_activity_search" model="ir.ui.view">
+            <field name="name">account.analytic.line.search.daily.activity</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <search>
+
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="category_id"/>
+                    <field name="customer_name"/>
+                    <field name="customer_mobile"/>
+                    <field name="customer_city"/>
+                    <field name="customer_state"/>
+
+                    <filter name="filter_date_range" string="Date" domain="[('date', 'in', [])]"/>
+
+                    <filter name="filter_employee" string="Employee" domain="[('employee_id', 'in', [])]"/>
+                    <filter name="filter_category" string="Category" domain="[('category_id', 'in', [])]"/>
+                    <filter name="filter_department" string="Department" domain="[('department_id', 'in', [])]"/>
+                    <filter name="filter_customer" string="Customer" domain="[('partner_id', 'in', [])]"/>
+                    <filter name="filter_customer_state" string="Customer State"
+                            domain="[('customer_state', '=', '')]"/>
+                    <filter name="filter_customer_city" string="Customer City"
+                            domain="[('customer_city', '=', '')]"/>
+
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'date:date'}"/>
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_by_customer" string="Customer" context="{'group_by': 'customer_name'}"/>
+                    <filter name="group_by_customer_state" string="Customer State"
+                            context="{'group_by': 'customer_state'}"/>
+                    <filter name="group_by_customer_city" string="Customer City"
+                            context="{'group_by': 'customer_city'}"/>
+
+                </search>
+            </field>
+        </record>
+        <!-- Action to open the pivot view of account.analytic.line -->
+        <record id="action_daily_activity_pivot" model="ir.actions.act_window">
+            <field name="name">Daily Activity Report</field>
+            <field name="res_model">account.analytic.line</field>
+            <field name="view_mode">pivot,tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                                        (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_daily_activity_pivot')}),
+                                        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_daily_activity_tree')})]"/>
+            <field name="search_view_id" ref="view_daily_activity_search"/>
+            <field name="context">
+                {
+                "group_by": ["employee_id", "category_id"],
+                "pivot_measures": [ "__count__","unit_amount"]
+                }
+            </field>
+        </record>
+        <!-- REMOVE THIS RECORD - This was causing the issue -->
+        <!-- <record id="account_analytic_line_tree_add_customer_fields" model="ir.ui.view"> -->
+
+        <!-- Menu item under Timesheets root menu -->
+        <menuitem
+                id="menu_daily_activity_report"
+                name="Daily Activity"
+                parent="hr_timesheet.timesheet_menu_root"
+                action="action_daily_activity_pivot"
+                sequence="10"
+        />
+
+    </data>
+</odoo>

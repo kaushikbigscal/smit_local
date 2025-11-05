@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Device Lock Tree View -->
+    <record id="view_user_device_lock_tree" model="ir.ui.view">
+        <field name="name">user.device.lock.tree</field>
+        <field name="model">user.device.lock</field>
+        <field name="arch" type="xml">
+            <tree create="0">
+                <field name="user_id"/>
+                <field name="device_uuid"/>
+                <field name="login_type"/>
+                <field name="last_used"/>
+                <button name="reset_device_lock" type="object"
+                        string="Reset Device"
+                        class="btn-secondary"
+                        help="Reset device lock for this user"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Device Lock Form View -->
+    <record id="view_user_device_lock_form" model="ir.ui.view">
+        <field name="name">user.device.lock.form</field>
+        <field name="model">user.device.lock</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="reset_device_lock" type="object"
+                            string="Reset Device Lock"
+                            class="btn-primary"
+                            help="Reset device lock to allow user to register a new device"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="device_uuid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="login_type" readonly="1"/>
+                            <field name="last_used" readonly="1"/>
+                            <field name="is_active" readonly="1" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Device Lock Search View -->
+    <record id="view_user_device_lock_search" model="ir.ui.view">
+        <field name="name">user.device.lock.search</field>
+        <field name="model">user.device.lock</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="device_uuid"/>
+                <field name="login_type"/>
+                <field name="is_active"/>
+                <filter string="Web Login" name="web_login"
+                        domain="[('login_type', '=', 'web')]"/>
+                <filter string="Mobile Login" name="mobile_login"
+                        domain="[('login_type', '=', 'mobile')]"/>
+                <filter string="No Device UUID" name="no_device"
+                        domain="[('device_uuid', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="User" name="group_user"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Login Type" name="group_login_type"
+                            context="{'group_by': 'login_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Device Lock Action -->
+    <record id="action_user_device_lock" model="ir.actions.act_window">
+        <field name="name">Device Locks</field>
+        <field name="res_model">user.device.lock</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No device locks found!
+            </p>
+            <p>
+                Device locks are created automatically when users login with device lock enabled.
+                You can reset device locks to allow users to register new devices.
+            </p>
+        </field>
+    </record>
+
+    <!--    Device Info tree view -->
+    <record id="view_user_device_info_tree" model="ir.ui.view">
+        <field name="name">user.device.info.tree</field>
+        <field name="model">user.device.info</field>
+        <field name="arch" type="xml">
+            <tree create="0">
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="device_os"/>
+                <field name="device_browser"/>
+                <field name="device_user_agent"/>
+                <field name="device_platform"/>
+                <field name="device_vendor"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Device info Form View -->
+    <record id="view_user_device_info_form" model="ir.ui.view">
+        <field name="name">user.device.info.form</field>
+        <field name="model">user.device.info</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <field name="device_os" readonly="1"/>
+                            <field name="device_browser" readonly="1"/>
+                            <field name="device_user_agent" readonly="1"/>
+                            <field name="device_platform" readonly="1"/>
+                            <field name="device_vendor" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="device_model" readonly="1"/>
+                            <field name="device_type" readonly="1"/>
+                            <field name="client_ip" readonly="1"/>
+                            <field name="screen_resolution" readonly="1"/>
+                            <field name="timezone" readonly="1"/>
+                            <field name="language" readonly="1"/>
+                            <field name="last_updated" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Device Lock Info -->
+    <record id="action_user_device_info" model="ir.actions.act_window">
+        <field name="name">Device Info</field>
+        <field name="res_model">user.device.info</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No device info found!
+            </p>
+            <p>
+                Device info are created automatically when users login.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_user_device_lock"
+              name="Device Locks"
+              parent="base.menu_users"
+              action="action_user_device_lock"
+              groups="base.group_system"
+              sequence="10"/>
+
+    <menuitem id="menu_user_device_info"
+              name="Device Info"
+              parent="base.menu_users"
+              action="action_user_device_info"
+              groups="base.group_system"
+              sequence="20"/>
+</odoo>
+

@@ -1,0 +1,41 @@
+<!-- your_module/views/project_task_view.xml -->
+
+<odoo>
+    <record id="view_task_form_inherit_parts_list" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.parts.list</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/> <!-- Adjust if you use custom view -->
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Parts List" name="parts_list" invisible="not is_fsm">
+                    <field name="task_part_ids">
+                        <tree editable="bottom" delete="1">
+                            <field name="product_id"/>
+                            <field name="original_product_id" column_invisible="1"/>
+
+                            <field name="serial_number_id" widget="many2one_tags"
+                                   context="{'default_product_id': original_product_id}"
+                                   readonly="0"
+                            />
+                            <field name="previous_serial_number_id" widget="many2one_tags"
+                                   context="{'default_product_id': original_product_id}"
+                                   readonly="0"
+                            />
+
+                            <field name="part_service_type" readonly="0"/>
+                            <field name="description"/>
+                            <field name="last_update_date_time"/>
+                            <button name="open_part_service_wizard"
+                                    string="Update Part Service"
+                                    type="object"
+                                    class="oe_highlight"/>
+                            <!-- If you want to add log or timestamp, you can -->
+                            <!-- <field name="last_update_date_time"/> -->
+                            <!-- Optional: Add more fields from project.task.part if needed -->
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

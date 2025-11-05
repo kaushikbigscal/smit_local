@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_monthly_salary_report_tree" model="ir.ui.view">
+        <field name="name">monthly.salary.report.tree</field>
+        <field name="model">monthly.salary.report</field>
+        <field name="arch" type="xml">
+            <!-- This will be completely replaced by get_view() -->
+            <tree string="Monthly Salary Report"/>
+        </field>
+    </record>
+
+    <record id="view_monthly_salary_report_search" model="ir.ui.view">
+        <field name="name">monthly.salary.report.search</field>
+        <field name="model">monthly.salary.report</field>
+        <field name="arch" type="xml">
+            <search string="Monthly Salary Report">
+
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="company_id"/>
+                <field name="month"/>
+
+                <filter string="Date" name="start_date" date="date_from"/>
+                <filter name="filter_employee" string="Employee" domain="[('employee_id', 'in', [])]"/>
+                <filter name="filter_department" string="Department" domain="[('department_id', 'in', [])]"/>
+                <filter name="filter_company" string="Company" domain="[('company_id', 'in', [])]"/>
+
+                <group string="Group By">
+                    <filter name="group_by_month" string="Month" context="{'group_by': 'month'}"/>
+                    <filter name="group_by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_monthly_salary_report" model="ir.actions.act_window">
+        <field name="name">Monthly Salary Report</field>
+        <field name="res_model">monthly.salary.report</field>
+        <field name="view_mode">tree,search</field>
+        <field name="search_view_id" ref="view_monthly_salary_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No report to display.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_hr_reports_root" name="Reporting" parent="menu_hr_payroll_root" sequence="45"/>
+    <menuitem id="menu_monthly_salary_report" name="Monthly Salary Report"
+              parent="menu_hr_reports_root" action="action_monthly_salary_report" sequence="20"/>
+
+</odoo>

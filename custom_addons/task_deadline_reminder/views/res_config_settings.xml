@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_reminder" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.reminder</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div class="app_settings_block">
+                <h2>System Reminders</h2>
+                <div class="row mt16 o_settings_container">
+                    <!-- Attendance Reminders (side-by-side) -->
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Day-In Attendance Reminders</span>
+                            <div class="text-muted">
+                                Enter reminder time after user's scheduled start hour.
+                            </div>
+                            <div class="mt16 d-flex align-items-center">
+                                <field name="reminder_day_in_offset_minutes" class="o_light_label" style="width: 80px;"/>
+                                <span class="ml8">minutes after</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Day-Out Attendance Reminders</span>
+                            <div class="text-muted">
+                                Enter reminder time after user's scheduled end hours.
+                            </div>
+                            <div class="mt16 d-flex align-items-center">
+                                <field name="reminder_day_out_offset_minutes" class="o_light_label" style="width: 80px;"/>
+                                <span class="ml8">minutes after</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Overdue Task Reminders -->
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="enable_overdue_reminder"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="enable_overdue_reminder" class="o_form_label">Overdue Task Reminders</label>
+                            <div class="text-muted">Enter comma-separated times in 24-hour format</div>
+                            <!-- Additional input shown only if checkbox is enabled -->
+                            <div class="mt16 d-flex flex-column" invisible="not enable_overdue_reminder">
+                                <field name="overdue_reminder_times" placeholder="e.g. 09:00,13:30"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_reminder_form" model="ir.ui.view">
+        <field name="name">task.reminder.form</field>
+        <field name="model">task.reminder</field>
+        <field name="arch" type="xml">
+            <form string="Reminder">
+                <group>
+                    <field name="name"/>
+                    <field name="author_id"/>
+                    <field name="user_ids" widget="many2many_avatar_user"/>-->
+                    <field name="related_model"/>
+                    <field name="related_id"/>
+                    <field name="deadline"/>
+                    <field name="is_read"/>
+                </group>
+                <notebook>
+                    <page string="Body">
+                        <field name="body"/>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_task_reminder_tree" model="ir.ui.view">
+        <field name="name">task.reminder.tree</field>
+        <field name="model">task.reminder</field>
+        <field name="arch" type="xml">
+            <tree string="Reminders">
+                <field name="name"/>
+                <field name="deadline"/>
+                <field name="user_ids"/>
+                <field name="is_read"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_task_reminder_search" model="ir.ui.view">
+        <field name="name">task.reminder.search</field>
+        <field name="model">task.reminder</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Read Status" name="is_read" context="{'group_by': 'is_read'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_task_reminder" model="ir.actions.act_window">
+        <field name="name">Reminders</field>
+        <field name="res_model">task.reminder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first task reminder
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_task_reminder"
+              name="Reminders"
+              parent="mail.mail_menu_technical"
+              action="action_task_reminder"
+              sequence="30"
+              groups="base.group_system"/>
+</odoo>

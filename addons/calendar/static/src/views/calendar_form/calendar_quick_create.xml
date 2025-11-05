@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Template for activity creation - shows both Save and Discard -->
+    <t t-name="calendar.CalendarActivityCreateButtons" t-inherit="web.FormViewDialog.ToOne.buttons">
+        <!-- Keep both Save and Discard buttons visible (default behavior) -->
+    </t>
+
+    <!-- Template for rule creation - shows only Discard -->
+    <t t-name="calendar.CalendarRuleCreateButtons" t-inherit="web.FormViewDialog.ToOne.buttons">
+        <!-- Hide Save button, show only Discard -->
+        <xpath expr="//button[contains(@class, 'o_form_button_save')]" position="attributes">
+            <attribute name="t-attf-style">display: none</attribute>
+        </xpath>
+
+        <!-- Keep Discard button visible -->
+        <xpath expr="//button[contains(@class, 'o_form_button_cancel')]" position="attributes">
+            <attribute name="t-attf-style">display: inline-block</attribute>
+        </xpath>
+    </t>
+</templates>
+
+
+        <!--        <templates xml:space="preserve">-->
+<!--    <t t-name="calendar.CalendarQuickCreateButtons" t-inherit="web.FormViewDialog.ToOne.buttons">-->
+<!--        &lt;!&ndash; Hide Save & Close button for records &ndash;&gt;-->
+<!--&lt;!&ndash;        <xpath expr="//button[contains(@class, 'o_form_button_save')]" position="attributes">&ndash;&gt;-->
+<!--&lt;!&ndash;            <attribute name="t-attf-class">btn btn-primary</attribute>&ndash;&gt;-->
+<!--&lt;!&ndash;            <attribute name="t-attf-style">display: #{isRecordMode ? 'none' : 'inline-block'}</attribute>&ndash;&gt;-->
+<!--&lt;!&ndash;        </xpath>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <xpath expr="//button[contains(@class, 'o_form_button_cancel')]" position="after">&ndash;&gt;-->
+<!--&lt;!&ndash;            <button class="btn btn-link ms-auto" t-on-click="goToFullEvent"&ndash;&gt;-->
+<!--&lt;!&ndash;                    t-attf-style="display: #{isMeetingMode ? 'inline-block' : 'none'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                More Options&ndash;&gt;-->
+<!--&lt;!&ndash;            </button>&ndash;&gt;-->
+<!--&lt;!&ndash;        </xpath>&ndash;&gt;-->
+
+<!--           <xpath expr="//button[contains(@class, 'o_form_button_save')]" position="replace"/>-->
+
+<!--&lt;!&ndash;             Remove Cancel/Discard button&ndash;&gt;-->
+<!--&lt;!&ndash;            <xpath expr="//button[contains(@class, 'o_form_button_cancel')]" position="replace"/>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <xpath exp r="." position="inside">&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash; Show Create Record button only for records &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            <button class="btn btn-primary"&ndash;&gt;-->
+<!--&lt;!&ndash;                    t-on-click="createInTargetModel"&ndash;&gt;-->
+<!--&lt;!&ndash;                    t-attf-style="display: #{isRecordMode ? 'inline-block' : 'none'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                Create Record&ndash;&gt;-->
+<!--&lt;!&ndash;            </button>&ndash;&gt;-->
+<!--&lt;!&ndash;        </xpath>&ndash;&gt;-->
+<!--    </t>-->
+<!--</templates>-->

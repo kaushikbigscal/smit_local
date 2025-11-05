@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Tree View-->
+    <record id="view_reminder_types_tree" model="ir.ui.view">
+        <field name="name">view.reminder.types.tree</field>
+        <field name="model">reminder.types</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" options='{"no_create": True}'/>
+                <field name="reminder_minutes"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_Reminder_type_form" model="ir.ui.view">
+        <field name="name">view.reminder.types.form</field>
+        <field name="model">reminder.types</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" options='{"no_create": True}'/>
+                        <field name="reminder_minutes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action-->
+    <record id="action_reminder_type" model="ir.actions.act_window">
+        <field name="name">Reminder Type</field>
+        <field name="res_model">reminder.types</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_config_reminder_type"
+              name="Reminder Types"
+              parent="project.menu_project_config"
+              sequence="60"
+              action="action_reminder_type"
+              groups="project.group_project_manager"/>
+</odoo>

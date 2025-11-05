@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <odoo>
+        <data>
+            <!-- Custom Report Template -->
+            <template id="report_my_custom_report">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="doc">
+                        <t t-call="web.external_layout">
+                            <!-- Table 1: Employee Details -->
+
+                            <table class="table table-sm table-bordered"
+                                   style="width: 100%; margin-bottom: 30px; margin-top: -20px; border: 1px solid black; border-collapse: collapse;">
+                                <tr>
+                                    <th colspan="4" style="background-color: black; color: white;">
+                                        <span>PAY SLIP</span>
+                                        <span>FOR</span>
+                                        <span>MONTH</span>
+                                        <span t-esc="doc.date_from and doc.date_from.strftime('%B %Y').upper() or ''"/>
+                                    </th>                                
+				</tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Name</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.name"/>
+
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>PAN</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.ssnid"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Employee Code</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.x_empCode or ''"/>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Gender</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;" t-esc="dict(doc.employee_id._fields['gender'].selection).get(doc.employee_id.gender) or ''"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Designation</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.job_title or ''"/>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Account Number</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.bank_account_no or ''"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Location</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.address_id.city or ''"/>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>IFSC Code</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.x_ifsc_code or ''"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:25%; border: 1px solid black;">
+                                        <strong>Joining Date</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:25%;"
+                                        t-esc="doc.employee_id.join_date and doc.employee_id.join_date.strftime('%d/%m/%Y') or ''"/>
+                                    <td style="border: 1px solid black; width:25%; background-color: lightgray;">
+					<strong> PF Number </strong>	
+				   </td>
+                                    <td style="border: 1px solid black; width:25%;" t-esc="doc.employee_id.pf_number or ''"></td>
+                                </tr>
+                            </table>
+                            
+              
+
+                            <!-- Table 2: Attendance and Arrears -->
+
+                            <table class="table table-sm table-bordered"
+                                   style="width: 100%; border: 1px solid black; margin-bottom: 30px; border-collapse: collapse; text-align: center;">                                
+				<tr style="background-color: black; color: white;">
+                                    <th style="width: 50%; border: 1px solid black;">PAY DAYS</th>
+                                    <th style="width: 50%; border: 1px solid black;">ABSENT DAYS</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black; width: 50%;"
+                                        t-esc="doc.worked_days_line_ids and doc.worked_days_line_ids[0].number_of_days or ''"/>
+                                    <td style="border: 1px solid black; width: 50%;"
+                                        t-esc="(float(doc.worked_days_line_ids.filtered(lambda payslip_lines: payslip_lines.code == 'Unpaid').number_of_days or '0')) + (float(doc.worked_days_line_ids.filtered(lambda payslip_lines: payslip_lines.code == 'SHORTFALL').number_of_days or '0'))"/>
+                                </tr>
+                            </table>
+                            
+
+                            <!-- Table 3: Earnings (INR) -->
+                            <table class="table table-sm table-bordered"
+                                   style="width: 100%; border: 1px solid black; margin-bottom: 30px; border-collapse: collapse;">
+                                <tr>
+                                    <th colspan="4"
+                                        style="background-color: black; color: white; ">
+                                        EARNINGS
+                                        (INR)
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>PARTICULARS</strong>
+                                    </td>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>MONTHLY</strong>
+                                    </td>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>ARREAR</strong>
+                                    </td>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>TOTAL</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>Basic</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'BASIC').total"/>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round((doc.line_ids.filtered(lambda line: line.code == 'Unpaid').total),2)"/>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round((doc.line_ids.filtered(lambda line: line.code == 'BASIC').total)-(doc.line_ids.filtered(lambda line: line.code == 'Unpaid').total),1)"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>HRA</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'HRA').total"/>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round(doc.line_ids.filtered(lambda line: line.code == 'Unpaid HRA').total,1)"/>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round((doc.line_ids.filtered(lambda line: line.code == 'HRA').total)-(doc.line_ids.filtered(lambda line: line.code == 'Unpaid HRA').total),1)"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>Special Allowance</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'SL').total"/>
+
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round(doc.line_ids.filtered(lambda line: line.code == 'UNPAID ALW').total,1)"/>
+                                    
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round((doc.line_ids.filtered(lambda line: line.code == 'SL').total)-(doc.line_ids.filtered(lambda line: line.code == 'UNPAID ALW').total),1)"/>
+
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>Incentive</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'Incentive').total"/>
+                                    <td style="border: 1px solid black;">0.0</td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'Incentive').total"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>Allowance</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'Petrol').total"/>
+                                    <td style="border: 1px solid black;">0.0</td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'Petrol').total"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; border: 1px solid black;">
+                                        <strong>GROSS EARNINGS</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;" t-set="gross_earning"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'GROSS').total"/>
+
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round((doc.line_ids.filtered(lambda line: line.code == 'Unpaid').total)+(doc.line_ids.filtered(lambda line: line.code == 'Unpaid HRA').total)+(doc.line_ids.filtered(lambda line: line.code == 'UNPAID ALW').total),1)"/>
+
+                                    <td style="border: 1px solid black;"
+                                        t-esc="round(((doc.line_ids.filtered(lambda line: line.code == 'BASIC').total)-(doc.line_ids.filtered(lambda line: line.code == 'Unpaid').total))
+                                               +((doc.line_ids.filtered(lambda line: line.code == 'HRA').total)-(doc.line_ids.filtered(lambda line: line.code == 'Unpaid HRA').total))
+                                               +((doc.line_ids.filtered(lambda line: line.code == 'SL').total) - (doc.line_ids.filtered(lambda line: line.code == 'UNPAID ALW').total))
+
+                                               +(doc.line_ids.filtered(lambda line: line.code == 'Incentive').total)
+                                               +(doc.line_ids.filtered(lambda line: line.code == 'Petrol').total),1)"/>
+                                </tr>
+                            </table>
+                            
+                            <!-- Table 4: Deductions (INR) -->
+                            <table class="table table-sm table-bordered"
+                                   style="width: 100%; border: 1px solid black; margin-bottom: 20px; border-collapse: collapse;">
+                                <tr>
+                                    <th colspan="4"
+                                        style="background-color: black; color: white; ">
+                                        DEDUCTIONS (INR)
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>PARTICULARS</strong>
+                                    </td>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>TOTAL</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>TDS</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;" t-set="pf_ee"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'TDS').total"/>
+                                </tr>
+
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>PF Employee Share @12%</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;" t-set="pf_ee"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'PF_EE').total"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>PF Employer Share @12.5%</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;" t-set="pf_er"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'PF_ER').total"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>PT</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'PT').total"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:15%; border: 1px solid black;">
+                                        <strong>TOTAL DEDUCTIONS</strong>
+                                    </td>
+                                    <td style="border: 1px solid black;"
+                                        t-esc="doc.line_ids.filtered(lambda line: line.code == 'TOTAL_DED').total"/>
+                                </tr>
+                            </table>
+
+                            <table class="table table-sm table-bordered"
+                                   style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="background-color: lightgray; width:50%; border: 1px solid black;">
+                                        <strong>NET PAY (INR)</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; width:50%;"
+                                        t-esc="round(doc.line_ids.filtered(lambda line: line.code == 'NET').total,0)"/>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: lightgray; width:50%; border: 1px solid black;">
+                                        <strong>NET PAY IN WORDS</strong>
+                                    </td>
+
+                                    <td style="border: 1px solid black; width:50%;"
+                                        t-esc="doc.net_amount_in_word"/>
+
+                                </tr>
+                            </table>
+
+				<div style="text-align: center; margin-top: 30px; font-weight: bold;">
+        				This is a system-generated payslip and does not require a signature.
+    				</div>
+		
+
+                        </t>
+                    </t>
+                </t>
+            </template>
+        </data>
+    </odoo>
+
+    <record id="action_report_hr_payslip" model="ir.actions.report">
+        <field name="name">hr payslip Report</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">om_hr_payroll.report_my_custom_report</field>
+        <field name="report_file">om_hr_payroll.report_my_custom_report</field>
+        <!--        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip"/>-->
+        <!--        <field name="binding_type">report</field>-->
+    </record>
+</odoo>
+
+
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="payslip_file_wizard" model="ir.ui.view">
+        <field name="name">payslip_wizard</field>
+        <field name="model">payslip.file.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Payslip">
+                <group>
+                    <group>
+                        <field name="bank_selection" string="Select Bank"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="payment_date" string="Payment Date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="generate_excel" string="Download" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_payslip_wizard" model="ir.actions.act_window">
+        <field name="name">Payslip File</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">payslip.file.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

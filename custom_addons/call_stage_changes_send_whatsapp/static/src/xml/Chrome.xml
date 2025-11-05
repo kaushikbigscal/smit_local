@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('status-buttons')]" position="inside">
+            <!-- Existing TotalSales component -->
+            <TotalSales />
+        </xpath>
+
+    </t>
+</templates>
+

@@ -1,0 +1,38 @@
+<odoo>
+
+    <record id="view_sla_term_tree" model="ir.ui.view">
+        <field name="name">sla.term.tree</field>
+        <field name="model">sla.term</field>
+        <field name="arch" type="xml">
+            <tree string="SLA Term">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sla_term_form" model="ir.ui.view">
+        <field name="name">sla.term.form</field>
+        <field name="model">sla.term</field>
+        <field name="arch" type="xml">
+            <form string="SLA Terms">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <notebook>
+                        <page string="Terms &amp; Conditions">
+                            <field name="note" no_label="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_sla_term" model="ir.actions.act_window">
+        <field name="name">SLA Terms</field>
+        <field name="res_model">sla.term</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_sla_term" name="SLA Terms" parent="industry_fsm.fsm_menu_settings" action="action_sla_term" sequence="50"/>
+</odoo>

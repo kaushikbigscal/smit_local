@@ -1,0 +1,41 @@
+<odoo>
+    <!-- Tree View-->
+    <record id="view_service_charge_type_tree" model="ir.ui.view">
+        <field name="name">service.charge.type.tree</field>
+        <field name="model">service.charge.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="service_charge_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_service_charge_type_form" model="ir.ui.view">
+        <field name="name">service.charge.type.form</field>
+        <field name="model">service.charge.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="service_charge_type"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    Action-->
+    <record id="action_service_charge_type" model="ir.actions.act_window">
+        <field name="name">Service Charge Type</field>
+        <field name="res_model">service.charge.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_config_call_type"
+              name="Service Charge Type"
+              parent="fsm_menu_settings"
+              sequence="62"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_service_charge_type"/>
+</odoo>

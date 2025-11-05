@@ -1,0 +1,80 @@
+<odoo>
+    <record id="inherit_customer_product_mapping_form_add_amc_contract" model="ir.ui.view">
+        <field name="name">customer.product.mapping.form.inherit.amc.contract</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="inherit_id" ref="industry_fsm.view_customer_product_mapping_form"/>
+        <field name="arch" type="xml">
+            <!-- Add amc_contract_id after source_type -->
+            <xpath expr="//field[@name='customer_id']" position="before">
+                <field name="contract_id" invisible="source_type != 'amc'"/>
+
+            </xpath>
+            <xpath expr="//field[@name='customer_id']" position="replace">
+                <field name="customer_id" readonly="source_type == 'amc'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='product_category']" position="replace">
+                <field name="product_category" invisible="source_type == 'amc'"/>
+            </xpath>
+            <xpath expr="//field[@name='serial_number_ids']" position="after">
+                <field name="quantity" invisible="source_type != 'amc'"/>
+                <field name="visit" invisible="1"/>
+                <field name="user_ids" widget="many2many_tags_avatar" invisible="source_type != 'amc'" readonly="1"/>
+                <field name="contract_type" invisible="source_type != 'amc' "/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <!--                    <page string="Parts">-->
+                    <!--                        <field name="part_line_ids">-->
+                    <!--                            <tree editable="bottom">-->
+                    <!--                                <field name="product_id"/>-->
+                    <!--                                <field name="part_id" domain="[('is_part', '=', True)]"/>-->
+                    <!--                                <field name="serial_number"/>-->
+                    <!--                                <field name="action"/>-->
+                    <!--                                <field name="action_date"/>-->
+                    <!--                            </tree>-->
+                    <!--                        </field>-->
+                    <!--                    </page>-->
+                    <page string="Parts List">
+                        <field name="mapping_parts_ids">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="original_product_id" column_invisible="1"/>
+                                <field name="serial_number_ids" widget="many2one_tags"
+                                       context="{'default_product_id':original_product_id }"
+                                />
+                                <field name="previous_serial_number_ids" widget="many2one_tags"
+                                       context="{'default_product_id':original_product_id }"
+                                />
+
+
+                                <!--                                <field name="serial_number_ids"/>-->
+                                <!--                                <field name="available_serial_numbers"/>-->
+                                <!--                                <field name="part_data_id"/>-->
+                                <!--                                <field name="part_name"/>-->
+                                <!--                                <field name="previous_serial_number_id"/>-->
+                                <!--                                <field name="new_serial_number_id"/>-->
+                                <field name="part_service_type"/>
+                                <field name="description"/>
+                                <field name="last_update_date_time"/>
+<!--                                <field name="is_replace"/>-->
+                            </tree>
+                        </field>
+                    </page>
+
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_customer_product_mapping_search_add_contract_type" model="ir.ui.view">
+    <field name="name">customer.product.mapping.search.inherit.contract_type</field>
+    <field name="model">customer.product.mapping</field>
+    <field name="inherit_id" ref="industry_fsm.view_customer_product_mapping_search"/> <!-- Adjust if different -->
+    <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+            <filter string="Contract Type" name="group_by_contract_type" context="{'group_by': 'contract_type'}"/>
+        </xpath>
+    </field>
+</record>
+</odoo>

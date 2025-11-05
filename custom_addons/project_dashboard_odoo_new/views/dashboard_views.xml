@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action for Project Dashboard-->
+    <record id="project_dashboard_action" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">project_dashboard</field>
+    </record>
+    <!-- Dashboard menu item -->
+<!--    <menuitem id="project_menu_open_Dashboard"-->
+<!--              name="Project Dashboard"-->
+<!--              action="project_dashboard_action"-->
+<!--              parent="project.menu_main_pm"-->
+<!--              sequence="1"-->
+<!--              active="False"/>-->
+
+    <!-- Summary Dashboard -->
+<!--    <record id="project_menu_open_Dashboard" model="ir.ui.menu">-->
+<!--        <field name="active" eval="False"/>-->
+<!--    </record>-->
+
+    <record id="summary_dashboard_action" model="ir.actions.client">
+        <field name="name">Project Dashboard</field>
+        <field name="tag">project_dashboard_main</field>
+    </record>
+    <!-- Dashboard menu item -->
+    <menuitem id="menu_summary_dashboard"
+              name="Project Dashboard"
+              action="summary_dashboard_action"
+              parent="project.menu_main_pm"
+              sequence="1"/>
+    <data noupdate="1">
+        <record id="project.menu_project_config" model="ir.ui.menu">
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

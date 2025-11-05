@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add container tile to portal home page -->
+    <template id="portal_my_home_container" name="Show My Containers" customize_show="True"
+              inherit_id="portal.portal_my_home" priority="10">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/barcode_container/static/src/img/container.svg'"/>
+                <t t-set="title">My Containers</t>
+                <t t-set="url" t-value="'/my/containers'"/>
+                <t t-set="text">Follow, Track and manage your containers</t>
+                <t t-set="placeholder_count" t-value="'container_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- List page with Scanner Button and Filters -->
+    <template id="portal_my_containers" name="My Containers">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <!--            <t t-set="searchbar_inputs" t-value="searchbar_inputs.items()"/>-->
+            <!--            <t t-set="searchbar_inputs" t-value="list(searchbar_inputs.values())"/>-->
+
+            <!-- ✅ Search + Sort Only -->
+            <!--            <t t-call="portal.portal_searchbar">-->
+            <!--                <t t-set="title">Containers</t>-->
+            <!--                <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>-->
+            <!--                <t t-set="search_in" t-value="search_in"/>-->
+            <!--                <t t-set="search" t-value="search"/>-->
+            <!--            </t>-->
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Containers</t>
+                <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>
+                <t t-set="search_in" t-value="search_in"/>
+                <t t-set="search" t-value="search"/>
+            </t>
+
+            <!-- QR Scanner Button -->
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <button id="portal_qr_scan_button" type="button" class="btn btn-primary">
+                            <i class="fa fa-qrcode"></i>
+                            Scan QR Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display scan notification from session -->
+            <t t-if="request.session.get('container_scan_message')">
+                <t t-set="scan_msg" t-value="request.session.pop('container_scan_message')"/>
+                <div t-attf-class="alert alert-{{scan_msg.get('type', 'info')}} alert-dismissible fade show"
+                     role="alert">
+                    <t t-esc="scan_msg.get('message', '')"/>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </t>
+
+            <!-- Modal (acts as the Dialog) -->
+            <div id="qrScannerModal" class="modal fade" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Scan QR Code</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="o_qr_scanner_wrapper">
+                                <div class="o_qr_scanner_content">
+                                    <video id="qr_video" autoplay="true" playsinline="true"></video>
+                                    <canvas id="qr_canvas" style="display:none;"></canvas>
+                                    <div class="o_qr_scanner_overlay"></div>
+                                </div>
+                            </div>
+                            <div id="qr_status" class="mt-3 text-center text-muted small"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .o_qr_scanner_wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                }
+                .o_qr_scanner_content {
+                position: relative;
+                width: 100%;
+                max-width: 400px;
+                aspect-ratio: 1;
+                border-radius: 12px;
+                overflow: hidden;
+                background: black;
+                }
+                .o_qr_scanner_content video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                }
+                .o_qr_scanner_overlay {
+                position: absolute;
+                inset: 0;
+                border: 3px solid limegreen;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0,255,0,0.6);
+                pointer-events: none;
+                }
+            </style>
+            <!-- jsQR library for decoding -->
+            <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+            <!-- Bootstrap modal runtime -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+            <script type="module">
+                document.addEventListener("DOMContentLoaded", () => {
+                const scanButton = document.getElementById("portal_qr_scan_button");
+                const modalEl = document.getElementById("qrScannerModal");
+                const video = document.getElementById("qr_video");
+                const canvas = document.getElementById("qr_canvas");
+                const statusEl = document.getElementById("qr_status");
+
+                if (!scanButton || !modalEl) {
+                console.warn("QR scanner elements not found on page");
+                return;
+                }
+
+                let modal = null;
+                let stream = null;
+                let scanning = false;
+
+                async function startCamera() {
+                try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" },
+                });
+                video.srcObject = stream;
+                await video.play();
+                scanning = true;
+                statusEl.textContent = "Scanning... Point camera at QR code";
+                scanLoop();
+                } catch (err) {
+                console.error("Camera permission denied:", err);
+                alert("Camera permission denied. Please allow camera access.");
+                if (modal) modal.hide();
+                }
+                }
+
+                function stopCamera() {
+                scanning = false;
+                if (stream) {
+                stream.getTracks().forEach((track) => track.stop());
+                stream = null;
+                }
+                statusEl.textContent = "";
+                }
+
+                function scanLoop() {
+                const ctx = canvas.getContext("2d", { willReadFrequently: true });
+                const tick = () => {
+                if (!scanning) return;
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert",
+                });
+                if (code) {
+                scanning = false;
+                stopCamera();
+                onQrDetected(code.data);
+                return;
+                }
+                }
+                requestAnimationFrame(tick);
+                };
+                tick();
+                }
+
+                async function onQrDetected(data) {
+                statusEl.textContent = "QR detected, processing...";
+
+                let containerId = null;
+                let label = null;
+
+                // ✅ Case 1: QR is a URL
+                if (data.startsWith("http://") || data.startsWith("https://")) {
+                try {
+                const url = new URL(data);
+                if (url.pathname.includes("/barcode/container/scan")) {
+                containerId = url.searchParams.get("container_id");
+                label = url.searchParams.get("label");
+                } else {
+                // Unknown URL format, just redirect
+                window.location.href = data;
+                return;
+                }
+                } catch (err) {
+                console.error("Invalid URL QR:", err);
+                alert("Invalid QR code URL format.");
+                if (modal) modal.hide();
+                return;
+                }
+                }
+                // ✅ Case 2: QR is JSON
+                else {
+                try {
+                const payload = JSON.parse(data);
+                containerId = payload.container_id;
+                label = payload.label;
+                } catch (err) {
+                console.error("Invalid JSON QR:", err);
+                alert("Invalid QR code format. Expected URL or JSON data.");
+                if (modal) modal.hide();
+                return;
+                }
+                }
+
+                // Validate extracted data
+                if (!containerId || !label) {
+                alert("Invalid QR: missing container_id or label");
+                if (modal) modal.hide();
+                return;
+                }
+
+                // ✅ Send POST request to backend
+                try {
+                const response = await fetch("/barcode/container/scan", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "call",
+                params: {
+                container_id: containerId,
+                label: label
+                },
+                }),
+                });
+
+                if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                // Hide modal first
+                if (modal) modal.hide();
+
+                // Check result
+                if (result.success &amp;&amp; result.matched) {
+                // Success - show message and redirect
+                const message = result.already_scanned
+                ? `Line '${result.label}' was already scanned.`
+                : `✅ Line '${result.label}' marked as scanned!`;
+
+                alert(message);
+
+                // Redirect to filtered view
+                if (result.redirect_url) {
+                window.location.href = result.redirect_url;
+                } else {
+                window.location.href = `/my/container/{result.container_id}`;
+                }
+                } else {
+                // Not matched
+                const errorMsg = result.message || `No matching line found for: ${label}`;
+                alert("⚠️ " + errorMsg);
+                }
+                } catch (err) {
+                console.error("Scan request failed:", err);
+                alert("Error processing scan: " + err.message);
+                if (modal) modal.hide();
+                }
+                }
+
+                // 🔘 Events
+                scanButton.addEventListener("click", () => {
+                modal = new bootstrap.Modal(modalEl);
+                modal.show();
+                startCamera();
+                });
+
+                modalEl.addEventListener("hidden.bs.modal", stopCamera);
+                });
+            </script>
+
+            <t t-if="not containers">
+                <div class="alert alert-warning mt-3" role="alert">
+                    There are currently no containers for your account.
+                </div>
+            </t>
+            <t t-if="containers" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Packing List</th>
+                        <th>Container Number</th>
+                        <th>BL Number</th>
+                        <th class="text-end">Date</th>
+                        <th>Destination</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="containers" t-as="container">
+                        <tr>
+                            <td>
+                                <a t-att-href="'/my/container/%s' % container.id">
+                                    <t t-esc="container.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <span t-field="container.container_number"/>
+                            </td>
+                            <td>
+                                <span t-field="container.bl_nr"/>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="container.date" t-options='{"widget": "date"}'/>
+                            </td>
+                            <td>
+                                <span t-field="container.destination_id"/>
+                            </td>
+                            <td class="text-center">
+                                <t t-set="scanned_count"
+                                   t-value="len(container.line_ids.filtered(lambda l: l.scanned))"/>
+                                <t t-set="total_count" t-value="len(container.line_ids)"/>
+                                <t t-if="total_count > 0">
+                                    <t t-if="scanned_count == total_count">
+                                        <span class="badge bg-success">Complete</span>
+                                    </t>
+                                    <t t-elif="scanned_count > 0">
+                                        <span class="badge bg-warning">Partial (<t t-esc="scanned_count"/>/<t
+                                                t-esc="total_count"/>)
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge bg-secondary">Pending</span>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge bg-secondary">No Lines</span>
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+
+    <!-- Detail page -->
+    <template id="portal_container_page" name="Container Details">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="sales_team.group_sale_salesman">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url"
+                       t-value="'/web#model=barcode.container&amp;id=%s&amp;view_type=form' % container.id"/>
+                </t>
+            </t>
+
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <!--                            <h3 class="mb-0">-->
+                            <!--                                Packing list-->
+                            <!--                                <span t-field="container.name"/>-->
+                            <!--                            </h3>-->
+                            <!--                            <a role="button" class="btn btn-primary" t-att-href="'/my/containers'">-->
+                            <!--                                <i class="fa fa-arrow-left"/>-->
+                            <!--                                Back to Containers-->
+                            <!--                            </a>-->
+                            <!--                            &lt;!&ndash; QR Scanner Button &ndash;&gt;-->
+
+                            <!--                            <button id="portal_qr_scan_button" type="button" class="btn btn-primary">-->
+                            <!--                                <i class="fa fa-qrcode"></i>-->
+                            <!--                                Scan QR Code-->
+                            <!--                            </button>-->
+                            <div>
+                                <h2 class="fw-bold mb-1">Packing List</h2>
+                                <p class="text-muted mb-0">
+                                    Container:
+                                    <span class="fw-bold" t-field="container.name"/>
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="btn-group">
+                                <a class="btn btn-outline-primary" t-att-href="'/my/containers'">
+                                    <i class="fa fa-arrow-left me-1"></i>
+                                    Back
+                                </a>
+                                <button id="portal_qr_scan_button" type="button" class="btn btn-primary">
+                                    <i class="fa fa-qrcode me-1"></i>
+                                    Scan QR
+                                </button>
+                            </div>
+
+                            <!-- Display scan notification from session -->
+                            <t t-if="request.session.get('container_scan_message')">
+                                <t t-set="scan_msg" t-value="request.session.pop('container_scan_message')"/>
+                                <div t-attf-class="alert alert-{{scan_msg.get('type', 'info')}} alert-dismissible fade show"
+                                     role="alert">
+                                    <t t-esc="scan_msg.get('message', '')"/>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                            </t>
+
+                            <!-- Modal (acts as the Dialog) -->
+                            <div id="qrScannerModal" class="modal fade" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Scan QR Code</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="o_qr_scanner_wrapper">
+                                                <div class="o_qr_scanner_content">
+                                                    <video id="qr_video" autoplay="true" playsinline="true"></video>
+                                                    <canvas id="qr_canvas" style="display:none;"></canvas>
+                                                    <div class="o_qr_scanner_overlay"></div>
+                                                </div>
+                                            </div>
+                                            <div id="qr_status" class="mt-3 text-center text-muted small"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <style>
+                                .o_qr_scanner_wrapper {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                }
+                                .o_qr_scanner_content {
+                                position: relative;
+                                width: 100%;
+                                max-width: 400px;
+                                aspect-ratio: 1;
+                                border-radius: 12px;
+                                overflow: hidden;
+                                background: black;
+                                }
+                                .o_qr_scanner_content video {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                }
+                                .o_qr_scanner_overlay {
+                                position: absolute;
+                                inset: 0;
+                                border: 3px solid limegreen;
+                                border-radius: 12px;
+                                box-shadow: 0 0 20px rgba(0,255,0,0.6);
+                                pointer-events: none;
+                                }
+                            </style>
+                            <!-- jsQR library for decoding -->
+                            <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+                            <!-- Bootstrap modal runtime -->
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+                            <script type="module">
+                                document.addEventListener("DOMContentLoaded", () => {
+                                const scanButton = document.getElementById("portal_qr_scan_button");
+                                const modalEl = document.getElementById("qrScannerModal");
+                                const video = document.getElementById("qr_video");
+                                const canvas = document.getElementById("qr_canvas");
+                                const statusEl = document.getElementById("qr_status");
+
+                                if (!scanButton || !modalEl) {
+                                console.warn("QR scanner elements not found on page");
+                                return;
+                                }
+
+                                let modal = null;
+                                let stream = null;
+                                let scanning = false;
+
+                                async function startCamera() {
+                                try {
+                                stream = await navigator.mediaDevices.getUserMedia({
+                                video: { facingMode: "environment" },
+                                });
+                                video.srcObject = stream;
+                                await video.play();
+                                scanning = true;
+                                statusEl.textContent = "Scanning... Point camera at QR code";
+                                scanLoop();
+                                } catch (err) {
+                                console.error("Camera permission denied:", err);
+                                alert("Camera permission denied. Please allow camera access.");
+                                if (modal) modal.hide();
+                                }
+                                }
+
+                                function stopCamera() {
+                                scanning = false;
+                                if (stream) {
+                                stream.getTracks().forEach((track) => track.stop());
+                                stream = null;
+                                }
+                                statusEl.textContent = "";
+                                }
+
+                                function scanLoop() {
+                                const ctx = canvas.getContext("2d", { willReadFrequently: true });
+                                const tick = () => {
+                                if (!scanning) return;
+                                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                                canvas.width = video.videoWidth;
+                                canvas.height = video.videoHeight;
+                                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                                });
+                                if (code) {
+                                scanning = false;
+                                stopCamera();
+                                onQrDetected(code.data);
+                                return;
+                                }
+                                }
+                                requestAnimationFrame(tick);
+                                };
+                                tick();
+                                }
+
+                                async function onQrDetected(data) {
+                                statusEl.textContent = "QR detected, processing...";
+
+                                let containerId = null;
+                                let label = null;
+
+                                // ✅ Case 1: QR is a URL
+                                if (data.startsWith("http://") || data.startsWith("https://")) {
+                                try {
+                                const url = new URL(data);
+                                if (url.pathname.includes("/barcode/container/scan")) {
+                                containerId = url.searchParams.get("container_id");
+                                label = url.searchParams.get("label");
+                                } else {
+                                // Unknown URL format, just redirect
+                                window.location.href = data;
+                                return;
+                                }
+                                } catch (err) {
+                                console.error("Invalid URL QR:", err);
+                                alert("Invalid QR code URL format.");
+                                if (modal) modal.hide();
+                                return;
+                                }
+                                }
+                                // ✅ Case 2: QR is JSON
+                                else {
+                                try {
+                                const payload = JSON.parse(data);
+                                containerId = payload.container_id;
+                                label = payload.label;
+                                } catch (err) {
+                                console.error("Invalid JSON QR:", err);
+                                alert("Invalid QR code format. Expected URL or JSON data.");
+                                if (modal) modal.hide();
+                                return;
+                                }
+                                }
+
+                                // Validate extracted data
+                                if (!containerId || !label) {
+                                alert("Invalid QR: missing container_id or label");
+                                if (modal) modal.hide();
+                                return;
+                                }
+
+                                // ✅ Send POST request to backend
+                                try {
+                                const response = await fetch("/barcode/container/scan", {
+                                method: "POST",
+                                headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest"
+                                },
+                                body: JSON.stringify({
+                                jsonrpc: "2.0",
+                                method: "call",
+                                params: {
+                                container_id: containerId,
+                                label: label
+                                },
+                                }),
+                                });
+
+                                if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                }
+
+                                const result = await response.json();
+
+                                // Hide modal first
+                                if (modal) modal.hide();
+
+                                // Check result
+                                if (result.success &amp;&amp; result.matched) {
+                                // Success - show message and redirect
+                                const message = result.already_scanned
+                                ? `Line '${result.label}' was already scanned.`
+                                : `✅ Line '${result.label}' marked as scanned!`;
+
+                                alert(message);
+
+                                // Redirect to filtered view
+                                if (result.redirect_url) {
+                                window.location.href = result.redirect_url;
+                                } else {
+                                window.location.href = `/my/container/{result.container_id}`;
+                                }
+                                } else {
+                                // Not matched
+                                const errorMsg = result.message || `No matching line found for: ${label}`;
+                                alert("⚠️ " + errorMsg);
+                                }
+                                } catch (err) {
+                                console.error("Scan request failed:", err);
+                                alert("Error processing scan: " + err.message);
+                                if (modal) modal.hide();
+                                }
+                                }
+
+                                // 🔘 Events
+                                scanButton.addEventListener("click", () => {
+                                modal = new bootstrap.Modal(modalEl);
+                                modal.show();
+                                startCamera();
+                                });
+
+                                modalEl.addEventListener("hidden.bs.modal", stopCamera);
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <th class="w-50">Container Number:</th>
+                                <td>
+                                    <span t-field="container.container_number"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>BL Number:</th>
+                                <td>
+                                    <span t-field="container.bl_nr"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Reference Number:</th>
+                                <td>
+                                    <span t-field="container.reference_nr"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-lg-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <th class="w-50">Date:</th>
+                                <td>
+                                    <span t-field="container.date" t-options='{"widget": "date"}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Destination:</th>
+                                <td>
+                                    <span t-field="container.destination_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>FOB:</th>
+                                <td>
+                                    <span t-field="container.fob"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <t t-if="container.note">
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <strong>Note:</strong>
+                            <p t-field="container.note"/>
+                        </div>
+                    </div>
+                </t>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Container Lines</h4>
+                        <t t-if="not container.line_ids">
+                            <p class="text-muted">No lines available.</p>
+                        </t>
+                        <t t-if="container.line_ids">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Label</th>
+                                            <th>Species</th>
+                                            <th class="text-end">Thickness (mm)</th>
+                                            <th class="text-end">Width (mm)</th>
+                                            <th class="text-end">Length (m)</th>
+                                            <th class="text-end">Pieces</th>
+                                            <th class="text-end">Volume (m³)</th>
+                                            <th class="text-center">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="container.line_ids" t-as="line">
+                                            <tr t-att-class="'table-success' if line.scanned else ''">
+                                                <td>
+                                                    <span t-field="line.label"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="line.species"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.thickness_mm"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.width_mm"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.length_m"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.pieces"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.volume_m3"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <t t-if="line.scanned">
+                                                        <span class="badge bg-success">Scanned</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <td colspan="5" class="text-end">
+                                                <strong>Total:</strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>
+                                                    <t t-esc="sum(container.line_ids.mapped('pieces'))"/>
+                                                </strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>
+                                                    <t t-esc="sum(container.line_ids.mapped('volume_m3'))"
+                                                       t-options='{"widget": "float", "precision": 3}'/>
+                                                </strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

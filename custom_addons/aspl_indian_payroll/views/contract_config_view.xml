@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_contract_form_inherit_new" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.new</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="load_salary_components" string="Load Salary Components" type="object"
+                        class="oe_highlight"/>
+            </xpath>
+
+            <xpath expr="//group[@name='salary']" position="inside">
+                <field name="gratuity" string="Gratuity" widget='checkbox'/>
+                <field name="pf" string="Provident Fund" widget='checkbox'/>
+                <field name="pf_ceiling" string="PF Ceiling" widget='checkbox'/>
+                <field name="esic" string="Esic" widget='checkbox'/>
+                <field name="total_gratuity"/>
+                <field name="entertainment_allowance"/>
+            </xpath>
+
+            <xpath expr="//page[@name='information']" position="after">
+                <page string="Applicable Salary Rule" name="applicable_salary">
+                    <field mode="tree" name="applicable_salary_rule_ids">
+                        <tree>
+                            <field name="rule_id" string="Rule"/>
+                            <field name="amount" string="Amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//page[@name='applicable_salary']" position="after">
+                <page string="Bonus" name="bonus">
+                    <field mode="tree" name="bonus_ids">
+                        <tree>
+                            <field name="bonus_id" string="Bonus" invisible="1"/>
+                            <field name="bonus_description" string="Description"/>
+                            <field name="bonus_amount" string="Bonus Amount"/>
+                            <field name="payable_date" string="Bonus Payable date"/>
+                            <field name="paid_date" string="bonus Paid Date"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="bonus_description" string="Description"/>
+                                    <field name="bonus_amount" string="Bonus Amount"/>
+                                </group>
+                                <group>
+                                    <field name="payable_date" string="Bonus Payable date"/>
+                                    <field name="paid_date" string="Bonus Paid Date"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//page[@name='bonus']" position="after">
+                <page string="Compensation" name="compensation">
+                    <field mode="tree" name="compensation_ids">
+                        <tree>
+                            <field name="compensation_id" string="Compensation" invisible="1"/>
+                            <field name="compensation_description" string="Description"/>
+                            <field name="compensation_amount" string="Compensation Amount"/>
+                            <field name="payable_date" string="Compensation Payable date"/>
+                            <field name="paid_date" string="Compensation Paid Date"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="compensation_description" string="Description"/>
+                                    <field name="compensation_amount" string="Compensation Amount"/>
+                                </group>
+                                <group>
+                                    <field name="payable_date" string="Compensation Payable date"/>
+                                    <field name="paid_date" string="Compensation Paid Date"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_it_contract_tree" model="ir.ui.view">
+        <field name="name">it.contract.tree</field>
+        <field name="model">hr.contract</field>
+        <field name="arch" type="xml">
+            <tree string="IT Declaration">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_it_contract_kanban" model="ir.ui.view">
+        <field name="name">it.contract.kanban</field>
+        <field name="model">hr.contract</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="state"/>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_it_declaration_form" model="ir.ui.view">
+        <field name="name">it.declaration.form</field>
+        <field name="model">it.declaration.payslip</field>
+        <field name="arch" type="xml">
+            <form string="IT Declaration">
+            </form>
+        </field>
+    </record>
+
+    <record id="action_it_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <record id="action_it_contract_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="act_window_id" ref="action_it_contract"/>
+        <field name="view_id" ref="view_it_contract_tree"/>
+    </record>
+
+    <record id="action_it_contract_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="act_window_id" ref="action_it_contract"/>
+        <field name="view_id" ref="view_it_contract_kanban"/>
+    </record>
+
+    <menuitem action="action_it_contract" id="menu_it_contract" name="Contracts"
+              parent="om_hr_payroll.menu_hr_payroll_root"
+              groups="om_hr_payroll.group_hr_payroll_manager"/>
+</odoo>

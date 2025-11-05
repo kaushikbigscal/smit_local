@@ -1,0 +1,56 @@
+<odoo>
+    <record id="view_amc_contract_visit_tree" model="ir.ui.view">
+        <field name="name">amc.contract.visit.tree</field>
+        <field name="model">amc.contract.visit</field>
+        <field name="arch" type="xml">
+            <tree string="AMC Contract Visits">
+                <field name="visit_date"/>
+                <field name="contract_id"/>
+                <field name="technician_ids" widget="many2many_avatar_user"/>
+
+            </tree>
+        </field>
+    </record>
+    <record id="view_amc_contract_visit_form" model="ir.ui.view">
+        <field name="name">amc.contract.visit.form</field>
+        <field name="model">amc.contract.visit</field>
+        <field name="arch" type="xml">
+            <form string="AMC Contract Visits">
+                <group>
+                    <field name="visit_date"/>
+                    <field name="contract_id"/>
+                    <field name="technician_ids" widget="many2many_avatar_user"/>
+
+
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="view_amc_contract_visit_search" model="ir.ui.view">
+        <field name="name">amc.contract.visit.search</field>
+        <field name="model">amc.contract.visit</field>
+        <field name="arch" type="xml">
+            <search string="AMC Contract Visit Search">
+                <field name="visit_date"/>
+                <field name="contract_id"/>
+                <field name="technician_ids"/>
+                <field name="state"/>
+
+                <filter name="next_30_days"
+                        domain="[('visit_date', '&gt;=', context_today()), ('visit_date', '&lt;=', context_today().add(days=30))]"
+                        string="Next 30 Days"/>
+                <filter name="upcoming_visits"
+                        domain="[('visit_date', '&gt;=', context_today())]"
+                        string="Upcoming Visits"/>
+
+
+            </search>
+        </field>
+    </record>
+    <record id="action_amc_contract_visit" model="ir.actions.act_window">
+        <field name="name">AMC Contract Visits</field>
+        <field name="res_model">amc.contract.visit</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="view_amc_contract_visit_search"/>
+    </record>
+</odoo>

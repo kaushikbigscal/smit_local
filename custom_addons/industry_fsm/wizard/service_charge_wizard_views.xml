@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_service_call_payment_wizard_form" model="ir.ui.view">
+        <field name="name">Service Call Payment Wizard</field>
+        <field name="model">service.call.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Register Payment">
+                <group>
+                    <group>
+                        <field name="task_id" readonly="1"/>
+                        <field name="amount" required="1"/>
+                        <field name="payment_method_line_id" domain="[('journal_id', '=', journal_id)]" required="1"
+                               options="{'no_open': True}"/>
+                        <field name="journal_id" readonly="True"/>
+                    </group>
+                    <group>
+                        <field name="total_charge" readonly="1"/>
+                        <field name="paid_amount" readonly="1"/>
+                        <field name="remaining_amount" readonly="1"/>
+                        <field name="payment_date"/>
+                        <field name="ref" string="Remark"/>
+                    </group>
+                </group>
+                <separator string="Payment History"/>
+                <field name="payment_ids" nolabel="1">
+                    <tree editable="bottom">
+                        <field name="create_date" string="Payment Date"/>
+                        <field name="amount" string="Amount"/>
+                        <field name="currency_id"/>
+                        <field name="payment_method_line_id" string="Method"/>
+                        <field name="move_id" string="Journal"/>
+                        <field name="ref" string="Remark"/>
+                        <button name="open_payment_form"
+                                type="object"
+                                icon="fa-external-link"
+                                string="View"/>
+
+                    </tree>
+                </field>
+                <footer>
+                    <button name="action_register_payment" type="object" string="Register Payment"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- New Group Category -->
+    <record id="module_category_timeline" model="ir.module.category">
+        <field name="name">Timeline</field>
+        <field name="sequence">20</field> <!-- Controls display order in Settings -->
+    </record>
+
+    <!-- Timeline Access Groups -->
+    <record id="group_timeline_employee_access" model="res.groups">
+        <field name="name">Access Employee Timeline</field>
+        <field name="category_id" ref="module_category_timeline"/>
+        <field name="comment">Can access Employee Timeline Dashboard and configure settings</field>
+    </record>
+
+    <record id="group_timeline_customer_access" model="res.groups">
+        <field name="name">Access Customer Timeline</field>
+        <field name="category_id" ref="module_category_timeline"/>
+        <field name="comment">Can access Customer Timeline Dashboard and configure settings</field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<odoo>
+  <record id="overdue_view_task_reminder_form" model="ir.ui.view">
+    <field name="name">overdue.task.reminder.form</field>
+    <field name="model">task.reminder</field>
+    <field name="arch" type="xml">
+      <form string="Overdue Task Reminder">
+        <sheet>
+          <group>
+            <field name="name"/>
+            <field name="user_ids"/>
+            <field name="task_ids" widget="many2many_tags"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="overdue_view_task_reminder_tree" model="ir.ui.view">
+    <field name="name">overdue.task.reminder.tree</field>
+    <field name="model">task.reminder</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="name"/>
+        <field name="user_ids"/>
+        <field name="task_ids"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_task_reminder" model="ir.actions.act_window">
+    <field name="name">Task Reminders</field>
+    <field name="res_model">task.reminder</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+</odoo>

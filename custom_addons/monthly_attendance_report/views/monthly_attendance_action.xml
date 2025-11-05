@@ -1,0 +1,17 @@
+<odoo>
+    <record id="action_monthly_attendance_report" model="ir.actions.act_window">
+        <field name="name">Monthly Attendance Report</field>
+        <field name="res_model">monthly.attendance.report.line</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="monthly_attendance_tree_view"/>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_monthly_attendance_report"
+              name="Monthly Attendance Report"
+              parent="hr_attendance.menu_hr_attendance_reporting_root"
+              action="action_monthly_attendance_report"
+              sequence="20"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="barcode_container.QrScannerDialog" owl="1">
+        <Dialog title="'Scan QR Code'" class="o_qr_scanner_dialog" size="'large'">
+            <div class="o_qr_scanner_wrapper">
+                <div class="o_qr_scanner_content">
+                    <video t-ref="video" autoplay="autoplay" playsinline="playsinline"></video>
+                    <canvas t-ref="canvas"></canvas>
+                    <div class="o_qr_scanner_overlay"></div>
+                </div>
+            </div>
+        </Dialog>
+    </t>
+</templates>

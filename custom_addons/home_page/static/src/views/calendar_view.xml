@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Extend Calendar Controller to add rules sidebar -->
+    <t t-name="calendar_dashboard.CalendarController"
+       t-inherit="web.CalendarController"
+       t-inherit-mode="extension"
+       owl="1">
+        <xpath expr="//div[@class='o_calendar_sidebar']" position="inside">
+            <CalendarRulesSidebar />
+        </xpath>
+    </t>
+
+    <!-- Extend Calendar Renderer to add dashboard -->
+    <t t-name="calendar_dashboard.CalendarRenderer"
+       t-inherit="web.CalendarRenderer"
+       t-inherit-mode="extension"
+       owl="1">
+        <xpath expr="//div[hasclass('o_calendar_renderer')]" position="before">
+            <CalendarDashboard />
+        </xpath>
+    </t>
+</templates>

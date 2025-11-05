@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payroll_form_inherit_new" model="ir.ui.view">
+        <field name="name">hr.payroll.form.inherit.new</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="om_hr_payroll.hr_salary_rule_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr='//group[1]' position='replace'>
+                <group>
+                    <group style="width:50%;">
+                        <field name="code"/>
+                        <field name="appear_on_contract" string="Appear on Contract" widget='checkbox'/>
+                        <field name="is_deduction" string="Is a Deduction" widget='checkbox'/>
+                        <field name="appears_on_payslip"/>
+                    </group>
+                    <group style="width:50%;">
+                        <field name="sequence"/>
+                        <field name="is_tax" string="Is a Tax" widget='checkbox'/>
+                        <field name="active"/>
+                        <field name="taxable" string="Taxable" widget='checkbox'/>
+                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <xpath expr='//notebook/page[1]' position='replace'>
+                <page string="General">
+                    <group>
+                        <separator string="Conditions"/>
+                        <field name="condition_select"/>
+                        <field name="condition_python" widget="ace" options="{'mode': 'python'}"
+                               invisible="condition_select != 'python'" required="condition_select == 'python'"/>
+                        <field name="condition_range"
+                               invisible="condition_select != 'range'" required="condition_select == 'range'"/>
+                        <field name="condition_range_min"
+                               invisible="condition_select != 'range'" required="condition_select == 'range'"/>
+                        <field name="condition_range_max"
+                               invisible="condition_select != 'range'" required="condition_select == 'range'"/>
+                        <separator string="Computation"/>
+                        <field name="amount_select"/>
+                        <field name="amount_percentage_base"
+                               invisible="amount_select != 'percentage'" required="amount_select == 'percentage'"/>
+                        <field name="quantity"
+                               invisible="amount_select == 'code'" required="amount_select != 'code'"/>
+                        <field name="amount_fix"
+                               invisible="amount_select != 'fix'" required="amount_select == 'fix'"/>
+                        <field name="amount_python_compute" widget="ace" options="{'mode': 'python'}"
+                               invisible="amount_select != 'code'" required="amount_select == 'code'"/>
+                        <field name="amount_percentage"
+                               invisible="amount_select != 'percentage'" required="amount_select == 'percentage'"/>
+                        <separator string="Company Contribution"/>
+                        <field name="register_id"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

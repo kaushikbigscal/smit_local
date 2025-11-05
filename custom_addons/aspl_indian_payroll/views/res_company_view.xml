@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_company_payroll_configuration" model="ir.ui.view">
+        <field name="name">payroll.configuration.in.res.company</field>
+        <field name="model">res.company</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Payroll" name="payroll_configuration">
+                    <group col="2">
+                        <group string="Basic">
+                            <label for="basicpercentage"/>
+                            <div>
+                                <field name="basicpercentage"/>
+                            </div>
+                            <field name="min_basic"/>
+                            <field name="max_basic"/>
+                        </group>
+                        <group col="1">
+                            <group string="Gratuity">
+                                <label for="gratuity_percentage"/>
+                                <div>
+                                    <field name="gratuity_percentage"/>
+                                </div>
+                                <field name="gratuity_multiplier"/>
+                            </group>
+                            <group string="It Declaration ">
+                                <label for="cess"/>
+                                <div>
+                                    <field name="cess"/>
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Professional Tax">
+                            <field name="professional_tax" string="Tax Amount"/>
+                        </group>
+
+                        <group string="Tax Deducted at Source ">
+                            <label for="tax_deducted_at_source"/>
+                            <div>
+                                <field name="tax_deducted_at_source"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group string="ESIC">
+                        <group>
+                            <label for="esic_ee_percentage"/>
+                            <div>
+                                <field name="esic_ee_percentage"/>
+                            </div>
+                            <label for="esic_er_percentage"/>
+                            <div>
+                                <field name="esic_er_percentage"/>
+                            </div>
+                            <label for="pfpercentage"/>
+                            <div>
+                                <field name="pfpercentage"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="pfceilingamt"/>
+                            <field name="esicwagelimit"/>
+                            <field name="esicwagelimit_physical_chanllanged"/>
+                        </group>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+  <t t-name="CustomerMap">
+    <div class="o_control_panel"></div>
+    <div class="o_content">
+      <div t-ref="googleMapContainer" style="height:100%; width:100%;"></div>
+    </div>
+  </t>
+</templates>

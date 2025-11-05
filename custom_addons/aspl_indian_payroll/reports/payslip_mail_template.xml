@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Monthly Payslip Email Template-->
+    <record id="email_template_payslip" model="mail.template">
+        <field name="name">Monthly Payslip Email</field>
+        <field name="model_id" ref="om_hr_payroll.model_hr_payslip"/>
+        <field name="email_from">{{(user.email)}}</field>
+        <field name="email_to">{{object.employee_id.work_email}}</field>
+        <field name="subject">Ref {{object.number}}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html"><![CDATA[
+                    <p>Hi,</p>
+                    <p>Here by attaching payslip details of this month</p>
+                    ]]>
+        </field>
+        <field name="report_template_ids"
+               eval="[(4, ref('om_hr_payroll.payslip_details_report'))]"/>
+    </record>
+<!--        <record id="email_template_payslip_custom" model="mail.template">-->
+<!--        <field name="name">Monthly Payslip Email</field>-->
+<!--        <field name="model_id" ref="om_hr_payroll.model_hr_payslip"/>-->
+<!--        <field name="email_from">{{(user.email)}}</field>-->
+<!--        <field name="email_to">{{object.employee_id.work_email}}</field>-->
+<!--        <field name="subject">Ref {{object.number}}</field>-->
+<!--        <field name="auto_delete" eval="True"/>-->
+<!--        <field name="body_html"><![CDATA[-->
+<!--                    <p>Hi,</p>-->
+<!--                    <p>Here by attaching payslip details of this month</p>-->
+<!--                    ]]>-->
+<!--        </field>-->
+<!--        <field name="report_template_ids"-->
+<!--               eval="[(4, ref('data_recycle.action_xml_upload_custom_report_format_for_all'))]"/>-->
+<!--    </record>-->
+</odoo>

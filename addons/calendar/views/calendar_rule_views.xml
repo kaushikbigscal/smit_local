@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Action -->
+        <record id="action_calendar_rule" model="ir.actions.act_window">
+            <field name="name">Calendar Rules</field>
+            <field name="res_model">calendar.rule</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create calendar rules to dynamically fetch events from any model.
+                </p>
+                <p>
+                    Calendar rules allow you to automatically sync records from any Odoo model
+                    into calendar events with proper field mapping and filtering.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item under Calendar -->
+        <menuitem id="menu_calendar_rule_root"
+                  name="Calendar Rules"
+                  parent="calendar.calendar_menu_config"
+                  action="action_calendar_rule"
+                  sequence="40" />
+
+
+
+        <!-- Tree View -->
+        <record id="view_calendar_rule_tree" model="ir.ui.view">
+            <field name="name">calendar.rule.tree</field>
+            <field name="model">calendar.rule</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="not active">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="model_id"/>
+<!--                    <field name="automation_id"/>-->
+                    <field name="event_count"/>
+                    <field name="last_sync" optional="show"/>
+                    <field name="active" widget="boolean_toggle"/>
+                    <field name="color" widget="color_picker" optional="hide"/>
+                </tree>
+
+
+
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_calendar_rule_form" model="ir.ui.view">
+            <field name="name">calendar.rule.form</field>
+            <field name="model">calendar.rule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_sync_existing_records"
+                            string="Sync Events"
+                            type="object"
+                            class="btn-primary"
+
+                            />
+                        <button name="action_view_events"
+                            string="View Events"
+                            type="object"
+                            class="btn-secondary"
+
+                            />
+                        <button name="action_delete_events"
+                            string="Delete All Events"
+                            type="object"
+                            class="btn-danger"
+                            confirm="Are you sure you want to delete all events created by this rule?"
+
+                            />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_events" type="object" class="oe_stat_button" icon="fa-calendar">
+                                <field name="event_count" widget="statinfo" string="Events"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="[('active', '=', True)]"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="Rule Name..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                                <field name="color" widget="color_picker"/>
+                                <field name="form_view_id" options="{'no_create': True}"/>
+                                <field name="logo"/>
+                                <field name="last_sync" readonly="1"/>
+
+                            </group>
+                            <group>
+                                <field name="model_id" options="{'no_create': True}"/>
+                                <field name="model_name" invisible="1"/>
+                                <field name="domain"
+                                       widget="domain"
+                                       options="{'model': 'model_name'}"
+                                       />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Field Mapping" name="field_mapping">
+                                <group string="Required Fields">
+                                    <field name="name_field_id"
+                                           options="{'no_create': True}"
+                                           required="[('id', '!=', False)]"
+                                           />
+                                    <field name="start_date_field_id"
+                                           options="{'no_create': True}"
+                                           required="[('id', '!=', False)]"
+                                           />
+                                </group>
+                                <group string="Optional Fields">
+                                    <field name="stop_date_field_id" options="{'no_create': True}"/>
+                                    <field name="description_field_id" options="{'no_create': True}"/>
+                                    <field name="attendee_field_id" options="{'no_create': True}"/>
+                                    <field name="company_field_id" options="{'no_create': True}"/>
+                                </group>
+                                <div class="alert alert-info" role="alert" invisible="[('model_id', '!=', False)]">
+                                    <strong>Info:</strong> Please select a model first to see available fields for mapping.
+                                </div>
+                            </page>
+                            <page string="Preview &amp; Test" name="preview" invisible="[('id', '=', False)]">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning" role="alert" invisible="[('start_date_field_id', '!=', False)]">
+                                            <strong>Warning:</strong> Start Date Field is required for syncing events.
+                                        </div>
+                                        <p class="text-muted">
+                                            This rule will create calendar events from records in the
+                                            <strong><field name="model_id" readonly="1"/></strong> model.
+                                        </p>
+                                        <p class="text-muted" invisible="['|', ('domain', '=', False), ('domain', '=', '[]')]">
+                                            <strong>Filter:</strong> <code><field name="domain" readonly="1"/></code>
+                                        </p>
+                                    </div>
+                                </div>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

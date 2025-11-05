@@ -1,0 +1,18 @@
+<odoo>
+    <record id="monthly_attendance_tree_view" model="ir.ui.view">
+        <field name="name">monthly.attendance.report.line.tree</field>
+        <field name="model">monthly.attendance.report.line</field>
+        <field name="arch" type="xml">
+            <tree string="Monthly Attendance Report" js_class="custom_list_view" create="False">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="total_days"/>
+                <field name="working_days"/>
+                <field name="present_days"/>
+                <field name="extra_days"/>
+                <field name="pay_days"/>
+                <field name="paid_leaves"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

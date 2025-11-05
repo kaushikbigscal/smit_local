@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gps_tracking_user,access_gps_tracking_user,model_gps_tracking,base.group_user,1,1,1,0
+access_gps_tracking_admin,access_gps_tracking_admin,model_gps_tracking,base.group_system,1,1,1,1
+access_tracking_source_link_user,access_tracking_source_link_user,model_tracking_source_link,base.group_user,1,1,1,0
+access_tracking_source_link_admin,access_tracking_source_link_admin,model_tracking_source_link,base.group_system,1,1,1,1

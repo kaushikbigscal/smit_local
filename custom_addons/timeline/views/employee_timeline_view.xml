@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Form View - Employee Dashboard -->
+    <record id="view_employee_timeline_form" model="ir.ui.view">
+        <field name="name">employee.timeline.form</field>
+        <field name="model">employee.timeline</field>
+        <field name="arch" type="xml">
+            <form string="Employee Timeline" create="false">
+                <group>
+                    <group>
+                        <field name="employee_id" placeholder="Select Employee..."
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               string="Employee"/>
+                    </group>
+                    <group>
+                        <field name="date_from"
+                               widget="daterange"
+                               options="{'end_date_field': 'date_to', 'always_range': '1'}"/>
+                        <field name="date_to" invisible="1"/>
+                        <field name="is_loaded" invisible="1"/>
+                    </group>
+                </group>
+
+                <!--                <div class="text-center my-3">-->
+                <!--                    <button type="object" name="action_load_timeline" class="btn btn-primary"-->
+                <!--                            invisible="is_loaded">LOAD TIMELINE-->
+                <!--                    </button>-->
+                <!--                </div>-->
+                <div class="text-center my-3">
+                    <button type="object" name="action_load_timeline" class="btn btn-primary">LOAD TIMELINE</button>
+                </div>
+
+                <div class="col-12">
+                    <field name="unified_timeline_display" widget="html" nolabel="1" readonly="1"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for listing (optional) -->
+    <record id="view_employee_timeline_tree" model="ir.ui.view">
+        <field name="name">employee.timeline.tree</field>
+        <field name="model">employee.timeline</field>
+        <field name="arch" type="xml">
+            <tree string="Employee Timelines" edit="false" delete="false">
+                <field name="employee_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for the employee timeline dashboard -->
+    <record id="action_employee_timeline_dashboard" model="ir.actions.act_window">
+        <field name="name">Employee Timeline Dashboard</field>
+        <field name="res_model">employee.timeline</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_employee_timeline_form"/>
+        <field name="target">current</field>
+        <field name="context">{
+            'default_date_from': (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'),
+            'default_date_to': context_today().strftime('%Y-%m-%d'),
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Employee Timeline!
+            </p>
+            <p>
+                The Employee Timeline Dashboard shows you a chronological view of all activities
+                for a specific Employee across different modules in your Odoo system.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_employee_timeline"
+              name="Timeline"
+              parent="hr.hr_menu_hr_reports"
+              action="action_employee_timeline_dashboard"
+              groups="timeline.group_timeline_employee_access"
+              sequence="20"/>
+</odoo>

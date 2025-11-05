@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+
+<odoo>
+
+    <record id="view_wppconnect_form" model="ir.ui.view">
+        <field name="name">wppconnect.api.form</field>
+        <field name="model">wppconnect.api</field>
+        <field name="arch" type="xml">
+            <form string="WPPConnect QR Code">
+                <sheet>
+                    <group>
+                        <field name="session"/>
+                        <field name="secret_key"/>
+                        <button name="generate_qr_code" type="object" string="Generate QR Code"/>
+                    </group>
+                    <group>
+                        <field name="qrcode_image" widget="image" options="{'image_width': 200, 'image_height': 200}"/>
+
+                        <field name="qrcode_filename" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_wppconnect_api" model="ir.actions.act_window">
+        <field name="name">wppconnect</field>
+        <field name="res_model">wppconnect.api</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_token_model" name="Tokens" action="action_wppconnect_api"/>
+
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_validate_task_wizard_form" model="ir.ui.view">
+        <field name="name">validate.task.wizard.form</field>
+        <field name="model">validate.task.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Validate Task">
+                <group>
+                    <field name="installation_task_checkbox"/>
+                    <field name="assignee_id" widget="many2many_avatar_user" invisible="installation_task_checkbox !=  True" required="installation_task_checkbox != False"/>
+                </group>
+                <footer>
+                    <button string="Save &amp; Close" name="action_save_and_close" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_view_validate_task_wizard_form" model="ir.actions.act_window">
+        <field name="name">Custom Wizard</field>
+        <field name="res_model">validate.task.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+
+
+
+

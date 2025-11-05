@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="crm_lead_view_form" model="ir.ui.view">
+        <field name="name">CRM - Leads with timesheet</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <field name="can_start_timer" invisible="1"/>
+                <field name="can_stop_timer" invisible="1"/>
+
+                <button name="action_start_lead_timer"
+                        type="object"
+                        string="Start Work"
+                        icon="fa-play-circle text-success"
+                        class="oe_start_button"
+                        invisible="not can_start_timer"
+                />
+
+                <button name="action_stop_lead_timer"
+                        type="object"
+                        string="Stop Work"
+                        icon="fa-stop-circle text-warning"
+                        class="oe_start_button"
+                        invisible="not can_stop_timer"
+                />
+            </div>
+            <page name="extra" position="after">
+                <page string="Timesheet" groups="hr_timesheet.group_hr_timesheet_user">
+                    <field name="timesheet_ids">
+                        <tree no_open="True">
+                            <field name="date_time"/>
+                            <field name="end_date_time"/>
+                            <field name="start_latitude" optional="hide"/>
+                            <field name="start_longitude" optional="hide"/>
+                            <field name="start_address"/>
+                            <field name="end_latitude" optional="hide"/>
+                            <field name="end_longitude" optional="hide"/>
+                            <field name="end_address"/>
+                            <field name="employee_id" widget="many2one_avatar_user"/>
+                            <field name="name" string="Name"/>
+                            <field name="unit_amount" string="Hours Spent" widget="timesheet_uom"/>
+                            <button name="unlink"
+                                    type="object"
+                                    icon="fa-trash"
+                                    class="btn btn-link"
+                                    title="Delete"/>
+                        </tree>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_tree_timer" model="ir.ui.view">
+        <field name="name">crm.lead.tree.timer.highlight</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="can_stop_timer" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <!-- Green highlight when stop button is visible (timer running) -->
+                <attribute name="decoration-success">can_stop_timer</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Or try this simpler approach with direct CSS -->
+    <record id="crm_lead_view_kanban_timer_css" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.timer.css</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Add field -->
+            <xpath expr="//templates" position="before">
+                <field name="can_stop_timer"/>
+            </xpath>
+
+            <!-- Add custom CSS class -->
+<!--            <xpath expr="//div[@class='oe_kanban_color_0 oe_kanban_card oe_kanban_global_click']" position="attributes">-->
+<!--                <attribute name="style">border: 3px solid green;</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+
+</odoo>

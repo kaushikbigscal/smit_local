@@ -1,0 +1,63 @@
+<odoo>
+    <!-- WhatsApp Template Tree View -->
+    <record id="view_template_whatsapp_tree" model="ir.ui.view">
+        <field name="name">template.whatsapp.tree</field>
+        <field name="model">template.whatsapp</field>
+        <field name="arch" type="xml">
+            <tree string="WhatsApp Templates">
+                <field name="model_id"/>
+                <field name="project_id"/>
+                <field name="stage_id"/>
+                <field name="message"/>
+                <field name="attachment_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- WhatsApp Template Form View -->
+    <record id="view_template_whatsapp_form" model="ir.ui.view">
+        <field name="name">template.whatsapp.form</field>
+        <field name="model">template.whatsapp</field>
+        <field name="arch" type="xml">
+            <form string="WhatsApp Template">
+                <sheet>
+                    <group>
+
+                        <field name="model_id"/>
+                        <field name="show_project" invisible="1"/>
+                        <field name="project_id" invisible="not show_project"/>
+                        <field name="show_stage" invisible="1"/>
+                        <field name="stages_available" invisible="1"/>
+                        <field name="stage_id" invisible="not show_stage"/>
+                        <field name="message" widget="text"
+                               placeholder="Enter message here with {{task_name}} and {{stage_name}}."/>
+
+                    </group>
+                    <group>
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                    </group>
+                    <group>
+                        <field name="legend_info" nolabel="1" widget="html"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!--     WhatsApp Template Action -->
+    <record id="action_template_whatsapp" model="ir.actions.act_window">
+        <field name="name">WhatsApp Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">template.whatsapp</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- WhatsApp Template Menu Item -->
+    <menuitem id="menu_template_whatsapp"
+              name="Template Configuration"
+              parent="menu_whatsapp_root"
+              action="action_template_whatsapp"
+              sequence="20"
+    />
+</odoo>

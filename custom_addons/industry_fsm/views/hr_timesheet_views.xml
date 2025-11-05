@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_task_form_timer_buttons" model="ir.ui.view">
+        <field name="name">project.task.form.timer.buttons</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+
+                <button name="action_start_service_call_timer"
+                        type="object"
+                        string="Start Work"
+                        icon="fa-play-circle text-success"
+                        class="oe_start_button"
+                        invisible="not is_fsm or not can_start_timer"
+                />
+
+                <button name="action_open_end_service_wizard"
+                        type="object"
+                        string="Stop Work"
+                        icon="fa-stop-circle text-warning"
+                        class="oe_start_button"
+                        invisible="not is_fsm or not can_stop_timer"
+                />
+            </div>
+        </field>
+    </record>
+
+    <!-- End Work Wizard -->
+    <record id="view_end_wizard_2" model="ir.ui.view">
+        <field name="name">end.work.wizard</field>
+        <field name="model">end.service.call.wizard</field>
+        <field name="arch" type="xml">
+            <form string="End Work">
+                <sheet>
+                    <group>
+                        <field name="task_id" options="{'no_open': True}"/>
+                        <field name="stage_id" required="1" options="{'no_create': True}"/>
+<!--                        <field name="complaint_type_id" widget="many2many_tags"/>-->
+                        <field name="show_pending_reason" invisible="1"/>
+                        <field name="show_problem_fields" invisible="1"/>
+                    </group>
+                    <group invisible="not show_pending_reason">
+                        <field name="pending_reason" required="show_pending_reason"/>
+                    </group>
+
+                    <group invisible="not show_problem_fields">
+                            <field name="actual_problem" placeholder="Predefine actual problems you can select here."  domain="[]" options='{"no_open": True,"no_create":True,"no_display":True, "no_quick_create": True}'  widget="many2many_tags" />
+                            <div class="o_td_label"/>
+                            <div>
+                                <field name="problem_description"/>
+                            </div>
+                        <field name="fix_description"/>
+                        <field name="attachment_ids" widget="many2many_binary"/>
+                        <field name="report_signature" widget="signature"/>
+                        <field name="report_signed_by"/>
+
+
+                    </group>
+                    <footer>
+                        <button string="Save" type="object" name="action_end_work" class="btn-primary"/>
+                        <button string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

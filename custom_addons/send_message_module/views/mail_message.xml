@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+<!--        <record id="view_mail_message_form" model="ir.ui.view">-->
+<!--            <field name="name">mail.message.form.inherit.sms</field>-->
+<!--            <field name="model">mail.message</field>-->
+<!--            <field name="inherit_id" ref="mail.view_mail_message_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//div[@class='o_mail_thread_message']" position="inside">-->
+<!--                    <button name="send_sms" type="object" string="Send SMS" class="btn btn-primary"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+    </data>
+</odoo>

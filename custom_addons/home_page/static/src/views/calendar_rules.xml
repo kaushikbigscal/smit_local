@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="CalendarRulesSidebar" owl="1">
+        <div class="o_calendar_rule_section p-3 border-top">
+            <div class="d-flex align-items-center mb-3">
+                <strong class="text-muted">Calendar Rules</strong>
+            </div>
+            <t t-if="state.loading">
+                <div class="text-center py-2">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    <span class="ms-2 small text-muted">Loading...</span>
+                </div>
+            </t>
+            <t t-elif="state.error">
+                <div class="alert alert-warning small py-2">
+                    <t t-esc="state.error"/>
+                </div>
+            </t>
+            <t t-elif="state.rules and state.rules.length">
+                <div class="o_calendar_rules_list">
+                    <t t-foreach="state.rules" t-as="rule" t-key="rule.id">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   t-att-id="'rule_' + rule.id"
+                                   t-att-checked="state.selectedRules.has(rule.id)"
+                                   t-on-change="(ev) => this.toggleRule(rule.id)"
+                            />
+                            <label class="form-check-label small"
+                                   t-att-for="'rule_' + rule.id">
+                                <t t-esc="rule.name"/>
+                            </label>
+                        </div>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="text-muted small text-center py-2">
+                    <i class="fa fa-info-circle me-1"></i>
+                    No calendar rules found
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

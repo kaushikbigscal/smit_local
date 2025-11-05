@@ -1,0 +1,21 @@
+<odoo>
+    <record id="view_company_form_inherit_geofence_extended" model="ir.ui.view">
+        <field name="name">res.company.form.inherit_geofence_extended</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="aptuem_attendance_location.view_company_form_inherit_geofence"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook//page//group[@name='attendance_configuration']" position="inside">
+                <group string="Reminder Settings">
+                    <field name="day_in_reminder_enabled"/>
+                    <field name="day_out_reminder_enabled"/>
+                    <field name="auto_day_out"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
+
+
+

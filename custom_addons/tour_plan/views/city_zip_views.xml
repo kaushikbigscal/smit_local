@@ -1,0 +1,42 @@
+<odoo>
+
+
+    <record id="view_city_zip_tree" model="ir.ui.view">
+        <field name="name">city.zip.tree</field>
+        <field name="model">city.zip</field>
+        <field name="arch" type="xml">
+            <tree string="Zip Code">
+                <field name="name"/>
+                <field name="city_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_city_zip_form" model="ir.ui.view">
+        <field name="name">city.zip.form</field>
+        <field name="model">city.zip</field>
+        <field name="arch" type="xml">
+            <form string="Zip Code" group_by="city_id">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="city_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+     <record id="action_city_zip" model="ir.actions.act_window">
+        <field name="name">Zip Code</field>
+        <field name="res_model">city.zip</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               Zip Code
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_city_zip_root" name="Zip Code" parent="menu_crm_config_salesperson_planner"
+          action="action_city_zip" sequence="10"/>
+
+</odoo>

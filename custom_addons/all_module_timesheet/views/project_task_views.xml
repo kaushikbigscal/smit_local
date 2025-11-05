@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_task_form_timer_buttons" model="ir.ui.view">
+        <field name="name">project.task.form.timer.buttons</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+
+                <field name="can_start_timer" invisible="1"/>
+                <field name="can_stop_timer" invisible="1"/>
+
+                <button name="action_start_task_timer"
+                        type="object"
+                        string="Start Work"
+                        icon="fa-play-circle text-success"
+                        class="oe_start_button"
+                        invisible="is_fsm or not can_start_timer"
+                />
+
+                <button name="action_stop_task_timer"
+                        type="object"
+                        string="Stop Work"
+                        icon="fa-stop-circle text-warning"
+                        class="oe_start_button"
+                        invisible="is_fsm or not can_stop_timer"
+                />
+
+            </div>
+
+            <xpath expr="//field[@name='timesheet_ids']//tree" position="attributes">
+                <attribute name="no_open">True</attribute>
+                <attribute name="editable">False</attribute>
+                <attribute name="create">False</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='timesheet_ids']/tree//field[@name='date']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='timesheet_ids']/tree//field[@name='name']" position="attributes">
+                <attribute name="string">name</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='timesheet_ids']/tree//field[@name='date']" position="after">
+                <field name="date_time"/>
+                <field name="end_date_time"/>
+                <field name="start_latitude" optional="hide"/>
+                <field name="start_longitude" optional="hide"/>
+                <field name="start_address"/>
+                <field name="end_latitude" optional="hide"/>
+                <field name="end_longitude" optional="hide"/>
+                <field name="end_address"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

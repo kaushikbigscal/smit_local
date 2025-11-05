@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_effezient_web_map_effezient_web_map,effezient_web_map.effezient_web_map,model_effezient_web_map_effezient_web_map,base.group_user,1,1,1,1

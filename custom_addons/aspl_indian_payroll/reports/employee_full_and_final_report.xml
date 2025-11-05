@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="custom_employee_full_and_final">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+
+                    <div class="page" style="margin: -4px 5px 5px 5px;">
+                        <t style="page-break-before:always;"/>
+
+                        <style type="text/css">
+                            td, th {
+                            min-height: 44px;
+                            padding: 10px;
+                            }
+                        </style>
+
+                        <h2 class="font-weight-bold"
+                            style="text-align: center;margin-bottom: 15px; padding: 15px;">
+                            FINAL SETTLEMENT
+                        </h2>
+
+                        <t t-set="payslip_obj" t-value="o._payslip_obj()"/>
+                        <t t-if="payslip_obj">
+                            <t t-foreach="payslip_obj.worked_days_line_ids" t-as="lines">
+                                <t t-if="lines.code == 'WORK100'">
+                                    <t t-set="actual_worked_days" t-value="lines.number_of_days"/>
+                                </t>
+                                <t t-elif="lines.code == 'LOP'">
+                                    <t t-set="total_lop" t-value="lines.number_of_days"/>
+                                </t>
+                            </t>
+                            <t t-set="worked_days" t-value="actual_worked_days - total_lop"/>
+                        </t>
+
+                        <div class="row" style="margin: 0 0 12px 0;">
+
+                            <table class="w-100">
+                                <tbody>
+                                    <tr>
+                                        <td style="min-width: 150px;">Name</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.name"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Department</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.department_id.name"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Designation</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.job_title"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Location</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.company_id.city"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Date of Joining</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.join_date.strftime('%d-%m-%Y') if o.employee_id.join_date else 'N/A'"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Submission date of resignation</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.resign_date.strftime('%d-%m-%Y') if o.resign_date else 'N/A'"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Last date of working</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.last_date.strftime('%d-%m-%Y') if o.last_date else 'N/A'"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Last salary paid</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <t t-if="payslip_obj">
+                                            <td t-esc="payslip_obj.date_from.strftime('%d-%m-%Y') if payslip_obj.date_from else 'N/A'"/>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Notice period as per application letter</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td t-esc="o.employee_id.resigned_notice_period"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Notice period adjustable</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">PL days payable</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Number of days salary payable</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <t t-if="payslip_obj">
+                                            <td t-esc="worked_days"/>
+                                        </t>
+                                        <t t-else="">
+                                            <td>0</td>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width: 150px;">Number of days in the month</td>
+                                        <td style="width:40px;text-align:center">:</td>
+                                        <t t-if="payslip_obj">
+                                            <td t-esc="actual_worked_days"/>
+                                        </t>
+                                        <t t-else="">
+                                            <td>0</td>
+                                        </t>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="display:flex;">
+                            <div style="border:1px solid #B6B6B6;width:50%;">
+                                <table class="table table-borderless" style="width:100%;margin-bottom: 0;">
+                                    <thead>
+                                        <div style="background-color: #B6B6B6;text-align: center;font-weight: bold;padding: 7px 0;">
+                                            Income
+                                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <t t-if="payslip_obj">
+                                            <tr t-foreach="payslip_obj.line_ids" t-as="li">
+                                                <t t-if="li.salary_rule_id.taxable and li.salary_rule_id.appears_on_payslip and li.category_id.code != 'GROSS' and li.category_id.code != 'NET' and li.total != 0">
+                                                    <td t-esc="li.name"/>
+                                                    <td style="text-align: end;" t-esc="li.total"/>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="border:1px solid #B6B6B6;width:50%;">
+                                <table class="table table-borderless" style="width:100%;margin-bottom: 0;">
+                                    <thead>
+                                        <div style="background-color: #B6B6B6;text-align: center;font-weight: bold;padding: 7px 0;">
+                                            Deduction
+                                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <t t-if="payslip_obj">
+                                            <tr t-foreach="payslip_obj.line_ids" t-as="li">
+                                                <!--Note: If you want to add any other category name in deduction then you just need to add 'and' operator and add it in t-if condition-->
+                                                <t t-if="li.salary_rule_id.is_deduction and li.salary_rule_id.appears_on_payslip and li.total != 0 and li.code != 'TOTAL_DED'">
+                                                    <td t-esc="li.name"/>
+                                                    <td style="text-align: end;" t-esc="li.total"/>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;margin-bottom: 25px;">
+                            <div style="border:1px solid #B6B6B6;width:50%;">
+                                <table class="table table-borderless" style="width:100%;margin-bottom: 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="font-weight: bold;">Total Income :</td>
+                                            <t t-if="payslip_obj">
+                                                <t t-foreach="payslip_obj.line_ids" t-as="li">
+                                                    <t t-if="li.code == 'GROSS'">
+                                                        <td style="text-align: end;" t-esc="li.total"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="border:1px solid #B6B6B6;width:50%;">
+                                <table class="table table-borderless" style="width:100%;margin-bottom: 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="font-weight: bold;">Total Deductions :</td>
+                                            <t t-if="payslip_obj">
+                                                <t t-foreach="payslip_obj.line_ids" t-as="li">
+                                                    <t t-if="li.code == 'TOTAL_DED'">
+                                                        <td style="text-align: end;" t-esc="li.total"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <t t-if="payslip_obj">
+                            <t t-foreach="payslip_obj.line_ids" t-as="li">
+                                <t t-if="li.code == 'NET'">
+                                    <t t-set="net_pay" t-value="li.total"/>
+                                </t>
+                            </t>
+                        </t>
+                        <div style="display:flex;">
+                            <div style="width:30%;">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <div style="text-align: center;font-weight: bold;padding: 25px 0;">
+                                            Net Pay : INR
+                                            <t t-if="payslip_obj">
+                                                <t t-esc="net_pay"/>
+                                            </t>
+                                            <t t-else="">0
+                                            </t>
+                                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <div>
+                                            <div style="text-align: left;margin: 33px 0 16px 0;">
+                                                CHECKED BY
+                                            </div>
+                                            <div style="text-align: left;">
+                                                Remarks :
+                                            </div>
+                                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="width:40%;">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <div style="text-align: center;font-weight: bold;padding: 25px 0;">
+                                            <t t-if="payslip_obj">
+                                                <t t-set="in_words"
+                                                   t-value="o._number_to_words(net_pay)"/>
+                                                <t t-esc="in_words"/>
+                                            </t>
+                                            <t t-else="">(Rupees ZERO Only)
+                                            </t>
+                                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <div>
+                                            <div style="text-align: center;margin: 33px 0 16px 0;">
+                                                AUTHORIZED BY
+                                            </div>
+                                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="width:30%;">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <div style="text-align: right;font-weight: bold;padding: 35px 0;">
+                                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <div>
+                                            <div style="text-align: right;margin: 33px 0 16px 0;">
+                                                RECEIVED AND SIGNED
+                                            </div>
+                                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_full_and_final">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="aspl_indian_payroll.custom_employee_full_and_final"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

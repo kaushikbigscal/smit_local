@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="action_all_customers_server" model="ir.actions.server">
+            <field name="name">Customers</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="binding_model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_all_customers()</field>
+        </record>
+
+        <!-- Override base Customers action -->
+        <record id="base.action_partner_form" model="ir.actions.act_window">
+            <field name="context">{'custom_customer_action': True}</field>
+        </record>
+        <!-- Override Account Customers action -->
+        <record id="account.res_partner_action_customer" model="ir.actions.act_window">
+            <field name="context">{'custom_customer_action': True, 'search_default_customer': 1,
+                'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}
+            </field>
+        </record>
+        <menuitem id="menu_customer_management"
+                  name="Customer Management"
+                  parent="contacts.menu_contacts"
+                  sequence="2"
+                  groups="base.group_user"/>
+        <menuitem id="menu_all_customers"
+                  name="Customers"
+                  parent="menu_customer_management"
+                  action="action_all_customers_server"
+                  sequence="1"
+                  groups="base.group_user"/>
+        <menuitem id="customer_product_mapping_menu_contacts"
+                  name="Customer Assets"
+                  parent="menu_customer_management"
+                  sequence="3"
+                  action="industry_fsm.industry_fsm_action_customer_product_mapping"
+                  groups="customer_assets_group_user"/>	
+    </data>
+
+    <record id="view_partner_form_inherit_customer_fields" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.customer.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <group colspan="2">
+                    <field name="created_by"/>
+                    <field name="customer_visibility_access" options="{'no_create':True, 'no_open': True}"/>
+                    <field name="customer_class_id" invisible="not show_customer_class"
+                           options="{'no_create':True, 'no_open': True}"/>
+                    <field name="zone_id" invisible="not show_zone" options="{'no_create':True, 'no_open': True}"/>
+                    <field name="brand_id" invisible="not show_brand" options="{'no_create':True, 'no_open': True}"/>
+                    <field name="show_customer_class" invisible="1"/>
+                    <field name="show_zone" invisible="1"/>
+                    <field name="show_brand" invisible="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_inherit_customer_fields" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit.customer.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="customer_visibility_access" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_custom" model="ir.ui.view">
+        <field name="name">res.partner.filter.custom</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Zone/Subzone" name="filter_has_zone" domain="[('zone_id', '!=', False)]"/>
+                <filter string="Brand" name="filter_has_brand" domain="[('brand_id', '!=', False)]"/>
+                <filter string="Customer Class" name="filter_has_customer_class"
+                        domain="[('customer_class_id', '!=', False)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Zone" name="group_by_zone" context="{'group_by': 'zone_id'}"/>
+                    <filter string="Brand" name="group_by_brand" context="{'group_by': 'brand_id'}"/>
+                    <filter string="Customer Class" name="group_by_customer_class"
+                            context="{'group_by': 'customer_class_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_company_form_fsm" model="ir.ui.view">
+        <field name="name">res.company.form.fsm</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='branches']" position="after">
+                <page string="Customer Visibility">
+                    <group string="Restrict By Location">
+                        <field name="restrict_zone"/>
+                        <field name="restrict_state"/>
+                        <field name="restrict_city"/>
+                    </group>
+                    <group string="Restrict By">
+                        <field name="restrict_customer_class"/>
+                        <field name="restrict_product_brand"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_form_inherit_customer_visibility" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.customer.visibility</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page//group[@name='managers']" position="before">
+                <field name="has_user" invisible="1"/>
+                <field name="user_id" invisible="1"/>
+                <field name="show_restrict_by_location" invisible="1"/>
+                <field name="show_zone_field" invisible="1"/>
+                <field name="show_state_field" invisible="1"/>
+                <field name="show_city_field" invisible="1"/>
+                <field name="show_restrict_by" invisible="1"/>
+                <field name="show_class_field" invisible="1"/>
+                <field name="show_brand_field" invisible="1"/>
+                <group string="Customer Visibility" invisible="has_user == False">
+                    <group>
+                        <field name="customer_access_scope" required="has_user == True"/>
+                        <field name="restrict_by_location"
+                               invisible="not show_restrict_by_location"/>
+                        <field name="location_restriction_zone"
+                               invisible="not show_zone_field"
+                               required="restrict_by_location"/>
+                        <field name="allowed_zone_ids"
+                               widget="many2many_tags"
+                               invisible="not show_zone_field or not location_restriction_zone or not restrict_by_location"
+                               required="location_restriction_zone == True"
+                               placeholder="Select allowed zones..."/>
+                        <field name="allowed_sub_zone_ids"
+                               widget="many2many_tags"
+                               domain="[('zone_master_id', 'in', allowed_zone_ids)]"
+                               invisible="not show_zone_field or not location_restriction_zone or not restrict_by_location"
+                               placeholder="Select allowed sub-zones..."/>
+                        <field name="location_restriction_state"
+                               invisible="not show_state_field"/>
+                        <field name="allowed_state_ids"
+                               widget="many2many_tags"
+                               invisible="not show_state_field or not location_restriction_state or not restrict_by_location"
+                               required="location_restriction_state == True"
+                               placeholder="Select allowed states..."/>
+                        <field name="location_restriction_city"
+                               invisible="not show_city_field"/>
+                        <field name="allowed_city_ids"
+                               widget="many2many_tags"
+                               invisible="not show_city_field or not location_restriction_city or not restrict_by_location"
+                               required="location_restriction_city == True"
+                               domain="[('state_id', 'in', allowed_state_ids)]"
+                               placeholder="Select allowed cities..."/>
+                    </group>
+                    <group>
+                        <field name="restrict_by" string="Restrict By"
+                               invisible="not show_restrict_by"/>
+                        <field name="customer_class"
+                               invisible="not show_class_field"
+                               string="Customer Class"/>
+                        <field name="allowed_customer_class_ids"
+                               widget="many2many_tags"
+                               invisible="not show_class_field or not customer_class or not restrict_by"
+                               required="customer_class == True"
+                               placeholder="Select allowed customer classes..."/>
+                        <field name="product_brand"
+                               invisible="not show_brand_field"
+                               string="Product Brand"/>
+                        <field name="allowed_product_brand_ids"
+                               widget="many2many_tags"
+                               invisible="not show_brand_field or not product_brand or not restrict_by"
+                               required="product_brand == True"
+                               placeholder="Select allowed product brands..."/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_customer_class_tree" model="ir.ui.view">
+        <field name="name">customer.class.tree</field>
+        <field name="model">customer.class</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_customer_class_form" model="ir.ui.view">
+        <field name="name">customer.class.form</field>
+        <field name="model">customer.class</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_product_brand_tree" model="ir.ui.view">
+        <field name="name">product.brand.tree</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_product_brand_form" model="ir.ui.view">
+        <field name="name">product.brand.form</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_customer_class" model="ir.actions.act_window">
+        <field name="name">Customer Classes</field>
+        <field name="res_model">customer.class</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Customer Class!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_customer_class"
+              name="Customer Classes"
+              parent="contacts.res_partner_menu_config"
+              action="action_customer_class"
+              sequence="4"/>
+
+    <record id="action_product_brand" model="ir.actions.act_window">
+        <field name="name">Product Brands</field>
+        <field name="res_model">product.brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Product Brand!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_product_brand"
+              name="Product Brands"
+              parent="contacts.res_partner_menu_config"
+              action="action_product_brand"
+              sequence="4"/>
+</odoo>

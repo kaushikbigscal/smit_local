@@ -1,0 +1,52 @@
+<odoo>
+    <record id="view_task_tree_inherit_with_department" model="ir.ui.view">
+        <field name="name">project.task.tree.inherit.with.department</field>
+        <field name="model">department.service</field>
+        <field name="arch" type="xml">
+            <tree string="Department">
+                <field name="department_id" string="Department"/>
+                <field name="state_id" widget="many2many_tags"/>
+                <field name="city_id" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_task_form_department" model="ir.ui.view">
+        <field name="name">view.task.form.department</field>
+        <field name="model">department.service</field>
+        <field name="arch" type="xml">
+            <form string="Task">
+                <sheet>
+                    <group>
+                        <field name="department_id"/>
+                        <field name="country_id"/>
+                        <field name="state_id" widget="many2many_tags" option="{'no_create':True}"/>
+                        <field name="city_domain" invisible="1" />
+                        <field name="city_id" widget="many2many_tags" invisible="state_id == False" domain="city_domain" option="{'no_create':True}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_service_call_with_parent_department" model="ir.actions.act_window">
+        <field name="name">Service Center</field>
+        <field name="res_model">department.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_task_tree_inherit_with_department"/>
+    </record>
+
+    <menuitem id="menu_service_center_root"
+              name="Service Center"
+              parent="fsm_menu_settings"
+              sequence="51"/>
+
+    <menuitem id="menu_config_service_center"
+              name="Service Center"
+              parent="menu_service_center_root"
+              sequence="10"
+              groups="industry_fsm.group_fsm_supervisor"
+              action="action_service_call_with_parent_department"/>
+</odoo>
+ 

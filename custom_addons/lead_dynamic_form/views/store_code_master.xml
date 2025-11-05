@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_store_code_tree" model="ir.ui.view">
+            <field name="name">store.code.tree</field>
+            <field name="model">store.code</field>
+            <field name="arch" type="xml">
+                <tree string="Store Codes">
+                    <field name="name"/>
+                    <field name="store_code"/>
+                    <field name="store_contact"/>
+                    <field name="store_open_time" widget="float_time"/>
+                    <field name="store_close_time" widget="float_time"/>
+                    <field name="is_active" widget="boolean"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_store_code_form" model="ir.ui.view">
+            <field name="name">store.code.form</field>
+            <field name="model">store.code</field>
+            <field name="arch" type="xml">
+                <form string="Store Code">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Enter Store Name" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="is_active" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <group string="Store Information">
+                                <field name="store_code" placeholder="e.g., ST001" required="1"/>
+                                <field name="store_contact" options="{'no_create': False, 'no_create_edit': False}"/>
+                                <field name="store_email" readonly="1"/>
+                                <field name="store_phone" readonly="1"/>
+                            </group>
+                            <group string="Location">
+                                <field name="lat_long" readonly="1" placeholder="0.0000, 0.0000"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Store Timings">
+                                <field name="store_open_time" widget="float_time"/>
+                                <field name="store_close_time" widget="float_time"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_store_code_search" model="ir.ui.view">
+            <field name="name">store.code.search</field>
+            <field name="model">store.code</field>
+            <field name="arch" type="xml">
+                <search string="Store Code">
+                    <field name="name" string="Store Name" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="store_code" string="Store Code" filter_domain="[('store_code', 'ilike', self)]"/>
+                    <field name="store_contact" string="Contact" filter_domain="[('store_contact', 'ilike', self)]"/>
+                    <separator/>
+                    <filter string="Active" name="filter_active" domain="[('is_active', '=', True)]"/>
+                    <filter string="Inactive" name="filter_inactive" domain="[('is_active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Contact" name="group_by_contact" context="{'group_by': 'store_contact'}"/>
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'is_active'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_store_code" model="ir.actions.act_window">
+            <field name="name">Store Codes</field>
+            <field name="res_model">store.code</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Store Code
+                </p>
+                <p>
+                    Click the create button to add a new store with contact details, location, and communication preferences.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_store_code"
+                  name="Store Code"
+                  parent="crm.crm_menu_config"
+                  sequence="59"
+                  action="action_store_code"/>
+    </data>
+</odoo>

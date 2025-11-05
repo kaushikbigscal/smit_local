@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_salary_rule_category_form_inherit_new" model="ir.ui.view">
+        <field name="name">hr.salary.rule.category.form.inherit.new</field>
+        <field name="model">hr.salary.rule.category</field>
+        <field name="inherit_id" ref="om_hr_payroll.hr_salary_rule_category_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr='//form' position='replace'>
+                <form string="Salary Categories">
+                    <group col="4">
+                        <group style="width:50%;">
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group style="width:50%;">
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </form>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

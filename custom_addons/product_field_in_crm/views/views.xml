@@ -1,0 +1,56 @@
+<odoo>
+    <record id="crm_lead_product_category" model="ir.ui.view">
+        <field name="name">crm.lead.product.category</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Before user_id in the lead group -->
+            <xpath expr="//group[@name='opportunity_info']//field[@name='user_id']" position="before">
+                <field name="product_category_id"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"/>
+                <field name="product_id"
+                       widget="many2many_tags"
+                       domain="[('id', 'in', computed_product_domain_ids)]"/>
+                <field name="computed_product_domain_ids" invisible="1"/>
+            </xpath>
+
+            <!-- Before user_id in the opportunity group -->
+            <xpath expr="//group[@name='lead_partner']//field[@name='user_id']" position="before">
+                <field name="product_category_id"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"/>
+                <field name="product_id"
+                       widget="many2many_tags"
+                       domain="[('id', 'in', computed_product_domain_ids)]"/>
+                <field name="computed_product_domain_ids" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
+
+
+        <!--<odoo>-->
+        <!--    <record id="crm_lead_product_category" model="ir.ui.view">-->
+        <!--        <field name="name">crm.lead.product.category</field>-->
+        <!--        <field name="model">crm.lead</field>-->
+        <!--        <field name="inherit_id" ref="crm.crm_lead_view_form"/>-->
+        <!--        <field name="arch" type="xml">-->
+        <!--            <xpath expr="//group//field[@name='user_id']" position="before">-->
+        <!--                <field name="product_category_id"-->
+        <!--                       widget="many2many_tags"-->
+        <!--                       options="{'no_create': True}"/>-->
+
+        <!--                <field name="product_id"-->
+        <!--                       widget="many2many_tags"-->
+        <!--                       domain="[('id', 'in', computed_product_domain_ids)]"/>-->
+
+        <!--                &lt;!&ndash; Add this as invisible so Odoo doesn't complain &ndash;&gt;-->
+        <!--                <field name="computed_product_domain_ids" invisible="1"/>-->
+
+        <!--            </xpath>-->
+        <!--        </field>-->
+        <!--    </record>-->
+        <!--</odoo>-->

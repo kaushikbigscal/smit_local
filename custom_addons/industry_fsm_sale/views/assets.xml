@@ -1,0 +1,7 @@
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend" name="Customer M2O Default - Assets">
+        <xpath expr="." position="inside">
+            <script type="module" src="industry_fsm_sale/static/src/js/m2o_customer_product.js"/>
+        </xpath>
+    </template>
+</odoo>

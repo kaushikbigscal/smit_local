@@ -1,0 +1,32 @@
+.o_calendar_systray {
+    cursor: pointer;
+    padding: 8px;
+    transition: background-color 0.2s ease;
+    position: relative;
+    
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .o_calendar_systray_icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        
+        .fa-home {
+            color: rgba(255, 255, 255, 0.9);
+            transition: color 0.2s ease;
+        }
+        
+        .o_calendar_systray_badge {
+            color: white;
+        }
+    }
+    
+    &:hover .o_calendar_systray_icon .fa-home {
+        color: #ffffff;
+    }
+}

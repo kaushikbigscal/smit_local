@@ -1,0 +1,151 @@
+.o_calendar_rule_options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+
+    // When there are rules, show them in grid
+    &:has(.o_calendar_rule_card) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    // When there are no rules, show full width message
+    &:has(.o_calendar_no_rules) {
+        display: block;
+        grid-template-columns: none;
+    }
+}
+
+.o_calendar_rule_card {
+    display: flex;
+    align-items: center;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    /* min-height: 80px;  consistent size */
+}
+
+.o_calendar_rule_card:hover {
+    border-color: #877bad;
+    background: #f5f4f8;
+}
+
+.o_calendar_rule_card.selected {
+    border-color: #875A7B; /* Odoo purple */
+    background: #f9f2fa;
+}
+
+.o_calendar_rule_card .o_icon_wrapper {
+    font-size: 1.8rem;
+    color: #877bad;
+    margin-right: 1rem;
+}
+
+.o_calendar_rule_card .o_text_wrapper {
+    flex: 1;
+}
+
+.o_calendar_rule_card .o_text_wrapper .o_title {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.o_calendar_rule_card .o_text_wrapper .o_subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.o_calendar_rule_logo {
+    max-width: 40px;
+    max-height: 40px;
+    margin-right: 0.6rem;
+
+}
+
+.o_calendar_no_rules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    margin: 10px 0;
+    min-height: 200px;
+    width: 100%; // Ensure it takes full width
+
+    .o_no_rules_icon {
+        margin-bottom: 20px;
+
+        i {
+            font-size: 48px;
+            color: #6c757d;
+            opacity: 0.7;
+        }
+    }
+
+    .o_no_rules_content {
+        max-width: 350px;
+
+        .o_no_rules_title {
+            color: #495057;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .o_no_rules_message {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            opacity: 0.9;
+        }
+    }
+}
+
+
+@media (max-width: 768px) {
+    .o_calendar_rule_options {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+
+        &:has(.o_calendar_no_rules) {
+            display: block;
+            grid-template-columns: none;
+        }
+    }
+
+    .o_calendar_no_rules {
+        padding: 30px 15px;
+        min-height: 150px;
+
+        .o_no_rules_icon i {
+            font-size: 36px;
+        }
+
+        .o_no_rules_content {
+            .o_no_rules_title {
+                font-size: 16px;
+            }
+
+            .o_no_rules_message {
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+.o_calendar_rule_card i.fa-wrench {
+    font-size: 30px;
+    color: #877bad;
+    margin-right: 0.6rem;
+}

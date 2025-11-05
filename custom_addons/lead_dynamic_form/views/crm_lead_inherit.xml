@@ -1,0 +1,62 @@
+<odoo>
+    <record id="view_crm_form_lead_type" model="ir.ui.view">
+        <field name="name">crm.lead.inherit.lead.type</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_name']" position="before">
+                <field name="lead_type_code" invisible="1"/>
+                <field name="lead_type_id"
+                       string="Lead Type"
+                       options="{'no_create': True}"
+                       placeholder="Select Lead Type"
+                       invisible="type == 'opportunity'"
+                />
+            </xpath>
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="store_id"
+                       string="Store Code"
+                       options="{'no_create': True}"
+                       placeholder="Select Store"
+                       invisible="(lead_type_code not in ['med_order', 'support']) or (type != 'lead')"
+                />
+            </xpath>
+            <xpath expr="//notebook[last()]" position="inside">
+                <page string="Partner Assignment" name="geo_location">
+                    <group>
+                        <group string="Geolocation">
+                            <label for="date_localization" string="Geo Location"/>
+                            <div>
+                                <span>Lat :
+                                    <field name="partner_latitude" nolabel="1" class="oe_inline"/>
+                                </span>
+                                <br/>
+
+                                <span>Long:
+                                    <field name="partner_longitude" nolabel="1" class="oe_inline"/>
+                                </span>
+                                <br/>
+
+
+                                <span invisible="not date_localization">Updated on:
+                                    <field name="date_localization" nolabel="1" readonly="1" class="oe_inline"/>
+                                </span>
+                                <br/>
+
+                                <div name="geo_localize_button">
+                                    <button invisible="partner_latitude != 0 or partner_longitude != 0"
+                                            icon="fa-gear" string="Compute based on address"
+                                            title="Compute Localization"
+                                            name="geo_localize_lead" type="object" class="btn btn-link p-0"/>
+                                    <button invisible="partner_latitude == 0 and partner_longitude == 0"
+                                            icon="fa-refresh" string="Refresh" title="Refresh Localization"
+                                            name="geo_localize_lead" type="object" class="btn btn-link p-0"/>
+                                </div>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

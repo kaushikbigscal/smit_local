@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--View configuration manager list view-->
+    <record id="manager_configuration_view_list" model="ir.ui.view">
+        <field name="name">manager.configuration.view.tree</field>
+        <field name="model">manager.configuration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="instance"/>
+                <field name="token"/>
+                <field name="ip_address"/>
+                <field name="port"/>
+            </tree>
+        </field>
+    </record>
+    <!--View configuration manager form view-->
+    <record id="manager_configuration_view_form" model="ir.ui.view">
+        <field name="name">manager.configuration.view.form</field>
+        <field name="model">manager.configuration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+
+                            <field name="instance"/>
+                            <field name="token"/>
+                            <field name="ip_address"/>
+                            <field name="port"/>
+
+                            <button name="action_authenticate" type="object"
+                                    class="oe_highlight" string="Authenticate"/>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manager_configuration" model="ir.actions.act_window">
+        <field name="name">Configuration Manager</field>
+        <field name="res_model">manager.configuration</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_whatsapp_root"
+          name="WhatsApp"
+          parent="fsm_menu_settings"
+          sequence="52"
+          groups="base.group_user"/>
+
+    <menuitem id="menu_config_manager"
+              name="Whatsapp Configuration"
+              parent="menu_whatsapp_root"
+              sequence="10"
+              groups="send_whatsapp_group_user"
+              action="action_manager_configuration"/>
+</odoo>

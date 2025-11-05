@@ -1,0 +1,35 @@
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.tour.plan</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="tour_plan" string="Tour Plan" name="tour_plan" data-key="tour_plan">
+                      <block title="Tour Plan Management" id="tour_management">
+                            <setting id="recurring_tour_plan_setting" help="Set the default minimum duration in minutes for End work">
+                                <field name="Minimum_Duration_end_work"/>
+                            </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="tour_plan_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings menu</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+                    <field name="context">{'module' : 'tour_plan', 'bin_size': False}</field>
+    </record>
+     <menuitem
+                name="Settings"
+                id="tour_config_settings_menu_action"
+                action="tour_plan_config_settings_action"
+                parent="menu_crm_config_salesperson_planner"
+                groups="base.group_system"
+                sequence="1"
+            />
+</odoo>

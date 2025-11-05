@@ -1,0 +1,49 @@
+<odoo>
+    <data>
+        <record id="action_get_private_tasks" model="ir.actions.server">
+            <field name="name">Personal Tasks</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Personal Tasks',
+                    'res_model': 'project.task',
+                    'view_mode': 'tree,form',
+                    'domain': [('id', 'in', model.get_private_task_ids())],
+                }
+            </field>
+        </record>
+
+
+        <record id="action_get_assigned_by_me_tasks" model="ir.actions.server">
+            <field name="name">Assigned By Me</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = {
+                'type': 'ir.actions.act_window',
+                'name': 'Assigned By Me',
+                'res_model': 'project.task',
+                'view_mode': 'tree,form',
+                'domain': [('id', 'in', model.get_assigned_by_me_task_ids())],
+                }
+            </field>
+        </record>
+
+        <menuitem
+                name="Assigned by Me"
+                id="menu_project_management_assigned_by_me"
+                action="action_get_assigned_by_me_tasks"
+                parent="project.menu_project_management"
+                sequence="3"
+        />
+        <menuitem
+                name="Personal Task"
+                id="menu_project_management_personal_task"
+                action="action_get_private_tasks"
+                parent="project.menu_project_management"
+                sequence="4"
+        />
+    </data>
+</odoo>

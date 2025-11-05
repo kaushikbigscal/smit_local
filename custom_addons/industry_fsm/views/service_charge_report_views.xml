@@ -1,0 +1,115 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_service_charge_report_tree" model="ir.ui.view">
+        <field name="name">Service Charge Report Tree</field>
+        <field name="model">service.charge.report</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="call_allocation"/>
+                <field name="user_ids" widget="many2many_avatar_user"/>
+                <field name="partner_id"/>
+                <field name="service_charge_type_name"/>
+                <field name="total_charge"/>
+                <field name="paid_amount"/>
+                <field name="remaining_amount"/>
+                <field name="payment_status"/>
+                <button name="action_open_task" icon="fa-external-link" type="object"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_service_charge_report_pivot" model="ir.ui.view">
+        <field name="name">Service Charge Report Pivot</field>
+        <field name="model">service.charge.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Charge Report" disable_linking="0">
+                <field name="department_id" type="row"/>
+                <field name="total_charge" type="measure"/>
+                <field name="paid_amount" type="measure"/>
+                <field name="remaining_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_service_charge_report_search" model="ir.ui.view">
+        <field name="name">Service Charge Report Search</field>
+        <field name="model">service.charge.report</field>
+        <field name="arch" type="xml">
+            <search string="Service Charge Report Search">
+                <field name="user_ids" widget="many2many_avatar_user"/>
+                <filter name="filter_assignee" string="Assignee" domain="[('user_ids', '!=', False)]"/>
+                <filter name="not_paid" string="Not Paid" domain="[('payment_status', '=', 'notpaid')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_name" string="Call Name" context="{'group_by': 'name'}"/>
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_by_assignee" string="Assignee" context="{'group_by': 'primary_user_id'}"/>
+                    <filter name="group_by_allocation" string="Call Allocation"
+                            context="{'group_by': 'call_allocation'}"/>
+                    <filter name="group_by_type" string="Call Type" context="{'group_by': 'call_type'}"/>
+                    <filter name="group_by_service_charge_type" string="Service Charge Type"
+                            context="{'group_by': 'service_charge_type_name'}"/>
+                    <filter name="group_by_payment_status" string="Payment Status"
+                            context="{'group_by': 'payment_status'}"/>
+                    <filter name="group_by_customer" string="Customer" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action: All Chargeable Services -->
+    <record id="action_service_charge_report" model="ir.actions.act_window">
+        <field name="name">Service Charge Report</field>
+        <field name="res_model">service.charge.report</field>
+        <field name="view_mode">pivot,tree</field>
+        <field name="context">{
+            'pivot_measures': ['__count', 'total_charge', 'paid_amount', 'remaining_amount'],
+            'group_by': 'department_id',
+            }
+        </field>
+        <field name="domain">[('call_type.name', '=', 'Chargeable')]</field>
+    </record>
+
+    <!-- Action: Only Not Paid -->
+
+    <record id="action_service_charge_pending_report" model="ir.actions.act_window">
+        <field name="name">Pending Service Charge Report</field>
+        <field name="res_model">service.charge.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="context">{
+
+            'pivot_measures': ['__count','total_charge','paid_amount','remaining_amount'],
+
+            'group_by': 'department_id'
+
+            }
+
+        </field>
+        <field name="domain">[('call_type.name', '=', 'Chargeable'), ('payment_status', '!=', 'paid')]</field>
+    </record>
+
+    <!-- Action:Tree -->
+    <record id="action_service_charge_tree_report" model="ir.actions.act_window">
+        <field name="name">Service Charge tree Report</field>
+        <field name="res_model">service.charge.report</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('call_type.name', '=', 'Chargeable')]</field>
+        <field name="view_id" ref="view_service_charge_report_tree"/>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_service_charge_report"
+              name="Service Charge Report"
+              parent="fsm_menu_reporting"
+              action="action_service_charge_report"
+              sequence="20"/>
+
+    <menuitem id="menu_service_pending_charge_report"
+              name="Pending Service Charge Report"
+              parent="fsm_menu_reporting"
+              action="action_service_charge_pending_report"
+              sequence="21"/>
+</odoo>

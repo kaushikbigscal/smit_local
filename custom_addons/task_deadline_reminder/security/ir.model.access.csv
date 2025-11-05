@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_task_reminder,access_task_reminder,model_task_reminder,base.group_user,1,1,1,1
+access_reminder_task_queue,access_reminder_task_queue,model_reminder_task_queue,base.group_user,1,1,1,1
+access_reminder_type,access_reminder_type,model_reminder_types,project.group_project_manager,1,1,1,1

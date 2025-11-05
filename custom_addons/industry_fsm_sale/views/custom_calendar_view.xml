@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherit_fsm_task_calendar_form_add_field" model="ir.ui.view">
+        <field name="name">FSM Task Calendar Form - Add Field</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id"
+               ref="industry_fsm.view_fsm_task_calendar_form"/> <!-- Replace with actual module name -->
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_ids']" position="before">
+                <field name="customer_product_id"/>
+            </xpath>
+            <xpath expr="//button[@name='action_partner_navigate']" position="after">
+                <button name="action_call_partner"
+                        type="object"
+                        icon="fa-phone"
+                        string="Call"
+                        class="btn btn-secondary flex-grow-1 flex-md-grow-0 w-45 text-truncate"
+                        widget="stateinfo"
+                        invisible="not partner_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

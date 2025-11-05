@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+
+    <!-- Tree view for listing fields -->
+    <record id="view_ir_model_fields_mobile_tree" model="ir.ui.view">
+        <field name="name">ir.model.fields.mobile.tree</field>
+        <field name="model">ir.model.fields.mobile</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="field_id"/>
+                <field name="for_mobile"/>
+                <field name="model_id"/> <!-- Display the model column in the tree -->
+                <field name="is_instant"/>
+                <field name="is_caching"/>
+                <field name="caching_refresh_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view for individual field settings -->
+    <record id="view_ir_model_fields_mobile_form" model="ir.ui.view">
+        <field name="name">ir.model.fields.mobile.form</field>
+        <field name="model">ir.model.fields.mobile</field>
+        <field name="arch" type="xml">
+            <form>
+                <!--                <header>-->
+                <!--                    <button name="action_create_fields" string="Create Fields" type="object" class="btn-primary"/>-->
+                <!--                </header>-->
+                <group>
+                    <field name="field_id"/>
+                    <field name="for_mobile"/>
+                    <field name="model_id"/> <!-- Add model field to the form view if necessary -->
+                    <field name="is_instant"/>
+                    <field name="is_caching"/>
+                    <field name="caching_refresh_time" invisible="not is_caching" placeholder="HH:MM"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_ir_model_fields_mobile_search" model="ir.ui.view">
+        <field name="name">ir.model.fields.mobile.search</field>
+        <field name="model">ir.model.fields.mobile</field>
+        <field name="arch" type="xml">
+            <search string="Search Mobile Fields">
+
+                <!-- Search by Field Name -->
+                <field name="field_id" string="Field Name"/>
+                <filter string="For Mobile" name="filter_for_mobile" domain="[('for_mobile', '=', True)]"/>
+                <filter string="Is Caching" name="filter_is_caching" domain="[('is_caching', '=', True)]"/>
+                <filter string="Is Instant" name="filter_is_instant" domain="[('is_instant', '=', True)]"/>
+                <field name="model_id" string="Model"/>
+            </search>
+
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_mobile_fields" model="ir.actions.act_window">
+        <field name="name">Mobile Fields</field>
+        <field name="res_model">ir.model.fields.mobile</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_ir_model_fields_mobile_tree"/>
+        <field name="search_view_id" ref="view_ir_model_fields_mobile_search"/>
+
+    </record>
+
+    <!-- Menu item to access the mobile fields configuration -->
+    <menuitem id="menu_mobile_fields" name="Mobile Fields"
+              parent="base.menu_custom"
+              action="action_mobile_fields"
+              sequence="100"
+    />
+
+
+    <record id="view_button_near_new" model="ir.ui.view">
+        <field name="name">view_button_near_new</field>
+        <field name="model">ir.model.fields.mobile</field>
+        <field name="inherit_id" ref="view_ir_model_fields_mobile_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="js_class">button_in_tree</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
+
+

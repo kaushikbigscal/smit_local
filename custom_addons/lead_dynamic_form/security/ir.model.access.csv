@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lead_dynamic_form_lead_dynamic_form,lead_dynamic_form.lead_dynamic_form,model_lead_type,base.group_user,1,1,1,1
+access_store_code_user,store.code.user,model_store_code,base.group_user,1,1,1,1

@@ -1,0 +1,124 @@
+<odoo>
+
+    <!-- ///////////////////////////////////////////////////// -->
+    <data>
+        <!-- Inherit the existing geofence view to add GPS tracking field -->
+        <record id="view_users_form_inherit_gps_tracking" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.gps.tracking</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="aptuem_attendance_location.view_users_form_inherit_geofence"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='enable_geofence_day_out']" position="after">
+                    <field name="enable_gps_tracking"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_config_settings_tracking" model="ir.ui.view">
+            <field name="name">res.config.settings.employee.tracking</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="employee_tracking" string="Employee Tracking" name="field_service_tracking"
+                         groups="base.group_system">
+                        <block title="Employee Tracking Configuration" id="tracking_configuration">
+                            <setting name="Customer Timeline"
+                                     help="Time between gps auto fetch in milliseconds.">
+                                <field name="time_interval"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+    </data>
+    <!-- ////////////////////////////////////////////////////// -->
+
+    <record id="view_gps_tracking_tree" model="ir.ui.view">
+        <field name="name">gps.tracking.tree</field>
+        <field name="model">gps.tracking</field>
+        <field name="arch" type="xml">
+            <tree>
+                <header>
+                    <button string="Export"
+                            type="object" display="always"
+                            name="action_export_tracking"
+                            class="btn-primary"/>
+                </header>
+                <field name="timestamp"/>
+                <field name="employee_id"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+                <field name="tracking_type"/>
+                <field name="link_id"/>
+                <field name="attendance_id" optional="hide"/>
+                <field name="suspicious"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gps_tracking_form" model="ir.ui.view">
+        <field name="name">gps.tracking.form</field>
+        <field name="model">gps.tracking</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="timestamp"/>
+                        <field name="employee_id"/>
+                        <field name="latitude"/>
+                        <field name="longitude"/>
+                        <field name="tracking_type"/>
+                        <field name="attendance_id"/>
+                        <field name="link_id"/>
+                        <field name="address"/>
+                        <field name="suspicious"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Search View -->
+    <record id="view_gps_tracking_search" model="ir.ui.view">
+        <field name="name">gps.tracking.search</field>
+        <field name="model">gps.tracking</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Today" name="filter_today" domain="[('timestamp', '=', context_today)]"/>
+                <field name="employee_id"/>
+                <field name="link_id"/>
+                <field name="timestamp"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'timestamp'}"/>
+                    <filter name="group_link" string="Source Link" context="{'group_by': 'link_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_gps_tracking" model="ir.actions.act_window">
+        <field name="name">Employee GPS Logs</field>
+        <field name="res_model">gps.tracking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_gps_tracking_search"/>
+        <field name="context">{
+            "group_by": ["employee_id", "timestamp:day"]
+            }
+        </field>
+    </record>
+
+
+    <record id="action_gps_tracking_route_map" model="ir.actions.client">
+        <field name="name">Tracking Map</field>
+        <field name="tag">gps_tracking_route_map</field>
+    </record>
+
+    <menuitem id="menu_gps_tracking_root" name="Employee Tracking" sequence="10"/>
+    <menuitem id="menu_gps_tracking" name="Tracking Logs" parent="menu_gps_tracking_root" sequence="15"
+              action="action_gps_tracking"/>
+    <menuitem id="menu_gps_tracking_map" name="Tracking Map" parent="menu_gps_tracking_root" sequence="10"
+              action="action_gps_tracking_route_map"/>
+</odoo>

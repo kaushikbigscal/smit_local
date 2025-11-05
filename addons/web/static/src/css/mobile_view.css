@@ -1,0 +1,18 @@
+/* Mobile devices (max-width: 768px) */
+@media (max-width: 768px) {
+    .o_control_panel {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 999 !important;
+        background: white !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 12px 16px !important;
+        margin-bottom: 5px !important;
+        overflow: visible !important;
+    }
+
+    .o_form_sheet_bg {
+        overflow: visible !important;
+        margin-top: 5px !important; /* Adjust based on header height */
+    }
+}

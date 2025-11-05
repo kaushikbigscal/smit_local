@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="point_of_sale.CreateCustomerButton">
+        <div class="quick-create-customer d-flex align-items-center">
+            <input type="text"
+                class="pos-input customer-name"
+                t-on-input="(ev) => this.state.customerName = ev.target.value"
+                t-att-value="state.customerName || ''"
+                placeholder="Customer Name"/>
+            <input type="tel"
+                class="pos-input customer-mobile"
+                t-on-input="(ev) => this.state.customerMobile = ev.target.value"
+                t-att-value="state.customerMobile || ''"
+                maxlength="10"
+                placeholder="Mobile Number"/>
+            <button class="create-button"
+                t-on-click="() => this.createCustomer()">
+                <i class="fa fa-user-plus"/>
+                Create
+            </button>
+        </div>
+    </t>
+</templates>
+
