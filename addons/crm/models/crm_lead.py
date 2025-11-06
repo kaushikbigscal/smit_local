@@ -108,15 +108,15 @@ class Lead(models.Model):
         'Opportunity', index='trigram', required=True,
         compute='_compute_name', readonly=False, store=True)
     user_id = fields.Many2one(
-        'res.users', string='Salesperson', default=lambda self: self.env.user,
+        'res.users', string='Salesperson',
         domain="[('share', '=', False)]",
-        check_company=True, index=True, tracking=True)
+        check_company=True, index=True, tracking=True) #default=lambda self: self.env.user,
     user_company_ids = fields.Many2many(
         'res.company', compute='_compute_user_company_ids',
         help='UX: Limit to lead company or all if no company')
     team_id = fields.Many2one(
         'crm.team', string='Sales Team', check_company=True, index=True, tracking=True,
-        compute='_compute_team_id', ondelete="set null", readonly=False, store=True, precompute=True)
+         ondelete="set null", readonly=False, store=True, precompute=True) #compute='_compute_team_id',
     lead_properties = fields.Properties(
         'Properties', definition='team_id.lead_properties_definition',
         copy=True)

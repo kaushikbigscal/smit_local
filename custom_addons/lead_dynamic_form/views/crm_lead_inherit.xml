@@ -4,7 +4,7 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_name']" position="before">
+            <xpath expr="//label[@for='contact_name']" position="before">
                 <field name="lead_type_code" invisible="1"/>
                 <field name="lead_type_id"
                        string="Lead Type"
@@ -17,7 +17,7 @@
                 <field name="store_id"
                        string="Store Code"
                        options="{'no_create': True}"
-                       placeholder="Select Store"
+                       placeholder="Auto-assigned (based on location)"
                        invisible="(lead_type_code not in ['med_order', 'support']) or (type != 'lead')"
                 />
             </xpath>
@@ -59,4 +59,50 @@
             </xpath>
         </field>
     </record>
+
+    <template id="job_application_form_template" name="Job Application Form">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2>Job Application Form</h2>
+                <form action="/job/application/submit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="lead_id" t-att-value="lead.id"/>
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" name="name" class="form-control" required="1"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Email *</label>
+                        <input type="email" name="email" class="form-control" required="1"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Phone *</label>
+                        <input type="text" name="phone" class="form-control" required="1"/>
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn Profile</label>
+                        <input type="url" name="linkedin" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Resume</label>
+                        <input type="file" name="resume" class="form-control" required="1"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Short Introduction</label>
+                        <textarea name="introduction" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit Application</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="thank_you_template" name="Thank You Page">
+        <t t-call="website.layout">
+            <div class="container mt-5 text-center">
+                <h2>Thank You!</h2>
+                <p>Your application has been received. Our HR team will contact you soon.</p>
+            </div>
+        </t>
+    </template>
 </odoo>

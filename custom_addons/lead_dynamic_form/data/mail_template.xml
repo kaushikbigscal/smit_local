@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="job_application_email_template" model="mail.template">
+        <field name="name">Job Application Acknowledgment</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Request to Complete Application Details</field>
+        <field name="email_to">{{ (not object.partner_id and object.email_from or '') }}</field>
+        <field name="partner_to">{{ object.partner_id.id or '' }}</field>
+        <field name="body_html" type="html">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="background-color: white; border-collapse: collapse; margin-left: 20px;">
+    <tr>
+        <td valign="top" style="padding: 0px 10px;">
+            <div style="font-size: 13px; margin: 0px; padding: 0px;">
+                <p><strong>Hello, <t t-out="object.partner_name or object.contact_name or 'Applicant'"/></strong></p>
+
+                <p>We confirm we successfully received your job application.</p>
+
+                <p><strong>Application Details:</strong></p>
+                <p>
+                    Name: <t t-out="object.partner_name or object.contact_name or 'Applicant'">Your Name</t>
+
+
+                    Email: <t t-out="object.email_from or ''">your.email@example.com</t>
+
+
+                    Phone: <t t-out="object.phone or ''">Your Phone</t>
+                </p>
+
+                <hr width="97%" style="background-color: rgb(204,204,204); border: medium none; clear: both; display: block; font-size: 0px; min-height: 1px; line-height: 0; margin: 16px 0px 16px 0px;"/>
+
+                <h3 style="color:#9A6C8E;"><strong>What is the next step?</strong></h3>
+                <p>Thank you for applying for a job through our website. We are pleased to review your profile.</p>
+
+                <p>Please click the button below to <strong>complete your application</strong> and upload your resume:</p>
+
+                <div style="padding: 5px 2px 5px 2px;">
+                    <a t-att-href="env['ir.config_parameter'].sudo().get_param('web.base.url') + '/job/application/form?lead_id=' + str(object.id)"
+                        style="background-color: #875a7b; text-decoration: none; color: #fff; padding: 12px 24px; border-radius: 5px; display: inline-block; font-weight: bold;">
+                        Complete Your Application
+                    </a>
+                </div>
+
+                <hr width="97%" style="background-color: rgb(204,204,204); border: medium none; clear: both; display: block; font-size: 0px; min-height: 1px; line-height: 0; margin: 16px 0px 16px 0px;"/>
+
+                <p>We usually <strong>answer applications within a few days.</strong></p>
+                <p>Feel free to <strong>contact us if you want a faster feedback</strong> or if you don't get news from us quickly enough (just reply to this email).</p>
+                
+
+                <hr width="97%" style="background-color: rgb(204,204,204); border: medium none; clear: both; display: block; font-size: 0px; min-height: 1px; line-height: 0; margin: 16px 0px 16px 0px;"/>
+
+                <p>Best Regards,
+
+                <strong>HR Team</strong></p>
+            </div>
+        </td>
+    </tr>
+</table>
+        </field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+    </record>
+</odoo>

@@ -15,9 +15,11 @@ Long description of module's purpose
     'data': [
         'security/ir.model.access.csv',
         'data/lead_type_data.xml',
+        'data/mail_template.xml',
         'views/lead_type_master.xml',
         'views/crm_lead_inherit.xml',
         'views/store_code_master.xml',
+        'data/nearest_store_mail_template.xml',
     ],
 
 }
