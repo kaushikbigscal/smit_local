@@ -12,8 +12,8 @@ class Department(models.Model):
         tracking=True
     )
     country_id = fields.Many2one('res.country', string="Country")
-    state_id = fields.Many2many("res.country.state", string='State', ondelete='restrict',
-                                domain="[('country_id', '=?', country_id)]")
+    state_id = fields.Many2many("res.country.state", string='State', ondelete='restrict', required=True
+                                , domain="[('country_id', '=?', country_id)]")
 
     city_id = fields.Many2many(
         'res.city', string="City", ondelete="restrict"

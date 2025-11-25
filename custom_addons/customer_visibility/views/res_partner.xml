@@ -43,8 +43,7 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='vat']" position="after">
-                <group colspan="2">
+            <xpath expr="//field[@name='l10n_in_pan']" position="after">
                     <field name="created_by"/>
                     <field name="customer_visibility_access" options="{'no_create':True, 'no_open': True}"/>
                     <field name="customer_class_id" invisible="not show_customer_class"
@@ -54,7 +53,6 @@
                     <field name="show_customer_class" invisible="1"/>
                     <field name="show_zone" invisible="1"/>
                     <field name="show_brand" invisible="1"/>
-                </group>
             </xpath>
         </field>
     </record>

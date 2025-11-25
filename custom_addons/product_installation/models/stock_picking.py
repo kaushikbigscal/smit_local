@@ -176,33 +176,33 @@ class StockPicking(models.Model):
                         extended_start = False
                         extended_end = False
 
-                        if sale_order:
-                            extended_line = sale_order.order_line.filtered(
-                                lambda l: l.is_extended_warranty and product.display_name in (l.name or "")
-                            )
-                            if extended_line:
-                                desc = extended_line[0].name or ""
-                                _logger.info(f"🔍 Extracting warranty dates from description: {desc}")
-
-                                import re
-                                from datetime import datetime as dt
-                                match = re.search(
-                                    r'from\s+(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\s+to\s+(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})',
-                                    desc, re.IGNORECASE
-                                )
-                                if match:
-                                    try:
-                                        start_str, end_str = match.groups()
-                                        start_str = start_str.replace('/', '-')
-                                        end_str = end_str.replace('/', '-')
-                                        extended_start = dt.strptime(start_str, "%d-%m-%Y").date()
-                                        extended_end = dt.strptime(end_str, "%d-%m-%Y").date()
-                                        _logger.info(
-                                            f"Extracted Extended Dates → Start: {extended_start}, End: {extended_end}")
-                                    except Exception as e:
-                                        _logger.warning(f"Date parse failed for extended warranty: {e}")
-                                else:
-                                    _logger.debug(f"No date pattern found in: {desc}")
+                        # if sale_order:
+                        #     extended_line = sale_order.order_line.filtered(
+                        #         lambda l: l.is_extended_warranty and product.display_name in (l.name or "")
+                        #     )
+                        #     if extended_line:
+                        #         desc = extended_line[0].name or ""
+                        #         _logger.info(f"🔍 Extracting warranty dates from description: {desc}")
+                        #
+                        #         import re
+                        #         from datetime import datetime as dt
+                        #         match = re.search(
+                        #             r'from\s+(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\s+to\s+(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})',
+                        #             desc, re.IGNORECASE
+                        #         )
+                        #         if match:
+                        #             try:
+                        #                 start_str, end_str = match.groups()
+                        #                 start_str = start_str.replace('/', '-')
+                        #                 end_str = end_str.replace('/', '-')
+                        #                 extended_start = dt.strptime(start_str, "%d-%m-%Y").date()
+                        #                 extended_end = dt.strptime(end_str, "%d-%m-%Y").date()
+                        #                 _logger.info(
+                        #                     f"Extracted Extended Dates → Start: {extended_start}, End: {extended_end}")
+                        #             except Exception as e:
+                        #                 _logger.warning(f"Date parse failed for extended warranty: {e}")
+                        #         else:
+                        #             _logger.debug(f"No date pattern found in: {desc}")
 
                         # Call type
                         call_type_value = False
@@ -230,8 +230,8 @@ class StockPicking(models.Model):
                                 vals_to_update.update({
                                     'start_date': start_date,
                                     'end_date': end_date,
-                                    'extended_start_date': extended_start,
-                                    'extended_end_date': extended_end,
+                                    # 'extended_start_date': extended_start,
+                                    # 'extended_end_date': extended_end,
                                     'status': unit_status,
                                 })
 
@@ -247,8 +247,8 @@ class StockPicking(models.Model):
                                                                                                   'direct_orders'] else 'direct_product',
                                     'start_date': start_date,
                                     'end_date': end_date,
-                                    'extended_start_date': extended_start,
-                                    'extended_end_date': extended_end,
+                                    # 'extended_start_date': extended_start,
+                                    # 'extended_end_date': extended_end,
                                     'asset_status': 'allocated',
                                     'status': unit_status,
                                     'product_category': product.categ_id.id or False,
@@ -262,12 +262,68 @@ class StockPicking(models.Model):
                             if installation_html:
                                 desc_html += installation_html
 
+                            # --------------------------------------------
+                            # ⚙️ Auto Fetch Department & assignee Logic
+                            # --------------------------------------------
+                            department_id = False
+                            assigned_users = []
+                            dept_service = False
+
+                            # No technicians assigned -> find department by partner city
+                            partner = picking.partner_id
+                            partner_city = partner.city_id.name if hasattr(partner,
+                                                                           'city_id') and partner.city_id else partner.city
+                            partner_state = partner.state_id.name if partner.state_id else False
+
+                            if partner_city:
+                                dept_service = self.env['department.service'].sudo().search([
+                                    ('city_id.name', 'ilike', partner_city)
+                                ], limit=1)
+
+                            else:
+                                # No city_id → match by state
+                                if partner_state:
+                                    dept_service = self.env['department.service'].sudo().search([
+                                        ('state_id.name', 'ilike', partner_state)
+                                    ], limit=1)
+
+                            if dept_service and dept_service.department_id:
+                                department_id = dept_service.department_id.id
+
+                                # Find users in that department
+                                department_users = self.env['res.users'].sudo().search([
+                                    ('employee_ids.department_id', '=', department_id)
+                                ])
+
+                                assigned_user = None
+
+                                # Try FSM Supervisors first (not Managers)
+                                supervisors = department_users.filtered(
+                                    lambda u: u.has_group('industry_fsm.group_fsm_supervisor')
+                                              and not u.has_group('industry_fsm.group_fsm_manager')
+                                )
+
+                                if supervisors:
+                                    assigned_user = supervisors[0]
+                                else:
+                                    # Fallback: FSM Manager in that department
+                                    managers = department_users.filtered(
+                                        lambda u: u.has_group('industry_fsm.group_fsm_manager')
+                                    )
+                                    if managers:
+                                        assigned_user = managers[0]
+
+                                if assigned_user:
+                                    assigned_users = [assigned_user.id] or []
+
                             task_vals = {
                                 'name': f"Installation Call - {product.name}",
                                 'project_id': project.id,
                                 'is_fsm': True,
                                 'partner_id': picking.partner_id.id,
                                 'customer_product_id': customer_asset.id,
+                                'department_id': department_id,
+                                'user_ids': [(6, 0, assigned_users)],
                                 'serial_number': customer_asset.serial_number_ids.id or False,
                                 'installation_table_html': desc_html,
                                 'call_type': call_type_value,

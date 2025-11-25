@@ -420,6 +420,12 @@
         <field name="inherit_id" ref="project_task_view_search_fsm"/>
         <field name="priority">1000</field>
         <field name="arch" type="xml">
+<!--            <search position="inside">-->
+<!--                <searchpanel>-->
+<!--                    <field name="stage_id" icon="fa-building" enable_counters="1"/>-->
+<!--                    <field name="department_id" icon="fa-users" enable_counters="1"/>-->
+<!--                </searchpanel>-->
+<!--            </search>-->
             <xpath expr="group//filter[@name='stage']" position="after">
                 <filter string="Department" name="department" context="{'group_by': 'department_id'}"/>
                 <filter string="Complaint Type" name="complaint" context="{'group_by': 'complaint_type_id'}"/>

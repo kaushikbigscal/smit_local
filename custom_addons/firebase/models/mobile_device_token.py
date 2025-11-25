@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
 
 
 class ResUsers(models.Model):
@@ -10,8 +10,23 @@ class ResUsers(models.Model):
     last_used = fields.Datetime(string='Last Used')
 
     _sql_constraints = [
-        ('unique_user_device_token', 'unique(user_id, device_token)', 'Device token must be unique per user')
+        ('unique_user_device_token', 'unique(device_token)', 'Device token must be unique per user')
     ]
+
+    def write(self, vals):
+        allowed_fields = ['device_token', 'last_used']
+
+        # If user is NOT an Administrator
+        if not self.env.user.has_group('base.group_system'):
+            # If user is Portal or Internal
+            if self.env.user.has_group('base.group_portal') or self.env.user.has_group('base.group_user'):
+                for field in vals.keys():
+                    if field not in allowed_fields:
+                        pass
+                        # raise AccessError(
+                        #     "You are only allowed to update the fields: device_token and last_used."
+                        # )
+        return super(ResUsers, self).write(vals)
 
     @api.model
     def register_device_token(self, user_id, device_token, platform):

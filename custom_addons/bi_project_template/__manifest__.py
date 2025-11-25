@@ -17,7 +17,7 @@
                'views/project_title_wizard.xml',
                'views/project_task_views.xml',
                'data/project_data.xml',
-	       'views/project_template_name.xml',
+	       # 'views/project_template_name.xml',
             ],
     'demo': [],
     'test': [],

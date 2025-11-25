@@ -39,6 +39,7 @@ tsconfig.json
 package-lock.json
 package.json
 .husky
+firebase_credentials.json
 
 # various virtualenv
 /bin/

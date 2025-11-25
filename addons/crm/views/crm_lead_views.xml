@@ -1239,6 +1239,7 @@
             <field name="act_window_id" ref="crm_lead_all_leads"/>
         </record>
 
+
         <!-- My Activities Menu -->
         <record id="crm_lead_action_my_activities" model="ir.actions.act_window">
             <field name="name">My Activities</field>

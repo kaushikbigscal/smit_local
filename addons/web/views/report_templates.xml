@@ -28,7 +28,7 @@
             </head>
             <body t-att-class="'container' if not full_width else 'container-fluid'" t-att-dir="env['res.lang']._lang_get(lang or env.user.lang).direction or 'ltr'">
                 <div id="wrapwrap">
-                    <main>
+                    <main style="overflow-x: auto !important;">
                         <t t-out="0"/>
                     </main>
                 </div>

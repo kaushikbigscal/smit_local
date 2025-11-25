@@ -396,17 +396,47 @@ class HrPayslip(models.Model):
         res = []
         # fill only if the contract as a working schedule linked
         for contract in contracts.filtered(lambda contract: contract.resource_calendar_id):
-            day_from = datetime.combine(fields.Date.from_string(date_from), time.min)
-            day_to = datetime.combine(fields.Date.from_string(date_to), time.max)
 
-            # compute leave days
+            # Determine contract effective period (intersection of payslip period and contract period)
+            calendar = contract.resource_calendar_id
+            tz = timezone(calendar.tz or 'UTC')
+
+            # localize payslip period datetimes to the contract/calendar timezone to avoid
+            # comparing offset-naive and offset-aware datetimes
+            day_from_naive = datetime.combine(fields.Date.from_string(date_from), time.min)
+            day_to_naive = datetime.combine(fields.Date.from_string(date_to), time.max)
+            day_from = tz.localize(day_from_naive)
+            day_to = tz.localize(day_to_naive)
+
+            contract_start = contract.date_start
+            contract_end = contract.date_end
+
+            if contract_start:
+                cs = fields.Date.from_string(contract_start) if isinstance(contract_start, str) else contract_start
+                contract_start_dt = tz.localize(datetime.combine(cs, time.min))
+            else:
+                contract_start_dt = None
+
+            if contract_end:
+                ce = fields.Date.from_string(contract_end) if isinstance(contract_end, str) else contract_end
+                contract_end_dt = tz.localize(datetime.combine(ce, time.max))
+            else:
+                contract_end_dt = None
+
+            # effective range for this contract
+            effective_from = day_from if not contract_start_dt else max(day_from, contract_start_dt)
+            effective_to = day_to if not contract_end_dt else min(day_to, contract_end_dt)
+
+            # if the effective period is empty, skip this contract
+            if effective_from >= effective_to:
+                continue
+
+            # compute leave days within effective period
             leaves = {}
             leave_hours_by_date = {}
-            calendar = contract.resource_calendar_id
-            tz = timezone(calendar.tz)
             day_leave_intervals = contract.employee_id.list_leaves(
-                day_from,
-                day_to,
+                effective_from,
+                effective_to,
                 calendar=contract.resource_calendar_id
             )
 
@@ -441,7 +471,9 @@ class HrPayslip(models.Model):
                 date_key = day.strftime('%Y-%m-%d')
                 leave_hours_by_date[date_key] = leave_hours_by_date.get(date_key, 0) + hours
 
-            # compute worked days
+            # compute worked days for the full payslip period (so the "Normal Working Days" row
+            # reflects the whole payslip month). Shortfall/attendance processing below will still
+            # be limited to the contract-effective period.
             work_data = contract.employee_id._get_work_days_data(
                 day_from,
                 day_to,
@@ -460,28 +492,65 @@ class HrPayslip(models.Model):
 
             res.append(attendances)
 
-            # Get public holidays from resource.calendar.leaves
+            # DHRUTI START
 
+            # Get contract start date for filtering
+            contract_start_date = contract.date_start
+            if contract_start_date:
+                contract_start_datetime = tz.localize(datetime.combine(
+                    fields.Date.from_string(contract_start_date) if isinstance(contract_start_date,
+                                                                               str) else contract_start_date,
+                    time.min
+                ))
+            else:
+                contract_start_datetime = None
+            # DHRUTI END
+
+            # Get public holidays overlapping the effective period
             public_holidays = self.env['resource.calendar.leaves'].search([
                 ('resource_id', '=', False),
                 ('company_id', 'in', self.env.companies.ids),
-                ('date_from', '<=', day_to),
-                ('date_to', '>=', day_from),
+                ('date_from', '<=', effective_to),
+                ('date_to', '>=', effective_from),
                 '|',
                 ('calendar_id', '=', False),
                 ('calendar_id', '=', calendar.id),
             ])
 
-            # Calculate public holiday hours by date
+            # Calculate public holiday hours by date within the FULL payslip period
+            # (not just the contract-effective period). Public holidays reduce expected work
+            # but are paid, so they should be included in WORK100 as paid days.
             public_holiday_hours_by_date = {}
             for holiday in public_holidays:
-                # Convert to employee/calendar timezone
-                holiday_start = fields.Datetime.context_timestamp(self, holiday.date_from)
-                holiday_end = fields.Datetime.context_timestamp(self, holiday.date_to)
+                # Convert holiday datetimes to naive UTC datetimes first (fields.Datetime.context_timestamp
+                # expects a naive datetime in UTC which it will then localize). If the value we pass is
+                # already tz-aware, normalize it to UTC and then make it naive by removing tzinfo.
+                def to_naive_utc(dt):
+                    if dt is None:
+                        return None
+                    # If dt is tz-aware, convert to UTC and drop tzinfo
+                    if dt.tzinfo is not None:
+                        return dt.astimezone(timezone('UTC')).replace(tzinfo=None)
+                    return dt
 
-                # Get the overlap period with our date range (already localized)
-                overlap_start = max(holiday_start, fields.Datetime.context_timestamp(self, day_from))
-                overlap_end = min(holiday_end, fields.Datetime.context_timestamp(self, day_to))
+                holiday_start = to_naive_utc(holiday.date_from)
+                holiday_end = to_naive_utc(holiday.date_to)
+
+                day_from_naive = to_naive_utc(day_from)
+                day_to_naive = to_naive_utc(day_to)
+
+                # Use fields.Datetime.context_timestamp to convert naive UTC datetimes into the
+                # local timezone for comparisons, but ensure inputs are naive.
+                holiday_start_ts = fields.Datetime.context_timestamp(self, holiday_start) if holiday_start else None
+                holiday_end_ts = fields.Datetime.context_timestamp(self, holiday_end) if holiday_end else None
+                day_from_ts = fields.Datetime.context_timestamp(self, day_from_naive) if day_from_naive else None
+                day_to_ts = fields.Datetime.context_timestamp(self, day_to_naive) if day_to_naive else None
+
+                # Get the overlap period with the FULL payslip period (not contract-effective)
+                overlap_start = max(holiday_start_ts, day_from_ts) if (holiday_start_ts and day_from_ts) else (
+                        holiday_start_ts or day_from_ts)
+                overlap_end = min(holiday_end_ts, day_to_ts) if (holiday_end_ts and day_to_ts) else (
+                        holiday_end_ts or day_to_ts)
 
                 if overlap_start < overlap_end:
                     # Calculate working hours that would be affected by this public holiday
@@ -512,11 +581,11 @@ class HrPayslip(models.Model):
             print(f"Public holiday hours by date: {public_holiday_hours_by_date}")
             print(f"Leave hours by date: {leave_hours_by_date}")
 
-            # Fetch the attendance records within the given period
+            # Fetch the attendance records within the effective contract period only
             attend_report_ids = self.env['hr.attendance'].search([
                 ('employee_id', '=', contract.employee_id.id),
-                ('check_in', '>=', day_from),
-                ('check_out', '<=', day_to)
+                ('check_in', '>=', effective_from),
+                ('check_out', '<=', effective_to)
             ])
 
             # Calculate actual working hours from attendance, grouped by date
@@ -531,67 +600,41 @@ class HrPayslip(models.Model):
 
                 print(f"Attendance on {attendance_date}: {actual_worked_hours} hours")
 
-            # Calculate expected daily hours for the contract
+            # Calculate shortfall as: WORK100_days (full payslip) - attendance_days - leave_days - public_holiday_days
+            # Public holidays are PAID days (should not count as shortfall).
+            # Only attendance after contract start and leaves after contract start count towards worked days.
+            # WORK100 is already computed above in work_data (full payslip period).
             daily_expected_hours = contract.resource_calendar_id.hours_per_day
 
-            # Calculate shortfall DAY BY DAY instead of total period
-            total_shortfall_hours = 0
-            total_shortfall_days = 0
+            total_expected_days_full = work_data['days']
+            total_attendance_hours = sum(attendance_by_date.values())
+            total_attendance_days = total_attendance_hours / daily_expected_hours if daily_expected_hours else 0
 
-            current_date = day_from.date()
-            end_date = day_to.date()
+            total_leave_hours = sum(leave_hours_by_date.values())
+            total_leave_days = total_leave_hours / daily_expected_hours if daily_expected_hours else 0
 
-            while current_date <= end_date:
-                date_str = current_date.strftime('%Y-%m-%d')
+            total_public_holiday_hours = sum(public_holiday_hours_by_date.values())
+            total_public_holiday_days = total_public_holiday_hours / daily_expected_hours if daily_expected_hours else 0
 
-                day_start = tz.localize(datetime.combine(current_date, time.min))
-                day_end = tz.localize(datetime.combine(current_date, time.max))
-
-                expected_hours_for_day = calendar.get_work_hours_count(
-                    day_start,
-                    day_end,
-                    compute_leaves=False,
-                )
-
-                if expected_hours_for_day > 0:
-                    actual_hours_for_day = attendance_by_date.get(date_str, 0)
-                    public_holiday_hours_for_day = public_holiday_hours_by_date.get(date_str, 0)
-                    leave_hours_for_day = leave_hours_by_date.get(date_str, 0)
-
-                    adjusted_expected_hours_for_day = (
-                            expected_hours_for_day
-                            - public_holiday_hours_for_day
-                            - leave_hours_for_day
-                    )
-
-                    if adjusted_expected_hours_for_day > actual_hours_for_day:
-                        daily_shortfall_hours = adjusted_expected_hours_for_day - actual_hours_for_day
-                        total_shortfall_hours += daily_shortfall_hours
-                        print(f"Day {date_str}: Shortfall {daily_shortfall_hours} hours")
-                    else:
-                        print(f"Day {date_str}: No shortfall")
-
-                current_date += timedelta(days=1)
-
-            # ---- ROUNDING APPLIED ON TOTAL ----
-
-            if total_shortfall_hours > 0:
-                daily_expected_hours = contract.resource_calendar_id.hours_per_day
-                total_shortfall_days = total_shortfall_hours / daily_expected_hours
-
+            # Shortfall in days (positive number means missing days)
+            # = Expected days - Attended days - Leave days - Public Holiday (paid) days
+            total_shortfall_days = total_expected_days_full - total_attendance_days - total_leave_days - total_public_holiday_days
+            print('total_shortfall_days', total_shortfall_days)
+            # If shortfall is positive (i.e., there are missing days), apply rounding rules and append a SHORTFALL line
+            if total_shortfall_days > 0:
                 # Apply rounding rules on total
                 fractional_part = total_shortfall_days - int(total_shortfall_days)
-                if 0 < fractional_part < 0.25:
+                if 0 <= fractional_part <= 0.25:
                     total_shortfall_days = int(total_shortfall_days)  # round down
                 elif fractional_part >= 0.75:
                     total_shortfall_days = int(total_shortfall_days) + 1  # round up
                 else:
                     total_shortfall_days = int(total_shortfall_days) + 0.5
 
-                # Adjust hours to match rounded days
+                # Convert back to hours
                 total_shortfall_hours = total_shortfall_days * daily_expected_hours
 
-                if total_shortfall_days > 0:
+                if not contract.employee_id.disable_tracking:
                     res.append({
                         'name': 'Attendance Shortfall',
                         'sequence': 2,
@@ -600,9 +643,6 @@ class HrPayslip(models.Model):
                         'number_of_hours': -(total_shortfall_hours),
                         'contract_id': contract.id
                     })
-                    print(f"Total Shortfall: {total_shortfall_days} days, {total_shortfall_hours} hours")
-                else:
-                    print("No shortfall after rounding")
 
             res.extend(leaves.values())
 
@@ -623,6 +663,7 @@ class HrPayslip(models.Model):
     #
     #         # compute leave days
     #         leaves = {}
+    #         leave_hours_by_date = {}
     #         calendar = contract.resource_calendar_id
     #         tz = timezone(calendar.tz)
     #         day_leave_intervals = contract.employee_id.list_leaves(
@@ -659,6 +700,9 @@ class HrPayslip(models.Model):
     #             if work_hours:
     #                 current_leave_struct['number_of_days'] -= hours / work_hours
     #
+    #             date_key = day.strftime('%Y-%m-%d')
+    #             leave_hours_by_date[date_key] = leave_hours_by_date.get(date_key, 0) + hours
+    #
     #         # compute worked days
     #         work_data = contract.employee_id._get_work_days_data(
     #             day_from,
@@ -679,31 +723,27 @@ class HrPayslip(models.Model):
     #         res.append(attendances)
     #
     #         # Get public holidays from resource.calendar.leaves
+    #
     #         public_holidays = self.env['resource.calendar.leaves'].search([
-    #             ('calendar_id', '=', calendar.id),
+    #             ('resource_id', '=', False),
+    #             ('company_id', 'in', self.env.companies.ids),
     #             ('date_from', '<=', day_to),
     #             ('date_to', '>=', day_from),
-    #             ('resource_id', '=', False),
-    #             ('time_type', '=', 'leave'),
+    #             '|',
+    #             ('calendar_id', '=', False),
+    #             ('calendar_id', '=', calendar.id),
     #         ])
-    #         print("this s public", public_holidays)
     #
     #         # Calculate public holiday hours by date
     #         public_holiday_hours_by_date = {}
     #         for holiday in public_holidays:
-    #             # Convert holiday times to local timezone
-    #             holiday_start = holiday.date_from
-    #             holiday_end = holiday.date_to
+    #             # Convert to employee/calendar timezone
+    #             holiday_start = fields.Datetime.context_timestamp(self, holiday.date_from)
+    #             holiday_end = fields.Datetime.context_timestamp(self, holiday.date_to)
     #
-    #             # Handle timezone conversion if needed
-    #             if holiday_start.tzinfo is None:
-    #                 holiday_start = tz.localize(holiday_start)
-    #             if holiday_end.tzinfo is None:
-    #                 holiday_end = tz.localize(holiday_end)
-    #
-    #             # Get the overlap period with our date range
-    #             overlap_start = max(holiday_start, tz.localize(day_from))
-    #             overlap_end = min(holiday_end, tz.localize(day_to))
+    #             # Get the overlap period with our date range (already localized)
+    #             overlap_start = max(holiday_start, fields.Datetime.context_timestamp(self, day_from))
+    #             overlap_end = min(holiday_end, fields.Datetime.context_timestamp(self, day_to))
     #
     #             if overlap_start < overlap_end:
     #                 # Calculate working hours that would be affected by this public holiday
@@ -724,8 +764,6 @@ class HrPayslip(models.Model):
     #                             compute_leaves=False,
     #                         )
     #
-    #                         print("affected hours", affected_hours)
-    #
     #                         date_key = current_day.strftime('%Y-%m-%d')
     #                         if date_key not in public_holiday_hours_by_date:
     #                             public_holiday_hours_by_date[date_key] = 0
@@ -734,6 +772,7 @@ class HrPayslip(models.Model):
     #                     current_day += timedelta(days=1)
     #
     #         print(f"Public holiday hours by date: {public_holiday_hours_by_date}")
+    #         print(f"Leave hours by date: {leave_hours_by_date}")
     #
     #         # Fetch the attendance records within the given period
     #         attend_report_ids = self.env['hr.attendance'].search([
@@ -749,7 +788,6 @@ class HrPayslip(models.Model):
     #             if attendance_date not in attendance_by_date:
     #                 attendance_by_date[attendance_date] = 0
     #
-    #             # Calculate actual worked hours (don't cap it for shortfall calculation)
     #             actual_worked_hours = round(attendance.worked_hours, 2)
     #             attendance_by_date[attendance_date] += actual_worked_hours
     #
@@ -762,14 +800,12 @@ class HrPayslip(models.Model):
     #         total_shortfall_hours = 0
     #         total_shortfall_days = 0
     #
-    #         # Get all working days in the period
     #         current_date = day_from.date()
     #         end_date = day_to.date()
     #
     #         while current_date <= end_date:
     #             date_str = current_date.strftime('%Y-%m-%d')
     #
-    #             # Check if this is a working day according to the calendar
     #             day_start = tz.localize(datetime.combine(current_date, time.min))
     #             day_end = tz.localize(datetime.combine(current_date, time.max))
     #
@@ -779,56 +815,56 @@ class HrPayslip(models.Model):
     #                 compute_leaves=False,
     #             )
     #
-    #             # Only process working days
     #             if expected_hours_for_day > 0:
     #                 actual_hours_for_day = attendance_by_date.get(date_str, 0)
     #                 public_holiday_hours_for_day = public_holiday_hours_by_date.get(date_str, 0)
+    #                 leave_hours_for_day = leave_hours_by_date.get(date_str, 0)
     #
-    #                 # Calculate adjusted expected hours for this day
-    #                 adjusted_expected_hours_for_day = expected_hours_for_day - public_holiday_hours_for_day
+    #                 adjusted_expected_hours_for_day = (
+    #                         expected_hours_for_day
+    #                         - public_holiday_hours_for_day
+    #                         - leave_hours_for_day
+    #                 )
     #
-    #                 print(
-    #                     f"Day {date_str}: Expected {expected_hours_for_day}h, Public Holiday {public_holiday_hours_for_day}h, Adjusted Expected {adjusted_expected_hours_for_day}h, Actual {actual_hours_for_day}h")
-    #
-    #                 # Calculate shortfall for this specific day
     #                 if adjusted_expected_hours_for_day > actual_hours_for_day:
     #                     daily_shortfall_hours = adjusted_expected_hours_for_day - actual_hours_for_day
-    #                     daily_shortfall_days = daily_shortfall_hours / daily_expected_hours
-    #
-    #                     # # Apply rounding rules to daily shortfall
-    #                     # fractional_part = daily_shortfall_days - int(daily_shortfall_days)
-    #                     # if fractional_part <= 0.25:
-    #                     #     daily_shortfall_days = int(daily_shortfall_days)  # Round down
-    #                     # elif fractional_part >= 0.75:
-    #                     #     daily_shortfall_days = int(daily_shortfall_days) + 1  # Round up
-    #                     # else:
-    #                     #     daily_shortfall_days = int(daily_shortfall_days) + 0.5
-    #
-    #                     if daily_shortfall_days > 0:
-    #                         total_shortfall_days += daily_shortfall_days
-    #                         total_shortfall_hours += daily_shortfall_hours
-    #                         print(f"  -> Shortfall: {daily_shortfall_days} days ({daily_shortfall_hours} hours)")
-    #                     else:
-    #                         print(f"  -> No shortfall after rounding")
+    #                     total_shortfall_hours += daily_shortfall_hours
+    #                     print(f"Day {date_str}: Shortfall {daily_shortfall_hours} hours")
     #                 else:
-    #                     print(f"  -> No shortfall (worked sufficient hours)")
+    #                     print(f"Day {date_str}: No shortfall")
     #
     #             current_date += timedelta(days=1)
     #
-    #         # Add shortfall entry if there's any total shortfall
-    #         if total_shortfall_days > 0:
-    #             work_dict = {
-    #                 'name': 'Attendance Shortfall',
-    #                 'sequence': 2,
-    #                 'code': 'SHORTFALL',
-    #                 'number_of_days': -(total_shortfall_days),
-    #                 'number_of_hours': -(total_shortfall_hours),
-    #                 'contract_id': contract.id
-    #             }
-    #             res.append(work_dict)
-    #             print(f"Total Shortfall: {total_shortfall_days} days, {total_shortfall_hours} hours")
-    #         else:
-    #             print("No shortfall for the period")
+    #         # ---- ROUNDING APPLIED ON TOTAL ----
+    #
+    #         if total_shortfall_hours > 0:
+    #             daily_expected_hours = contract.resource_calendar_id.hours_per_day
+    #             total_shortfall_days = total_shortfall_hours / daily_expected_hours
+    #
+    #             # Apply rounding rules on total
+    #             fractional_part = total_shortfall_days - int(total_shortfall_days)
+    #             if 0 < fractional_part < 0.25:
+    #                 total_shortfall_days = int(total_shortfall_days)  # round down
+    #             elif fractional_part >= 0.75:
+    #                 total_shortfall_days = int(total_shortfall_days) + 1  # round up
+    #             else:
+    #                 total_shortfall_days = int(total_shortfall_days) + 0.5
+    #
+    #             # Adjust hours to match rounded days
+    #             total_shortfall_hours = total_shortfall_days * daily_expected_hours
+    #
+    #             if total_shortfall_days > 0:
+    #                 res.append({
+    #                     'name': 'Attendance Shortfall',
+    #                     'sequence': 2,
+    #                     'code': 'SHORTFALL',
+    #                     'number_of_days': -(total_shortfall_days),
+    #                     'number_of_hours': -(total_shortfall_hours),
+    #                     'contract_id': contract.id
+    #                 })
+    #                 print(f"Total Shortfall: {total_shortfall_days} days, {total_shortfall_hours} hours")
+    #             else:
+    #                 print("No shortfall after rounding")
     #
     #         res.extend(leaves.values())
     #

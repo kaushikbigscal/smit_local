@@ -15,6 +15,7 @@ the Summernote toolbar is hidden until the field is focused, similar to desktop 
             'pwa/static/src/js/html_field_patch.js',
             # 'pwa/static/src/css/tree_view.css',
             'pwa/static/src/css/sale_team_dashboard.css',
+            'pwa/static/src/css/ios_dropdown_action.scss',
             'pwa/static/src/css/tax_totals_right.css',
             'pwa/static/src/css/custom_leave.css',
 

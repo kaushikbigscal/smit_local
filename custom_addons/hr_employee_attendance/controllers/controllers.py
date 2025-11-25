@@ -221,7 +221,7 @@ class CustomAuthController(http.Controller):
                     }
                     default_response['department_info'] = employee_info
                 # ---------------------------------------------------------------------------
-
+                enable_gps_tracking = False
                 try:
                     # Safe read of system parameter
                     time_interval = int(
@@ -247,48 +247,25 @@ class CustomAuthController(http.Controller):
                     _logger.error("[AUTH] Error checking module installation: %s", e)
 
                 # --------------------------------------------------------------------
+
                 try:
                     if module_installed:
                         if "enable_gps_tracking" in request.env["res.users"]._fields:
                             enable_gps_tracking = bool(user.sudo().enable_gps_tracking)
                             _logger.info("[AUTH] enable_gps_tracking field found, value: %s", enable_gps_tracking)
                     else:
-                        enable_gps_tracking = False
                         if not module_installed:
                             _logger.info(
                                 "[AUTH] field_service_tracking module not installed, skipping GPS tracking flag.")
+                            enable_gps_tracking = False
                         else:
                             _logger.info("[AUTH] enable_gps_tracking field not found in res.users model.")
                 except Exception as e:
                     enable_gps_tracking = False
                     _logger.error("[AUTH] Error reading enable_gps_tracking field: %s", e)
 
-                # try:
-                #     # Safe read of system parameter
-                #     time_interval = int(
-                #         request.env["ir.config_parameter"].sudo().get_param(
-                #             "field_service_tracking.time_interval", default=5000
-                #         )
-                #     )
-                #     logger.info("1", time_interval)
-                # except Exception:
-                #     time_interval = 5000  # fallback
-                #
-                # # Check if the field_service_tracking module is installed before using its fields
-                # module_installed = request.env["ir.module.module"].sudo().search_count([
-                #     ("name", "=", "field_service_tracking"),
-                #     ("state", "=", "installed")
-                # ]) > 0
-                # logger.info('module_installed', module_installed.value())
-                #
-                # if module_installed and "enable_gps_tracking" in request.env["res.users"]._fields:
-                #     enable_gps_tracking = bool(user.sudo().enable_gps_tracking)
-                # else:
-                #     logger.info("else case")
-                #     enable_gps_tracking = False
-
                 default_response["time_interval"] = time_interval
-                default_response["enable_gps_tracking"] = enable_gps_tracking
+                default_response["enable_gps_tracking"] = enable_gps_tracking or False
 
                 # ---------------------------------------------------------------------------
 

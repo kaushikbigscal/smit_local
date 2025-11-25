@@ -296,6 +296,17 @@ class Task(models.Model):
                     'industry_fsm.group_fsm_task_creator') and not user.has_group('industry_fsm.group_fsm_supervisor'):
                 raise ValidationError("You cannot create call without assignee.")
 
+            if vals.get('department_id') and user.has_group(
+                    'industry_fsm.group_fsm_task_creator') and not user.has_group('industry_fsm.group_fsm_supervisor'):
+                employee = user.employee_id
+                user_dept = employee.department_id.id if employee.department_id else False
+                if user_dept != vals.get('department_id'):
+                    raise ValidationError(_("You cannot assign call to a department other than your own."))
+
+            if not vals.get('department_id') and user.has_group(
+                    'industry_fsm.group_fsm_task_creator') and not user.has_group('industry_fsm.group_fsm_supervisor'):
+                raise ValidationError(_("You cannot create call without department."))
+
             if vals.get('call_sub_types') == 'escalation_call':
                 raise ValidationError("You cannot select 'Escalation Call' while creating a new call.")
 
@@ -432,7 +443,9 @@ class Task(models.Model):
         'res.users', compute='_compute_user_ids_domain', store=False
     )
 
-    #####################################################################
+    ###################################################################
+    # My Department Filter Field & Search Method
+    ###################################################################
 
     user_department_id = fields.Many2one(
         'hr.department',
@@ -451,8 +464,6 @@ class Task(models.Model):
 
         # If user has no department, return a domain that matches nothing
         return [('id', '=', False)]
-
-    ############################################################################
 
     @api.model
     def _get_department_domain(self):
@@ -1535,11 +1546,13 @@ class Task(models.Model):
                     ('user_ids', 'in', self.env.user.id),  # User's own tasks
                     '|',
                     ('department_id', 'in', allowed_dept_ids),  # Departments with explicit permission
-                    '|',
-                    ('department_id', '=', False),  # Tasks with no department
-                    ('department_id', '=', employee.department_id.id if employee and employee.department_id else -1)
+
+                    ('department_id', '=', employee.department_id.id if employee and employee.department_id else -1),
                     # User's department
                 ]
+
+                # '|',
+                # ('department_id', '=', False),  # Tasks with no department
 
                 # Add FSM specific domain to args
                 fsm_args = []
@@ -1580,10 +1593,12 @@ class Task(models.Model):
                     ('user_ids', 'in', self.env.user.id),
                     '|',
                     ('department_id', 'in', allowed_dept_ids),
-                    '|',
-                    ('department_id', '=', False),
-                    ('department_id', '=', employee.department_id.id if employee and employee.department_id else -1)
+
+                    ('department_id', '=', employee.department_id.id if employee and employee.department_id else -1),
                 ]
+
+                # '|',
+                # ('department_id', '=', False),
 
                 # Combine with existing domain
                 domain = domain or []
@@ -1637,8 +1652,9 @@ class Task(models.Model):
                     # Check department access
                     dept_id = task.department_id.id if task.department_id else False
                     if not dept_id:
-                        filtered_records.append(record)
-                    elif dept_id in allowed_dept_ids or dept_id == own_dept_id:
+                        continue
+
+                    if dept_id in allowed_dept_ids or dept_id == own_dept_id:
                         filtered_records.append(record)
 
                 return filtered_records

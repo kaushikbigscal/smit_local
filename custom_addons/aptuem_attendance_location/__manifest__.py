@@ -36,6 +36,7 @@
         'web.assets_backend': [
             'aptuem_attendance_location/static/src/main.js',
             'aptuem_attendance_location/static/src/mobile_gps_required.js',
+            'aptuem_attendance_location/static/src/logout_patch.js',
         ],
     },
 }

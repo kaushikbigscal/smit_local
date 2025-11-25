@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_auto_refresh" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.auto.refresh</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="priority" eval="100"/>
+        <field name="arch" type="xml">
+
+            <!-- Inject a new app block for Auto Refresh Settings -->
+            <xpath expr="//form" position="inside">
+                <app string="Auto Refresh" name="auto_refresh" groups="base.group_system">
+                    <block title="Auto Refresh Configuration">
+
+                        <setting name="Enable Auto Refresh"
+                                 help="Turn on automatic page refresh for the frontend.">
+                            <field name="enable_auto_refresh"/>
+                        </setting>
+
+                        <setting name="Auto Refresh Interval (seconds)"
+                                 help="Specify how often (in seconds) the page should refresh automatically.">
+                            <field name="auto_refresh_interval"/>
+                        </setting>
+
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

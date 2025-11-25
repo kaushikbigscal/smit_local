@@ -956,7 +956,85 @@ class AmcContractVisit(models.Model):
                 matching_mapping = mapping
                 break  # First exact match found
 
-        # Create the task
+        # --------------------------
+        # ⚙️ Dynamic Department Logic
+        # --------------------------
+        department_id = False
+        assigned_users = []
+
+        if self.technician_ids:
+            # If visit already has technicians
+            assigned_users = self.technician_ids.ids
+            # Find department from first technician
+            tech = self.technician_ids[0]
+            employee = self.env['hr.employee'].search([('user_id', '=', tech.id)], limit=1)
+            if employee and employee.department_id:
+                department_id = employee.department_id.id
+        else:
+            # No technicians assigned -> find department by partner city
+            partner = self.contract_id.partner_id
+            partner_city = partner.city_id.name if hasattr(partner, 'city_id') and partner.city_id else partner.city
+            partner_state = partner.state_id.name if partner.state_id else False
+
+            dept_service = False
+
+            # if partner_city:
+            #     dept_service = self.env['department.service'].sudo().search([
+            #         ('city_id.name', 'ilike', partner_city)
+            #     ], limit=1)
+            #
+            # else:
+            #     # No city_id → match by state
+            #     if partner_state:
+            #         dept_service = self.env['department.service'].sudo().search([
+            #             ('state_id.name', 'ilike', partner_state)
+            #         ], limit=1)
+
+            # Priority 1 → match by city text
+            if partner_city:
+                dept_service = self.env['department.service'].sudo().search([
+                    ('city_id.name', 'ilike', partner_city)
+                ], limit=1)
+
+            # Priority 2 → fallback to state
+            if not dept_service and partner_state:
+                dept_service = self.env['department.service'].sudo().search([
+                    ('state_id.name', 'ilike', partner_state)
+                ], limit=1)
+
+            if dept_service and dept_service.department_id:
+                department_id = dept_service.department_id.id
+
+                # Find users in that department
+                department_users = self.env['res.users'].sudo().search([
+                    ('employee_ids.department_id', '=', department_id)
+                ])
+
+                assigned_user = None
+
+                # Try FSM Supervisors first (not Managers)
+                supervisors = department_users.filtered(
+                    lambda u: u.has_group('industry_fsm.group_fsm_supervisor')
+                              and not u.has_group('industry_fsm.group_fsm_manager')
+                )
+
+                if supervisors:
+                    assigned_user = supervisors[0]
+                else:
+                    # Fallback: FSM Manager in that department
+                    managers = department_users.filtered(
+                        lambda u: u.has_group('industry_fsm.group_fsm_manager')
+                    )
+                    if managers:
+                        assigned_user = managers[0]
+
+                if assigned_user:
+                    assigned_users = [assigned_user.id] or []
+
+        # -----------------------------------
+        # ✅ Prepare Task Values & Create Task
+        # -----------------------------------
+
         task_vals = {
             'name': f"{self.contract_id.contract_type.name} Visit - {self.contract_id.name}",
             'partner_id': self.contract_id.partner_id.id,
@@ -965,8 +1043,8 @@ class AmcContractVisit(models.Model):
             'is_fsm': True,
             'planned_date_begin': datetime.combine(self.visit_date, time(3, 30)),
             'date_deadline': datetime.combine(self.visit_date, time(5, 30)),
-            'department_id': self.env['hr.department'].search([('name', '=', 'Service Division')], limit=1).id,
-            'user_ids': [(6, 0, self.technician_ids[:1].ids)],
+            'department_id': department_id,
+            'user_ids': [(6, 0, assigned_users)],
             'project_id': fsm_project.id,
             'stage_id': new_stage.id if new_stage else False,
             'call_coordinator_id': self.contract_id.call_coordinator_id.id,

@@ -1,7 +1,7 @@
 # call_visibility.py
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from functools import lru_cache
+from odoo.tools import ormcache
 
 
 class CallVisibility(models.Model):
@@ -43,7 +43,7 @@ class CallVisibility(models.Model):
         return [('parent_id', '=', parent_department.id)] if parent_department else []
 
     @api.model
-    @lru_cache(maxsize=128)  # Cache results to improve performance
+    @ormcache('operation', 'user_id')
     def get_allowed_department_ids(self, operation='read', user_id=None):
         """Get department IDs where specified user has permission.
         If no permissions found, return the user's own department."""
@@ -89,7 +89,7 @@ class CallVisibility(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         res = super(CallVisibility, self).create(vals_list)
-        self.clear_department_cache()
+        # self.clear_department_cache()
         for vals in vals_list:
             if not vals['perm_read']:
                 raise ValidationError(_("You must give read rights to the selected supervisor."))
@@ -97,7 +97,7 @@ class CallVisibility(models.Model):
 
     def write(self, vals):
         res = super(CallVisibility, self).write(vals)
-        self.clear_department_cache()
+        # self.clear_department_cache()
         for rec in self:
             if not rec.perm_read:
                 raise ValidationError(_("You must give read rights to the selected supervisor."))
@@ -105,5 +105,5 @@ class CallVisibility(models.Model):
 
     def unlink(self):
         res = super(CallVisibility, self).unlink()
-        self.clear_department_cache()
+        # self.clear_department_cache()
         return res

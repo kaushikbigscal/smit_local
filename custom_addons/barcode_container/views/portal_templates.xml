@@ -32,12 +32,12 @@
             <!--                <t t-set="search_in" t-value="search_in"/>-->
             <!--                <t t-set="search" t-value="search"/>-->
             <!--            </t>-->
-            <t t-call="portal.portal_searchbar">
-                <t t-set="title">Containers</t>
-                <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>
-                <t t-set="search_in" t-value="search_in"/>
-                <t t-set="search" t-value="search"/>
-            </t>
+<!--            <t t-call="portal.portal_searchbar">-->
+<!--                <t t-set="title">Containers</t>-->
+<!--                <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>-->
+<!--                <t t-set="search_in" t-value="search_in"/>-->
+<!--                <t t-set="search" t-value="search"/>-->
+<!--            </t>-->
 
             <!-- QR Scanner Button -->
             <div class="container">

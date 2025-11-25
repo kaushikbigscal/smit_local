@@ -1,7 +1,7 @@
 import uuid
 
 from odoo import fields, http, _
-from odoo.http import request, _logger,Response
+from odoo.http import request, _logger, Response
 from datetime import date, datetime, timedelta
 from collections import OrderedDict, defaultdict
 from odoo.tools import format_date, format_datetime
@@ -24,7 +24,6 @@ class PortalHomePage(http.Controller):
         values['fsm_installed'] = is_fsm_installed(request.env)
         return values
 
-
     # def _prepare_sale_portal_rendering_values(self, quotation_page=False, **kwargs):
     #     values = super()._prepare_sale_portal_rendering_values(quotation_page=quotation_page, **kwargs)
     #
@@ -46,13 +45,13 @@ class PortalHomePage(http.Controller):
     #         values['quotation_count'] = len(quotations)
     #     return values
 
-    @http.route(['/my/home','/my'], type='http', auth="user", website=True)
+    @http.route(['/my/home', '/my'], type='http', auth="user", website=True)
     def portal_my_home(self, **kwargs):
         # Get current website
         # website = request.website
         user = request.env.user
         partner = user.partner_id
-        today =  date.today()
+        today = date.today()
         # Fetch the 5 most recently created products
         recent_products = request.env['product.product'].sudo().search(
             [], order='create_date desc', limit=2)
@@ -94,7 +93,7 @@ class PortalHomePage(http.Controller):
 
         pending_quotation_count = request.env['sale.order'].search_count([
             ('partner_id', '=', partner.id),
-            ('state', 'not in', ['sale','draft'])
+            ('state', 'not in', ['sale', 'draft'])
         ])
         # pending_quotation_count = request.env['sale.order'].search_count(quotation_domain)
 
@@ -166,7 +165,6 @@ class PortalHomePage(http.Controller):
         # if 'customer.product.mapping' in request.env.registry.models:
         #     active_asset_count = request.env['customer.product.mapping'].sudo().search_count(domain_asset)
 
-
         # Step 1: Find all active assets
         domain_asset = [
             ('customer_id', '=', partner.id),
@@ -218,7 +216,6 @@ class PortalHomePage(http.Controller):
         else:
             asset_status_message = f"{under_service_count} under service, {operational_count} operational"
 
-
         featured_categories = request.env['product.category'].sudo().search([
             ('display_in_catalog_category', '=', True)
         ])
@@ -240,7 +237,7 @@ class PortalHomePage(http.Controller):
         featured_products_slider = request.env['product.template'].sudo().search(
             domain,
             order='create_date desc',
-            limit=6 
+            limit=6
         )
 
         company = request.env.company.sudo()
@@ -300,7 +297,7 @@ class PortalHomePage(http.Controller):
         try:
             page = int(page)
         except (ValueError, TypeError):
-            page = 1 
+            page = 1
         domain = [('sale_ok', '=', True)]
         if q:
             domain += ['|', ('name', 'ilike', q), ('default_code', 'ilike', q)]
@@ -341,7 +338,6 @@ class PortalHomePage(http.Controller):
             'url': '/product/%s' % p.id,  # or use slug if SEO route enabled
             'image_url': '/web/image/product.product/%s/image_128' % p.id
         } for p in products]
-
 
     # Controller code for ticket form view
     @http.route(['/my/ticket/<int:ticket_id>'], type='http', auth='user', website=True)
@@ -427,7 +423,7 @@ class PortalHomePage(http.Controller):
         attachments = []
 
         chatter_attachments = ticket.attachment_ids.sudo()
-        print("chatter attachment:",chatter_attachments)
+        print("chatter attachment:", chatter_attachments)
         ir_attachments = request.env['ir.attachment'].sudo().search([
             ('res_model', '=', 'project.task'),
             ('res_id', '=', ticket.id),
@@ -502,7 +498,7 @@ class PortalHomePage(http.Controller):
 
         partner_id = request.env.user.partner_id.id
         if not payment_utils.check_access_token(
-            access_token, partner_id, task.remaining_amount, task.currency_id.id
+                access_token, partner_id, task.remaining_amount, task.currency_id.id
         ):
             raise ValidationError(_("Invalid token"))
 
@@ -552,7 +548,7 @@ class PortalHomePage(http.Controller):
 
         # --- Search ---
         if search:
-            search_domain = ['|', '|','|', '|','|','|',
+            search_domain = ['|', '|', '|', '|', '|', '|',
                              ('name', 'ilike', search)]
             if 'sequence_fsm' in Task._fields:
                 search_domain.append(('sequence_fsm', 'ilike', search))
@@ -604,8 +600,10 @@ class PortalHomePage(http.Controller):
         # --- Filters ---
         filters = {
             'all': {'label': 'All', 'domain': []},
-            'open_calls':{'label': 'Open Calls', 'domain':[('stage_id.name','not in', ['Done','Canceled','Resolved'])]},
-            'closed_calls':{'label': 'Close Calls', 'domain':[('stage_id.name','in', ['Done','Canceled','Resolved'])]},
+            'open_calls': {'label': 'Open Calls',
+                           'domain': [('stage_id.name', 'not in', ['Done', 'Canceled', 'Resolved'])]},
+            'closed_calls': {'label': 'Close Calls',
+                             'domain': [('stage_id.name', 'in', ['Done', 'Canceled', 'Resolved'])]},
         }
 
         for assignee in calls.mapped('user_ids'):
@@ -635,7 +633,7 @@ class PortalHomePage(http.Controller):
                 call_type_name = call.call_type.name if call.call_type else "No Type"
                 grouped_calls.setdefault(call_type_name, []).append(call)
 
-    # --- Combine Filter & GroupBy for Frontend Dropdown ---
+        # --- Combine Filter & GroupBy for Frontend Dropdown ---
         combined_options = {}
         for key, val in filters.items():
             combined_options[f'f_{key}'] = {
@@ -681,9 +679,9 @@ class PortalHomePage(http.Controller):
                 'call_type': {'input': 'call_type', 'label': 'Call Type'},
             },
             'searchbar_combined': combined_options,
-                'default_url': '/my/view',
-                'format_date': lambda date: format_date(env, date, date_format='dd/MM/yyyy') if date else 'N/A',
-                'has_active_assets': bool(mapping_ids),
+            'default_url': '/my/view',
+            'format_date': lambda date: format_date(env, date, date_format='dd/MM/yyyy') if date else 'N/A',
+            'has_active_assets': bool(mapping_ids),
         })
 
     @http.route(['/my/assets', '/my/contract/<int:contract_id>/assets'], type='http', auth='user', website=True)
@@ -705,13 +703,13 @@ class PortalHomePage(http.Controller):
 
         # Search
         if search:
-            domain += ['|','|','|','|','|',
+            domain += ['|', '|', '|', '|', '|',
                        ('product_id.name', 'ilike', search),
                        ('product_id.default_code', 'ilike', search),
-                       ('serial_number_ids','ilike',search),
-                       ('status','ilike',search),
-                       ('start_date','ilike',search),
-                       ('end_date','ilike',search),
+                       ('serial_number_ids', 'ilike', search),
+                       ('status', 'ilike', search),
+                       ('start_date', 'ilike', search),
+                       ('end_date', 'ilike', search),
                        ]
 
         mappings = Mapping.search(domain)
@@ -793,7 +791,7 @@ class PortalHomePage(http.Controller):
                 status = product['status']
                 grouped_products.setdefault(status, []).append(product)
 
-    # Combine filter and groupby
+        # Combine filter and groupby
         combined_options = {}
         for key, val in filters.items():
             combined_options[f'f_{key}'] = {
@@ -836,7 +834,6 @@ class PortalHomePage(http.Controller):
             'default_url': '/my/assets',
         })
 
-
     @http.route(['/my/asset/<int:mapping_id>'], type='http', auth="user", website=True)
     def view_product_detail(self, mapping_id, **kwargs):
         user = request.env.user
@@ -876,7 +873,7 @@ class PortalHomePage(http.Controller):
             'mapping': mapping,
             'page_name': 'Assets',
             'prev_record': f'/my/asset/{prev_id}' if prev_id else None,
-            'next_record': f'/my/asset/{next_id }' if next_id  else None,
+            'next_record': f'/my/asset/{next_id}' if next_id else None,
             'format_date': lambda date: format_date(request.env, date, date_format='dd/MM/yyyy') if date else 'N/A',
             'coverage_note': coverage_note,
         })
@@ -908,7 +905,7 @@ class PortalHomePage(http.Controller):
         order = sortings.get(sortby, sortings['recent'])['order']
 
         if search:
-            domain += ['|', '|','|','|','|','|',
+            domain += ['|', '|', '|', '|', '|', '|',
                        ('name', 'ilike', search),
                        ('sequence_fsm', 'ilike', search),
                        ('customer_product_id.product_id.name', 'ilike', search),
@@ -998,7 +995,7 @@ class PortalHomePage(http.Controller):
             'default_url': '/my/open/ticket',
             'open_ticket_count': len(valid_tasks),
         })
-        
+
     @http.route(['/my/active/assets'], type='http', auth='user', website=True)
     def active_list_products(self, sortby='name', filterby='under_service', groupby='', search='', **kwargs):
         partner = request.env.user.partner_id
@@ -1013,13 +1010,13 @@ class PortalHomePage(http.Controller):
 
         # --- Search ---
         if search:
-            domain += ['|','|','|','|','|',
+            domain += ['|', '|', '|', '|', '|',
                        ('product_id.name', 'ilike', search),
                        ('product_id.default_code', 'ilike', search),
-                       ('serial_number_ids','ilike',search),
-                       ('status','ilike',search),
-                       ('start_date','ilike',search),
-                       ('end_date','ilike',search),
+                       ('serial_number_ids', 'ilike', search),
+                       ('status', 'ilike', search),
+                       ('start_date', 'ilike', search),
+                       ('end_date', 'ilike', search),
                        ]
 
         # --- Date filter: Only active assets
@@ -1037,8 +1034,10 @@ class PortalHomePage(http.Controller):
                 product_data.append({
                     'product': mapping.product_id,
                     'mapping': mapping,
-                    'start_date_fmt': format_date(request.env, mapping.start_date, date_format='dd/MM/yyyy') if mapping.start_date else 'N/A',
-                    'end_date_fmt': format_date(request.env, mapping.end_date, date_format='dd/MM/yyyy') if mapping.end_date else 'N/A',
+                    'start_date_fmt': format_date(request.env, mapping.start_date,
+                                                  date_format='dd/MM/yyyy') if mapping.start_date else 'N/A',
+                    'end_date_fmt': format_date(request.env, mapping.end_date,
+                                                date_format='dd/MM/yyyy') if mapping.end_date else 'N/A',
                     'status': mapping.status or 'Unknown',
                     'source_type': mapping.source_type or 'Unknown',
                 })
@@ -1086,7 +1085,6 @@ class PortalHomePage(http.Controller):
                 ('customer_product_id', 'in', mappings.ids),  # mappings already active
                 ('stage_id', 'not in', done_stages.ids),
             ])
-
 
             under_service_ids = tasks.mapped('customer_product_id.id')
 
@@ -1206,7 +1204,7 @@ class PortalHomePage(http.Controller):
         # Default values
         default_mapping_id = 0
 
-        product_id = int(kw.get('product_id') or 0)              # product.product ID
+        product_id = int(kw.get('product_id') or 0)  # product.product ID
         product_mapping_id = int(kw.get('product_mapping_id') or 0)  # customer.product.mapping ID
         serial_number = kw.get('serial_number') or False  # lot/serial number
         # All mappings for this customer
@@ -1326,7 +1324,6 @@ class PortalHomePage(http.Controller):
     #         'default_product_id': default_mapping_id,
     #         'selected_serial': selected_serial,  # 🔹 Pass only matched serial
     #     })
-
 
     # # Controller code for submit ticket
     # @http.route('/ticket/submit', type='http', auth='user', website=True, csrf=True, methods=['POST'])
@@ -1469,7 +1466,6 @@ class PortalHomePage(http.Controller):
             except Exception as e:
                 _logger.error("Date parsing failed: %s", e)
 
-
         # --- get or create FSM project ---
         project = request.env['project.project'].sudo().search([('name', '=', 'Service Call')], limit=1)
         if not project:
@@ -1490,14 +1486,54 @@ class PortalHomePage(http.Controller):
         if not selected_stage:
             return request.render('website.404')
 
-        # --- department from city ---
-        partner_city_id = partner.city if partner.city else None
+        # --- department & assignee from customer's city ---
+        partner_city_id = partner.city_id.name if hasattr(partner, 'city_id') and partner.city_id else partner.city
+        partner_state = partner.state_id.name if partner.state_id else False
+
+        dept_service = False
         department_id = None
+        assigned_users = []
+
         if partner_city_id:
             dept_service = request.env['department.service'].sudo().search(
-                [('city_id', 'ilike', partner_city_id)], limit=1)
-            if dept_service and dept_service.department_id:
-                department_id = dept_service.department_id.id
+                [('city_id.name', 'ilike', partner_city_id)], limit=1)
+
+        else:
+            # No city_id → match by state
+            if partner_state:
+                dept_service = request.env['department.service'].sudo().search([
+                    ('state_id.name', 'ilike', partner_state)
+                ], limit=1)
+
+        if dept_service and dept_service.department_id:
+            department_id = dept_service.department_id.id
+
+            # --- department's supervisor from city ---
+            assigned_user = None
+
+            # Find users in that department
+            department_users = request.env['res.users'].sudo().search([
+                ('employee_ids.department_id', '=', department_id)
+            ])
+
+            # Try FSM Supervisors first (not Managers)
+            supervisors = department_users.filtered(
+                lambda u: u.has_group('industry_fsm.group_fsm_supervisor')
+                          and not u.has_group('industry_fsm.group_fsm_manager')
+            )
+
+            if supervisors:
+                assigned_user = supervisors[0]
+            else:
+                # Fallback: FSM Manager in that department
+                managers = department_users.filtered(
+                    lambda u: u.has_group('industry_fsm.group_fsm_manager')
+                )
+                if managers:
+                    assigned_user = managers[0]
+
+            if assigned_user:
+                assigned_users = [assigned_user.id] or []
 
         # --- get mapping record and its serial number ---
         # serial_number_id = False
@@ -1506,7 +1542,6 @@ class PortalHomePage(http.Controller):
         #     if mapping and mapping.serial_number_ids:
         #         # take the first serial number if there are several
         #         serial_number_id = mapping.serial_number_ids[0].id
-
 
         # --- Mapping record and serial number ---
         serial_number_id = False
@@ -1523,7 +1558,8 @@ class PortalHomePage(http.Controller):
                 if mapping.status:
                     unit_status_value = mapping.status  # If unit_status is Selection
                     # Auto set call_type based on mapping.status
-                    call_type_record = request.env['call.type'].sudo().search([('name', 'ilike', mapping.status.strip())], limit=1)
+                    call_type_record = request.env['call.type'].sudo().search(
+                        [('name', 'ilike', mapping.status.strip())], limit=1)
                     if call_type_record:
                         call_type_value = call_type_record.id
                         print("Auto-set call_type ID: %s, Name: %s", call_type_value, call_type_record.name)
@@ -1541,9 +1577,11 @@ class PortalHomePage(http.Controller):
             'customer_product_id': mapping_id,  # mapping.id
             'complaint_type_id': [(6, 0, complaint_type_ids)],
             'reason_code_id': [(6, 0, reason_code_ids)],
-            'user_ids': False,
             'stage_id': selected_stage.id,
+            # 'department_id': department_id,
+            # 'user_ids': False,
             'department_id': department_id,
+            'user_ids': [(6, 0, assigned_users)],
             'call_type': call_type_value,
 
         }
@@ -1609,7 +1647,8 @@ class PortalHomePage(http.Controller):
 
         return request.redirect(f'/my/ticket/{ticket.id}')
 
-    @http.route('/my/ticket/<int:ticket_id>/cancel', type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    @http.route('/my/ticket/<int:ticket_id>/cancel', type='http', auth='user', website=True, methods=['POST'],
+                csrf=True)
     def ticket_cancel(self, ticket_id, **post):
         if 'project.task' not in request.env or 'project.task.type' not in request.env:
             return request.render('website.404')
@@ -1633,7 +1672,7 @@ class PortalHomePage(http.Controller):
             _logger.error("Error in cancelling ticket: %s", e)
 
         return request.redirect(f'/my/ticket/{ticket.id}')
- 
+
     @http.route('/my/ticket/<int:ticket_id>/feedback', type='json', auth='user', methods=['POST'], csrf=True)
     def submit_feedback(self, ticket_id):
         try:
@@ -1712,7 +1751,7 @@ class PortalHomePage(http.Controller):
                 json.dumps({'success': False, 'error': str(e)}),
                 content_type='application/json;charset=utf-8'
             )
- 
+
     @http.route(['/my/contract/list'], type='http', auth='user', website=True)
     def contract_list(self, sortby='name', filterby='all', groupby='', search='', **kwargs):
 
@@ -1731,7 +1770,7 @@ class PortalHomePage(http.Controller):
 
         # --- Search ---
         if search:
-            domain += ['|','|','|','|',
+            domain += ['|', '|', '|', '|',
                        ('name', 'ilike', search),
                        ('contract_type.name', 'ilike', search),
                        ('start_date', 'ilike', search),
@@ -1776,7 +1815,6 @@ class PortalHomePage(http.Controller):
             for contract in contracts:
                 key = contract.stage_id or 'No Stage'
                 grouped_contracts.setdefault(str(key), []).append(contract)
-
 
         # Unified Dropdown Options
         combined_options = {}
@@ -1908,7 +1946,6 @@ class PortalHomePage(http.Controller):
             'is_html_empty': lambda html: not html or not html.strip(),
         })
 
-
     # @http.route(['/my/invoices/<int:invoice_id>/pay'], type='http', auth="user", website=True)
     # def portal_invoice_pay(self, invoice_id, **kw):
     #     invoice = request.env['account.move'].sudo().browse(invoice_id).exists()
@@ -2013,6 +2050,7 @@ class PortalHomePage(http.Controller):
 
         return request.redirect('/my/notifications')
 
+
 class QuotationPortal(CustomerPortal):
     @http.route('/my/quotation/orders/<int:order_id>', type='http', auth='user', website=True)
     def view_amc_quotation_form(self, order_id, **kwargs):
@@ -2023,7 +2061,7 @@ class QuotationPortal(CustomerPortal):
         if not order_sudo.exists() or order_sudo.partner_id.id != partner.id:
             return request.render("website.403")
 
-        #Copy Odoo logic: Set access token
+        # Copy Odoo logic: Set access token
         token = order_sudo._portal_ensure_token()
 
         # Include Payment Context if order requires payment
@@ -2049,6 +2087,7 @@ class QuotationPortal(CustomerPortal):
             )
 
         return request.render("customer_app.amc_quotation_template", values)
+
 
 class TicketPaymentPortal(payment_portal.PaymentPortal):
 
@@ -2108,9 +2147,8 @@ class TicketPaymentPortal(payment_portal.PaymentPortal):
             'access_token': ticket_sudo.access_token,
             'company_mismatch': False,
             'expected_company': company,  # used in some templates
-            'show_tokenize_input_mapping': show_tokenize_input_mapping,  
+            'show_tokenize_input_mapping': show_tokenize_input_mapping,
         }
-
 
     @http.route('/my/ticket/<int:ticket_id>/transaction', type='json', auth='user', website=True)
     def portal_ticket_transaction(self, ticket_id, **kwargs):
@@ -2192,7 +2230,7 @@ class TicketPaymentPortal(payment_portal.PaymentPortal):
         })
 
         return tx_sudo._get_processing_values()
-        
+
     @http.route(['/my/quotations/<int:order_id>'], type='http', auth="user", website=True)
     def portal_custom_order_page(self, order_id, access_token=None, **kw):
         # Reuse logic from existing method to fetch sale order and render
