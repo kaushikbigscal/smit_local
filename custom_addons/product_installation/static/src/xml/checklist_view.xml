@@ -1,0 +1,34 @@
+<templates xml:space="preserve">
+  <t t-name="product_installation.ChatterWithChecklist" t-inherit="mail.Chatter" t-inherit-mode="extension">
+    <xpath expr="//AttachmentList" position="attributes">
+      <attribute name="attachments">normalAttachments</attribute>
+    </xpath>
+
+    <xpath expr="//div[contains(@class,'o-mail-AttachmentBox')]" position="inside">
+      <t t-if="checklistAttachments.length">
+        <div class="d-flex align-items-center mt-3">
+            <hr class="flex-grow-1"/>
+            <span class="p-3 fw-bold">Checklist Files</span>
+            <hr class="flex-grow-1"/>
+        </div>
+        <div class="d-flex flex-column">
+            <AttachmentList
+                attachments="checklistAttachments"
+                unlinkAttachment.bind="unlinkAttachment"
+                imagesHeight="100"
+            />
+            <FileUploader multiUpload="true" fileUploadClass="'o-mail-Chatter-fileUploader'"
+                          onUploaded.bind="onUploaded" onClick="(ev) => this.onClickAttachFile(ev)">
+                <t t-set-slot="toggler">
+                    <button class="btn btn-link" type="button"
+                            t-att-disabled="!state.thread.hasWriteAccess">
+                        <i class="fa fa-plus-square"/>
+                        Attach Checklist
+                    </button>
+                </t>
+            </FileUploader>
+        </div>
+      </t>
+    </xpath>
+  </t>
+</templates>

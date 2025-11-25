@@ -1,0 +1,46 @@
+<odoo>
+    <!-- Company Stock Report -->
+
+
+    <!-- Distributor Stock Report -->
+    <record id="action_product_stock_distributor" model="ir.actions.act_window">
+        <field name="name">Distributor Stock</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('detailed_type', '=', 'product')]</field>
+        <field name="context">{'actionId': 'action_product_stock_distributor','default_detailed_type': 'product'}</field>
+        <field name="search_view_id" ref="stock.product_search_form_view_stock_report"/>
+        <!-- Use the external ID of the stock tree view -->
+        <field name="view_id" ref="stock.product_product_stock_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No stock to show
+            </p>
+            <p>
+                Create some storable products to see their stock info in this view.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menus under Reporting -->
+    <menuitem id="menu_product_stock_distributor"
+              name="Distributor Stock"
+              parent="stock.menu_stock_config_settings"
+              action="action_product_stock_distributor"
+              sequence="6"/>
+
+
+
+
+    <record id="view_stock_form_inherit_warehouse" model="ir.ui.view">
+        <field name="name">stock.warehouse.inherit.installation</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="is_distributor_warehouse" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

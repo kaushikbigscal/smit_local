@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_installation" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.installation</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="distributor_id" invisible="sale_order_type == 'direct_orders'"/>
+                <field name="enable_distributor" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">sale_order_type == 'primary_orders'</attribute>
+
+            </xpath>
+            <field name="name" position="after">
+                <h6 class="mt-3 mb-2">
+                    <field name="sale_order_type" widget="radio" options="{'horizontal': true}"
+                           invisible="not enable_distributor"/>
+                </h6>
+            </field>
+
+            <xpath expr="//page[@name='order_lines']" position="after">
+                <page name="installation" string="Installation"
+                      invisible="not enable_distributor">
+
+                    <field name="installation_table_html" readonly="1" widget="html"/>
+
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree" position="inside">
+                <field name="enable_distributor" column_invisible="1"/>
+                <button name="action_open_installation_wizard"
+                        type="object"
+                        icon="fa-wrench"
+                        string="Installation"
+                        invisible="not enable_distributor or not is_installation"
+                />
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']"
+                   position="before">
+                <!--                <field name="distributor_asset" widget="many2one_tags"/>-->
+                <field name="product_domain_ids" column_invisible="1"/>
+                <field name="product_template_domain_ids" column_invisible="1"/>
+                <field name="is_distributor" column_invisible="1"/>
+                <field name="is_installation" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']"
+                   position="attributes">
+                <attribute name="domain">[('id', 'in', product_template_domain_ids)]</attribute>
+                <attribute name="context">{'warehouse': parent.warehouse_id}</attribute>
+
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_id']"
+                   position="attributes">
+                <attribute name="domain">[('id', 'in', product_domain_ids)]</attribute>
+                <attribute name="context">{'warehouse': parent.warehouse_id}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sale_order_tree_inherit_distributor" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.distributor</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id"
+               ref="sale.sale_order_tree"/> <!-- replace with actual module id if needed -->
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="distributor_id"/>
+            </xpath>
+            <xpath expr="//field[@name='distributor_id']" position="before">
+                <field name="sale_order_type"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_type_filter" model="ir.ui.view">
+        <field name="name">sale.order.type.filter</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Primary Orders"
+                        name="filter_primary_orders"
+                        domain="[('sale_order_type','=','primary_orders')]"/>
+                <filter string="Secondary Orders"
+                        name="filter_secondary_orders"
+                        domain="[('sale_order_type','=','secondary_orders')]"/>
+                <filter string="Direct Orders"
+                        name="filter_direct_orders"
+                        domain="[('sale_order_type','=','direct_orders')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_installation_wizard_form" model="ir.ui.view">
+        <field name="name">installation.wizard.form</field>
+        <field name="model">installation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Installation Details">
+                <group>
+                    <field name="product_id"/>
+                </group>
+                <footer>
+                    <button name="action_save_dynamic_fields" string="Save" type="object" class="btn-secondary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,26 @@
+<odoo>
+    <record id="customer_product_mapping_sale_orders_views" model="ir.ui.view">
+        <field name="name">customer.product.mapping.sale.orders.views</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="inherit_id" ref="industry_fsm.view_customer_product_mapping_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='customer_id']" position="after">
+                <field name="distributor_id" string="Distributor Name" invisible="source_type != 'sale_order'"/>
+                <field name="asset_status" string="Status" invisible="source_type != 'sale_order'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="customer_product_mapping_sale_orders_tree" model="ir.ui.view">
+        <field name="name">customer.product.mapping.sale.orders.tree</field>
+        <field name="model">customer.product.mapping</field>
+        <field name="inherit_id" ref="industry_fsm.view_customer_product_mapping_tree_fsm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='customer_id']" position="after">
+                <field name="distributor_id" string="Distributor Name" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

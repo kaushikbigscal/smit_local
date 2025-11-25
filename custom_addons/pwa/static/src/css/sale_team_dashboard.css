@@ -1,0 +1,30 @@
+@media (max-width: 500px) {
+  [name="to_replace_in_sale_crm"] {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    --gutter-x: 0px; /* ✅ fixed colon here */
+    padding-right: calc(var(--gutter-x) * 0);
+    padding-left: calc(var(--gutter-x) * 0.5);
+    margin-top: var(--gutter-y);
+    margin-bottom: 10px;
+  }
+}
+
+/* Scope only to hr.attendance list view */
+
+
+
+
+@media (max-width: 500px) {
+  .row {
+    --gutter-x: 0;
+    --gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--gutter-y));
+    margin-right: calc(-.5 * var(--gutter-x));
+    margin-left: calc(-.5 * var(--gutter-x));
+  }
+}
+

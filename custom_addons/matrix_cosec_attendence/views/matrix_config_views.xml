@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_matrix_configuration_form" model="ir.ui.view">
+            <field name="name">matrix.configuration.form</field>
+            <field name="model">matrix.configuration</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="api_url"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="username"/>
+                                <field name="password" password="True"/>
+                                <field name="last_sync_date" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <separator string="Custom Fetch" colspan="2"/>
+                            <group col="1">
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <button name="action_sync_attendance" string="Sync Attendance" type="object"
+                                        class="btn-primary"/>
+                            </group>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_matrix_configuration" model="ir.actions.act_window">
+            <field name="name">Matrix Configuration</field>
+            <field name="res_model">matrix.configuration</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="matrix_attendance_root_menu"
+                  name="Biometric Settings"
+                  parent="hr_attendance.menu_hr_attendance_settings"
+                  action="action_matrix_configuration"
+                  groups="hr_attendance.group_hr_attendance_manager"
+                  sequence="10"/>
+
+    </data>
+</odoo>

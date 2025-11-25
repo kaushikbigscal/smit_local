@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_simple_form_inherit_distribution" model="ir.ui.view">
+        <field name="name">res.partner.simplified.form.inherit.distribution</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_simple_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_type']" position="replace">
+                <field name="company_type" widget="radio" options="{'horizontal': true}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_distribution_management"
+              name="Distributor Management"
+              parent="contacts.menu_contacts"
+              sequence="3"
+              groups="base.group_user"/>
+
+    <record id="view_distribution_partner_tree" model="ir.ui.view">
+        <field name="name">res.partner.distribution.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Distributors">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="user_id" string="Salesperson"/>
+                <field name="city"/>
+                <field name="country_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_distribution_partners" model="ir.actions.act_window">
+        <field name="name">Distributors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('company_type','=','distribution')]</field>
+        <field name="context" eval="{
+        'default_company_type': 'distribution',
+        'allowed_company_type': 'distribution'
+        }"/>
+        <field name="view_id" ref="view_distribution_partner_tree"/>
+    </record>
+
+    <record id="res_partner_view_search" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type_company']" position="after">
+                <filter string="Distributor" name="type_distribution" domain="[('company_type', '=', 'distribution')]"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_distribution_partners"
+              name="Distributors"
+              parent="menu_distribution_management"
+              action="action_distribution_partners"
+              sequence="1"
+              groups="base.group_user"/>
+</odoo>

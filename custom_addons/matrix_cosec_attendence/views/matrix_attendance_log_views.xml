@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Attendance Log List View -->
+    <record id="view_matrix_attendance_log_list" model="ir.ui.view">
+        <field name="name">matrix.attendance.log.list</field>
+        <field name="model">matrix.attendance.log</field>
+        <field name="arch" type="xml">
+            <tree import="0" create="false">
+                
+                <field name="employee_id"/>
+                <field name="biometric_id"/>
+                <field name="username"/>
+                <field name="event_datetime"/>
+                <field name="entry_exit_type"/>
+                <field name="reason"/>
+		<field name="log_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Attendance Log Form View -->
+    <record id="view_matrix_attendance_log_form" model="ir.ui.view">
+        <field name="name">matrix.attendance.log.form</field>
+        <field name="model">matrix.attendance.log</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_create_attendance" type="object" string="Create Attendance" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="biometric_id"/>
+                        <field name="username"/>
+                        <field name="event_datetime"/>
+                        <field name="entry_exit_type"/>
+                        <field name="reason"/>
+                        <field name="log_date" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+
+        </field>
+    </record>
+
+    <!-- Action to open Attendance Form -->
+    <record id="action_create_attendance" model="ir.actions.act_window">
+        <field name="name">Create Attendance</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">
+            {"default_employee_id": employee_id, "default_check_in": event_datetime if entry_exit_type == '0' else False, "default_check_out": event_datetime if entry_exit_type == '1' else False}
+        </field>
+    </record>
+
+
+    <record id="action_matrix_attendance_log" model="ir.actions.act_window">
+        <field name="name">Attendance Pull Logs</field>
+        <field name="res_model">matrix.attendance.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Attendance Log Menu Item -->
+    <menuitem id="biometric_log_menu"
+              name="Biometric Logs"
+              parent="hr_attendance.menu_hr_attendance_root"
+              groups="hr_attendance.group_hr_attendance_manager"
+              sequence="10"/>
+
+    <menuitem id="matrix_attendance_log_menu"
+              name="Attendance Pull Logs"
+              parent="biometric_log_menu"
+              action="action_matrix_attendance_log"
+              groups="hr_attendance.group_hr_attendance_manager"
+              sequence="10"/>
+
+</odoo>
+
+

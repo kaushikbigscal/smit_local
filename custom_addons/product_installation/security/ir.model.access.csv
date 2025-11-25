@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_installation_attachment_line,access.installation.attachment.line,model_installation_attachment_line,base.group_user,1,1,1,1
+access_sale_order_installation_line_user,sale.order.installation.line user,model_sale_order_installation_line,base.group_user,1,1,1,1
+access_installation_wizard,installation.wizard user,model_installation_wizard,base.group_user,1,1,1,1
+access_distributor_asset_change_wizard,distributor.asset.change.wizard user,model_distributor_asset_change_wizard,base.group_user,1,1,1,1
+access_distributor.asset,distributor.asset user,model_distributor_asset,base.group_user,1,1,1,1

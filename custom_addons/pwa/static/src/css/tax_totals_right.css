@@ -1,0 +1,10 @@
+/* Right-align the Tax Totals block in form view */
+.o_field_account-tax-totals-field {
+    text-align: right; /* Push entire content right */
+}
+
+.o_field_account-tax-totals-field table {
+    display: inline-table; /* Keep table compact */
+    margin-left: auto;     /* Push table to far right */
+    margin-right: 0;
+}

@@ -1,0 +1,73 @@
+@media (max-width: 700px) {
+    /* Add horizontal scrollbar to the main container */
+    .o_content, .o_list_view, .o_list_renderer {
+        overflow-x: auto !important;
+        width: 100% !important;
+    }
+
+    /* Ensure the table doesn't collapse and maintains its width */
+    .o_list_view table {
+        min-width: max-content !important;
+        table-layout: fixed !important;
+    }
+
+    /* Your original CSS - keep fixed width columns */
+    .o_list_view th {
+    height: 50px !important;
+    },
+    .o_list_view td {
+        min-width: 90px !important;
+        max-width: 500px !important;
+        width: 130px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Your original actions column CSS */
+    .o_list_controller.o_list_actions_header.position-sticky.end-0 {
+        min-width: 50px !important;
+        max-width: 50px !important;
+        width: 50px !important;
+    }
+
+    /* Additional targeting for common Odoo container classes */
+    .o_view_controller, .o_list_controller {
+        overflow-x: auto !important;
+    }
+}
+
+
+
+/*.o_optional_columns_dropdown.o-dropdown--menu.dropdown-menu.d-block {
+  position: fixed !important;
+  transform: none !important;
+}
+
+ /*For small screens: align to left with some margin
+@media (max-width: 500px) {
+  .o_optional_columns_dropdown.o-dropdown--menu.dropdown-menu.d-block {
+    left: 10px !important;
+    right: 10px !important;
+  }
+}
+
+/* For larger screens: align to right with some margin
+@media (min-width: 501px) {
+  .o_optional_columns_dropdown.o-dropdown--menu.dropdown-menu.d-block {
+    right: 10px !important;
+    left: auto !important;
+  }
+}
+*/
+
+/*
+@media (max-width: 500px) {
+  .o_optional_columns_dropdown.o-dropdown--menu.dropdown-menu.d-block {
+    position: fixed !important;
+    left: 10.322px !important;
+    right:10.322px !important;
+    transform: none !important;
+  }
+}
+*/

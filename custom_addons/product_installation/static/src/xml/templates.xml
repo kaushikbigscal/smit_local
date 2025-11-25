@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="product_installation.StockReportSearchPanel.Override"
+       t-inherit="stock.StockReportSearchPanel.Regular"
+       t-inherit-mode="primary">
+
+        <!-- Remove the "All Warehouses" option -->
+        <xpath expr="//li[contains(@class, 'o_search_panel_filter_value')][span[contains(@t-att-class, '!selectedWarehouse')]]" position="replace"/>
+
+    </t>
+
+</templates>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<templates xml:space="preserve">-->
+
+<!--    &lt;!&ndash; inherit the original chatter template &ndash;&gt;-->
+<!--    <t t-inherit="mail.Chatter" t-inherit-mode="extension">-->
+
+<!--        &lt;!&ndash; insert checklist attachments before normal attachments &ndash;&gt;-->
+<!--        <t t-jquery=".o-mail-Chatter-content > div.o-mail-Chatter-search + t-else > div.o-mail-Chatter-content > div.o-mail-Chatter-content div.o-mail-AttachmentBox" t-operation="before">-->
+<!--            <t t-if="checklistAttachments.length > 0">-->
+<!--                <div class="o-mail-ChecklistBox position-relative mb-3" t-ref="checklist-box">-->
+<!--                    <div class="d-flex align-items-center">-->
+<!--                        <hr class="flex-grow-1"/>-->
+<!--                        <span class="p-3 fw-bold">-->
+<!--                            Checklist-->
+<!--                        </span>-->
+<!--                        <hr class="flex-grow-1"/>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex flex-column">-->
+<!--                        <AttachmentList-->
+<!--                            attachments="checklistAttachments"-->
+<!--                            unlinkAttachment.bind="unlinkAttachment"-->
+<!--                            imagesHeight="100"-->
+<!--                        />-->
+<!--                        <FileUploader-->
+<!--                            multiUpload="true"-->
+<!--                            fileUploadClass="'o-mail-Chatter-fileUploader'"-->
+<!--                            onUploaded.bind="onUploaded"-->
+<!--                            onClick="(ev) => this.onClickAttachFile(ev)"-->
+<!--                        >-->
+<!--                            <t t-set-slot="toggler">-->
+<!--                                <button class="btn btn-link" type="button"-->
+<!--                                        t-att-disabled="!state.thread.hasWriteAccess">-->
+<!--                                    <i class="fa fa-plus-square"/>-->
+<!--                                    Add Checklist File-->
+<!--                                </button>-->
+<!--                            </t>-->
+<!--                        </FileUploader>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </t>-->
+
+<!--    </t>-->
+
+<!--</templates>-->

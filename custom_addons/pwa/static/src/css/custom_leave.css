@@ -1,0 +1,148 @@
+/* Only target error dialog on small screens */
+@media (max-width: 575.98px) {
+    /* Specific to error dialog container */
+    .modal-dialog .modal-content.o_error_dialog {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 auto !important;
+        max-width: 95% !important;
+        min-width: 300px !important;
+        max-height: 40vh !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Reduce header size on mobile */
+    .modal-content.o_error_dialog .modal-header {
+        padding: 8px 12px !important;
+        flex-shrink: 0 !important;
+        position: relative !important;
+        z-index: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .modal-content.o_error_dialog .modal-title {
+        font-size: 19px !important;
+        padding-left:10px !important;
+    }
+
+    /* Ensure scrollable content */
+    .modal-content.o_error_dialog .modal-body {
+        overflow-y: auto !important;
+        padding-top:30px !important;
+        flex: 1 !important;
+    }
+}
+
+
+/* Only target Font Size of Half Day and Custom hours */
+.small-label {
+    font-size: 14px !important;
+}
+
+
+/* Only target calendar render in center while selecting half day */
+/* Only target calendar render in center while selecting half day on small screens */
+@media (max-width: 575px) {
+    .o_popover.o-popover--bs,
+    .o_popover.o-popover--bm {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+    }
+}
+
+
+/* Employee width to be fixed in Monthly Salary Report*/
+.o_list_view th[data-name="employee_name"],
+.o_list_view td[data-name="employee_name"] {
+    min-width: 130px !important;
+    max-width: 130px !important;
+    width: 130px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+/* Mobile-friendly adjustments below 600px */
+@media (max-width: 600px) {
+    /* Keep original card styles */
+    .o_timeoff_card {
+        padding-top: 12px !important;
+        padding-bottom: 35px !important;
+        flex: 0 0 auto; /* Prevent shrinking */
+        width: 80% !important; /* Adjust card width for better visibility */
+        max-width: 220px; /* Optional: limit max card width */
+        scroll-snap-align: start; /* Smooth snapping */
+        background-color:#f5f5f5 !important;  /* f5f5f5 */
+    }
+
+    .o_timeoff_name {
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .o_timeoff_duration {
+        font-size: 20px !important;
+    }
+
+    .o_timeoff_duration img {
+        width: 20px !important;
+        height: 20px !important;
+        margin-right: 4px !important;
+    }
+
+    .o_timeoff_details,
+    .o_timeoff_validity {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    .o_timeoff_info {
+        font-size: 12px !important;
+        margin-left: 2px !important;
+    }
+
+    /* Button adjustments */
+    .o_timeoff_card .btn {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+    }
+
+    /* Dashboard container → enable horizontal scrolling */
+    .o_timeoff_dashboard {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;  /* Horizontal scroll */
+        overflow-y: hidden !important; /* Prevent vertical scroll */
+        scroll-snap-type: x mandatory; /* Enable smooth snap */
+        gap: 10px; /* Space between cards */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        padding-bottom: 5px;
+    }
+
+    /* Optional: Hide scrollbar for a cleaner look */
+    .o_timeoff_dashboard::-webkit-scrollbar {
+        height: 6px;
+    }
+    .o_timeoff_dashboard::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+    }
+    .o_timeoff_dashboard::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+
+
+
+

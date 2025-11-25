@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_product_template_form_inherit_installed_ok" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.installed.ok</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='purchase_ok']" position="after">
+                <span class="d-inline-block">
+                    <field name="enable_distributor" invisible="1"/>
+                    <field name="installed_ok" invisible="not enable_distributor"/>
+                    <label for="installed_ok" invisible="not enable_distributor"/>
+                </span>
+            </xpath>
+
+
+            <xpath expr="//page[@name='sales']" position="after">
+                <page name="installation" string="Installation" invisible="(not installed_ok) or (not enable_distributor)">
+                    <field name="installation_attachment_line_ids" widget="one2many"
+                           context="{'show_attribute': False}">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="upload_file" filename="upload_file_filename"/>
+                            <field name="upload_file_filename" string="File Name"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_category_form_inherit_display_catalog" model="ir.ui.view">
+        <field name="name">product.category.form.inherit.display.catalog</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="enable_distributor" invisible="1"/>
+                <field name="installed_ok" invisible="not enable_distributor"/>
+            </xpath>
+
+            <xpath expr="//sheet" position="inside">
+                <notebook position="inside">
+                    <page name="installation" string="Installation" invisible="(not installed_ok) or (not enable_distributor)">
+                        <field name="installation_attachment_line_ids" widget="one2many"
+                               context="{'show_attribute': False}">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="upload_file" filename="upload_file_filename"/>
+                                <field name="upload_file_filename" string="File Name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_task_form_feedback_tab" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.customer.app.feedback</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="industry_fsm.view_task_form2_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <field name="enable_distributor" invisible="1"/>
+                <page string="Installation" name="installation" invisible="not enable_distributor">
+                    <field name="installation_table_html"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Inherit the portal layout to add Installation Tickets card -->
+    <template id="installation_portal_layout_cards" inherit_id="customer_app.custom_portal_layout_cards">
+
+        <!-- Replace the info-card-grid to adjust for 5 cards in a row -->
+        <xpath expr="//div[@class='info-card-grid w-100 mb-4']" position="replace">
+            <div class="info-card-grid w-100 mb-4">
+                <!-- Active Assets Card -->
+                <t t-if="fsm_installed">
+                    <a t-attf-href="/my/active/assets" class="text-decoration-none">
+                        <div class="info-card">
+                            <div class="info-card-title">Active Assets</div>
+                            <div class="info-card-value">
+                                <t t-esc="active_asset_count or 0"/>
+                            </div>
+                            <div class="info-icon">
+                                <i class="bi bi-box2"></i>
+                            </div>
+                            <div t-attf-class="info-card-status #{'info-green' if under_service_count == 0 else 'info-red'}">
+                                <t t-if="active_asset_count == 0">
+                                    No assets
+                                </t>
+                                <t t-elif="under_service_count == 0">
+                                    All Operational
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="under_service_count"/>
+                                    Under Service
+                                </t>
+                            </div>
+                        </div>
+                    </a>
+                </t>
+                <t t-if="fsm_installed">
+                    <a t-attf-href="/my/open/ticket" class="text-decoration-none">
+                        <div class="info-card">
+                            <div class="info-card-title">Open Tickets</div>
+
+                            <!-- Count -->
+                            <div class="info-card-value">
+                                <t t-esc="open_ticket_count or 0"/>
+                            </div>
+                            <div class="info-icon">
+                                <i class="bi bi-chat-left"></i>
+                            </div>
+
+                            <!-- Status: green if 0, red if >0 -->
+                            <div t-attf-class="info-card-status #{'info-green' if open_ticket_count == 0 else 'info-red'}">
+                                <t t-if="open_ticket_count == 0">No Open tickets</t>
+                                <t t-else="">
+                                    <t t-esc="open_ticket_count or 0"/>
+                                    Pending
+                                </t>
+                            </div>
+                        </div>
+                    </a>
+                </t>
+                <t t-if="fsm_installed">
+                    <a t-attf-href="/my/installation/tickets" class="text-decoration-none">
+                        <div class="info-card">
+                            <div class="info-card-title">Installation Tickets</div>
+
+                            <!-- Count -->
+                            <div class="info-card-value">
+                                <t t-esc="installation_ticket_count or 0"/>
+                            </div>
+                            <div class="info-icon">
+                                <i class="bi bi-tools"></i>
+                            </div>
+
+                            <!-- Status: green if 0, red if >0 -->
+                            <div t-attf-class="info-card-status #{'info-green' if installation_ticket_count == 0 else 'info-red'}">
+                                <t t-if="installation_ticket_count == 0">No Open tickets</t>
+                                <t t-else="">
+                                    <t t-esc="installation_ticket_pending  or 0"/>
+                                    Pending
+                                </t>
+                            </div>
+                        </div>
+                    </a>
+                </t>
+
+                <!-- Quotations Card -->
+                <div t-att-class="'info-card ' + ('full-width-mobile' if not (fsm_installed and contract_count > 0) else '')">
+                    <a t-attf-href="/my/quotes" class="text-decoration-none">
+                        <div class="info-card-title">Quotations</div>
+                        <div class="info-card-value">
+                            <t t-esc="quotation_count or 0"/>
+                        </div>
+                        <div class="info-icon">
+                            <i class="bi bi-file-earmark-richtext"></i>
+                        </div>
+                        <div t-attf-class="info-card-status #{'info-green' if quotation_count == 0 else 'info-red'}">
+                            <t t-if="quotation_count == 0">No pending reviews</t>
+                            <t t-else="">
+                                <t t-esc="quotation_count or 0"/>
+                                Pending for reviews
+                            </t>
+                        </div>
+                    </a>
+                </div>
+
+                <t t-if="fsm_installed and contract_count > 0">
+                    <a href="/my/contract/list" style="text-decoration: none;">
+                        <div class="info-card">
+                            <div class="info-card-title">Contract Status</div>
+
+                            <!-- Status text: Expired or Active -->
+                            <div class="info-card-value">
+                                <t t-if="is_expired">Expired</t>
+                                <t t-elif="contract_count == 1">Active</t>
+                                <t t-else="">
+                                    <t t-esc="contract_count"/>
+                                </t>
+                            </div>
+                            <div class="info-icon">
+                                <t t-if="is_expired">
+                                    <i class="bi bi-x-circle"></i>
+                                </t>
+                                <t t-else="">
+                                    <i class="bi bi-check2-circle"></i>
+                                </t>
+                            </div>
+
+                            <!-- Status message below: Red if expired -->
+                            <t t-if="contract_count == 1 and contract_renewal_message">
+                                <div t-attf-class="info-card-status #{'info-red' if is_expired else 'info-green'}">
+                                    <t t-esc="contract_renewal_message"/>
+                                </div>
+                            </t>
+                        </div>
+                    </a>
+                </t>
+            </div>
+
+        </xpath>
+    </template>
+
+    <!-- Installation Tickets List View Template -->
+    <template id="installation_ticket_list_view" name="Installation Ticket List">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title" t-value="'Installation Tickets'"/>
+                    <t t-set="searchbar_combined" t-value="searchbar_combined"/>
+                    <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>
+                    <t t-set="search_in" t-value="search_in"/>
+                    <t t-set="filterby" t-value="filterby"/>
+                    <t t-set="groupby" t-value="groupby"/>
+                    <t t-set="search" t-value="search"/>
+                    <t t-set="default_url" t-value="default_url"/>
+                </t>
+
+                <t t-if="grouped_calls">
+                    <div class="accordion" id="installationAccordion">
+                        <t t-foreach="grouped_calls.items()" t-as="group">
+                            <t t-set="group_name" t-value="group[0]"/>
+                            <t t-set="group_calls" t-value="group[1]"/>
+                            <t t-set="group_id" t-value="'group-' + group_name.replace(' ', '_').replace('/', '_')"/>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" t-attf-id="heading-#{group_id}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            t-attf-data-bs-target="#collapse-#{group_id}" aria-expanded="false"
+                                            t-attf-aria-controls="collapse-#{group_id}">
+                                        <t t-esc="group_name or 'Undefined Group'"/>
+                                    </button>
+                                </h2>
+
+                                <div t-attf-id="collapse-#{group_id}" class="accordion-collapse collapse"
+                                     t-attf-aria-labelledby="heading-#{group_id}"
+                                     data-bs-parent="#installationAccordion">
+                                    <div class="accordion-body p-4">
+                                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                                            <table class="table table-hover mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sortable">Ticket Number
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Installation Call Name
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Product
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Creation Date
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Expected Date
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Assignee
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                        <th class="sortable">Stage
+                                                            <i class="fa fa-sort ms-1"></i>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="group_calls" t-as="call">
+                                                        <tr>
+                                                            <td>
+                                                                <t t-esc="call.sequence_fsm or 'N/A'"/>
+                                                            </td>
+                                                            <td class="wrap-text">
+                                                                <a t-attf-href="/my/ticket/#{call.id}"
+                                                                   t-esc="call.name"/>
+                                                            </td>
+                                                            <td class="wrap-text">
+                                                                <t t-esc="(call.customer_product_id.product_id.name if call.customer_product_id else '') or 'N/A'"/>
+                                                            </td>
+                                                            <td>
+                                                                <t t-esc="format_date(call.create_date)"/>
+                                                            </td>
+                                                            <td>
+                                                                <t t-esc="format_date(call.planned_date_begin)"/>
+                                                            </td>
+                                                            <td class="wrap-text">
+                                                                <t t-esc="call.user_ids and call.user_ids[0].name or 'N/A'"/>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-warning text-dark"
+                                                                      t-esc="call.stage_id.name or 'N/A'"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-elif="not groupby">
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover o_list_view o_portal_my_doc_table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable">Ticket Number
+                                        <i class="fa fa-sort ms-1"></i>
+                                    </th>
+                                    <th class="sortable">Installation Call Name
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                    <th class="sortable">Product
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                    <th class="sortable">Creation Date
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                    <th class="sortable">Expected Date
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                    <th class="sortable">Assignee
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                    <th class="sortable">Stage
+                                        <i class="fa fa-sort ms-1"> </i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="calls" t-as="call">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="call.sequence_fsm or 'N/A'"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <a t-attf-href="/my/ticket/#{call.id}" t-esc="call.name"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <t t-esc="(call.customer_product_id.product_id.name if call.customer_product_id else '') or 'N/A'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="format_date(call.create_date) if call.create_date else 'N/A'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="format_date(call.planned_date_begin) if call.planned_date_begin else 'N/A'"/>
+                                        </td>
+                                        <td class="wrap-text">
+                                            <t t-esc="call.user_ids.name or 'N/A'"/>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark"
+                                                  t-esc="call.stage_id.name or 'N/A'"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+                <!-- No Results -->
+                <t t-else="">
+                    <div class="alert alert-warning">No installation tickets found.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="ticket_form_view_inherit" inherit_id="customer_app.ticket_form_view">
+        <xpath expr="//div//h4['Communication History']" position="before">
+            <t t-set="is_installation_ticket" t-value="'installation' in (ticket.name or '').lower() and ticket.project_id.name == 'Service Call' and ticket.is_fsm and not ticket.installation_request_confirmed"/>
+            <t t-if="is_installation_ticket">
+                <div class="mb-3">
+                    <button type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#installationChecklistModal">
+                        Installation Request
+                    </button>
+
+                    <!-- Modal placed here -->
+                    <div class="modal fade" id="installationChecklistModal" tabindex="-1"
+                         aria-labelledby="installationChecklistModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form t-att-action="'/my/ticket/%s/installation_request' % ticket.id" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="installationChecklistModalLabel">Installation
+                                            Checklist
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you confirm this entire installation checklist?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Yes, Confirm</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+
+    <!-- Add breadcrumb for Installation Tickets -->
+    <template id="installation_portal_breadcrumbs" inherit_id="customer_app.portal_breadcrumbs_page_name">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'Installation Tickets'" class="breadcrumb-item">
+                <a href="/my/installation/tickets">Installation Tickets</a>
+            </li>
+            <li t-if="page_name == 'Installation Ticket'" class="breadcrumb-item">
+                <a href="/my/installation/tickets">Installation Tickets</a>
+            </li>
+            <li t-if="page_name == 'Installation Ticket' and ticket" class="breadcrumb-item active" aria-current="page">
+                <t t-esc="ticket.name"/>
+            </li>
+            <!--            <t t-if="page_name == 'Installation Tickets'">-->
+            <!--                <div class="d-flex justify-content-end" style="max-width: 300px; margin-left:auto;">-->
+            <!--                    <a href="/my/ticket/create"-->
+            <!--                       class="btn btn-primary d-flex align-items-center justify-content-center"-->
+            <!--                       style="padding: 4px 10px; font-size: 12px; height: 30px; min-width: 120px;">-->
+            <!--                        Create Installation-->
+            <!--                    </a>-->
+            <!--                </div>-->
+            <!--            </t>-->
+        </xpath>
+    </template>
+</odoo>
